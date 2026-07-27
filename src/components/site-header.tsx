@@ -25,6 +25,9 @@ export default async function SiteHeader() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <Link href="/book" className="hover:text-brand-red transition-colors">
+            Plan Your Wedding
+          </Link>
           <Link href="/vendors" className="hover:text-brand-red transition-colors">
             Browse Vendors
           </Link>

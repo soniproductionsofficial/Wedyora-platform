@@ -24,6 +24,10 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font -- this
+            rule targets the Pages Router's pages/_document.js; loading a
+            font stylesheet from the App Router's root layout <head> is the
+            documented pattern here and applies to every page. */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
           rel="stylesheet"

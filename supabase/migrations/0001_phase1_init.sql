@@ -124,6 +124,11 @@ create table public.bookings (
   status booking_status not null default 'pending_assignment',
   assigned_by uuid references public.profiles (id),
   assigned_at timestamptz,
+  -- Set by the admin (later: the AI matching engine) at assignment time,
+  -- since the customer only specifies a budget RANGE at booking time, not
+  -- a fixed price. advance_amount is what actually gets charged via Razorpay.
+  agreed_price numeric(10, 2),
+  advance_amount numeric(10, 2),
   created_at timestamptz not null default now()
 );
 

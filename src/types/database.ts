@@ -123,6 +123,8 @@ export interface Database {
           status: BookingStatus;
           assigned_by: string | null;
           assigned_at: string | null;
+          agreed_price: number | null;
+          advance_amount: number | null;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["bookings"]["Row"]> & {
