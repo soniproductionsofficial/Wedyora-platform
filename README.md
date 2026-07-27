@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wedyora Platform
 
-## Getting Started
+The Wedyora booking platform: customers book wedding vendors, vendors apply
+and get verified, and (in later phases) an AI matching engine assigns
+vendors to bookings automatically. Built with Next.js (App Router) +
+Supabase (auth, Postgres database, file storage) + Razorpay (payments).
 
-First, run the development server:
+This is the actual application — not the public marketing site
+(`wedyora_site/wedyora.html`, deployed separately on standard web hosting).
+
+## Status: Phase 1 (MVP) — in progress
+
+What works right now:
+
+- Customer signup / login (Supabase Auth)
+- Vendor application form (creates a login + a `pending` vendor profile)
+- Public vendor browsing page, filterable by category/city (only shows
+  `approved` vendors)
+- Database schema + Row Level Security policies for profiles, vendors,
+  packages, bookings, and payments (`supabase/migrations/0001_phase1_init.sql`)
+
+Not built yet (tracked in the project task list):
+
+- Admin panel: approving/rejecting pending vendors, manually assigning a
+  vendor to a booking
+- Customer booking flow: browse a vendor's packages → pick a date → create
+  a booking
+- Razorpay checkout for the advance payment, and the server-side webhook
+  that marks a booking `confirmed` once payment clears
+- Everything from later phases (AI vendor-matching engine, escrow/finance
+  automation, wedding-day GPS operations, editing/QC workflow, BI dashboards)
+  — deliberately deferred until the core booking loop is solid
+
+## Getting Started Locally
 
 ```bash
+npm install
+cp .env.local.example .env.local   # fill in real Supabase/Razorpay keys
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The schema lives in `supabase/migrations/0001_phase1_init.sql`. Once you
+have a Supabase project, run it via the Supabase SQL Editor (paste the file
+contents and run) or the Supabase CLI (`supabase db push`).
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+- **Hosting:** [Vercel](https://vercel.com) — connect this GitHub repo, add
+  the environment variables from `.env.local.example` in the Vercel project
+  settings, and it deploys automatically on every push.
+- **Database/Auth/Storage:** [Supabase](https://supabase.com)
+- **Payments:** [Razorpay](https://razorpay.com) (start in Test Mode)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `ACCOUNT_SETUP_GUIDE.md` (delivered separately) for step-by-step account
+setup instructions.
