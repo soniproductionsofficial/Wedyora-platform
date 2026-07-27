@@ -1,9 +1,29 @@
--- Wedyora Platform — Phase 1 (MVP) schema
--- Scope: customer signup, vendor signup + admin approval, browsing,
--- booking creation, advance payment, manual vendor assignment.
--- Deliberately NOT in this migration (later phases): AI vendor scoring,
--- escrow/settlement automation, GST/TDS calculation, penalty system,
--- wedding-day GPS operations, editing/QC workflow, BI dashboards.
+-- Wedyora Platform — Phase 1 (MVP) schema, RESET + REBUILD version.
+-- Safe to run any number of times on this project: it first drops
+-- anything left over from a previous attempt (nothing valuable is lost —
+-- this project has no real signups/bookings yet), then rebuilds everything
+-- from scratch in one go.
+
+-- ============================================================
+-- 0. RESET — drop anything from a previous partial run
+-- ============================================================
+
+drop table if exists public.payments cascade;
+drop table if exists public.bookings cascade;
+drop table if exists public.packages cascade;
+drop table if exists public.vendor_profiles cascade;
+drop table if exists public.service_categories cascade;
+drop table if exists public.profiles cascade;
+
+drop trigger if exists on_auth_user_created on auth.users;
+drop function if exists public.handle_new_user() cascade;
+drop function if exists public.is_admin() cascade;
+
+drop type if exists payment_status cascade;
+drop type if exists payment_type cascade;
+drop type if exists booking_status cascade;
+drop type if exists vendor_status cascade;
+drop type if exists user_role cascade;
 
 -- ============================================================
 -- 1. ROLES & PROFILES
