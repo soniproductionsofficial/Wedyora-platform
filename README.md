@@ -8,28 +8,42 @@ Supabase (auth, Postgres database, file storage) + Razorpay (payments).
 This is the actual application — not the public marketing site
 (`wedyora_site/wedyora.html`, deployed separately on standard web hosting).
 
-## Status: Phase 1 (MVP) — in progress
+## Status: Phase 1 (MVP) — core loop built, not yet tested against a real database
 
-What works right now:
+What works right now (verified via `npm run build` + route smoke tests in
+the dev sandbox, but NOT yet against a real Supabase/Razorpay project):
 
 - Customer signup / login (Supabase Auth)
 - Vendor application form (creates a login + a `pending` vendor profile)
 - Public vendor browsing page, filterable by category/city (only shows
   `approved` vendors)
+- Admin panel (`/admin`) — approve/reject vendor applications, and manually
+  assign an approved vendor + set the agreed price / advance amount on a
+  booking (a manual stand-in for the future AI matching engine)
+- Customer booking request form (`/book`) — category, date, city, guest
+  count, budget range, notes
+- Razorpay advance-payment checkout once a booking has a vendor assigned,
+  with the server independently re-verifying the payment signature before
+  marking anything as paid (never trusts the browser's word for it)
 - Database schema + Row Level Security policies for profiles, vendors,
   packages, bookings, and payments (`supabase/migrations/0001_phase1_init.sql`)
 
+**Making yourself an admin:** there's no public signup path to the `admin`
+role (intentionally). Sign up as a normal customer first, then in the
+Supabase SQL Editor run:
+
+```sql
+update public.profiles set role = 'admin'
+where id = (select id from auth.users where email = 'you@example.com');
+```
+
 Not built yet (tracked in the project task list):
 
-- Admin panel: approving/rejecting pending vendors, manually assigning a
-  vendor to a booking
-- Customer booking flow: browse a vendor's packages → pick a date → create
-  a booking
-- Razorpay checkout for the advance payment, and the server-side webhook
-  that marks a booking `confirmed` once payment clears
+- End-to-end test against a real Supabase project + real Razorpay test-mode
+  checkout (next step once those accounts exist)
 - Everything from later phases (AI vendor-matching engine, escrow/finance
   automation, wedding-day GPS operations, editing/QC workflow, BI dashboards)
-  — deliberately deferred until the core booking loop is solid
+  — deliberately deferred until the core booking loop is proven solid
 
 ## Getting Started Locally
 
