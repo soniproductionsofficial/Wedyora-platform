@@ -2,57 +2,110 @@
 
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { normalizePhone } from "@/lib/phone";
 
-export async function vendorApplyAction(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
+// The vendor application form is longer than the customer one (business
+// details, category, experience, bio) and none of it should be re-typed
+// after the phone is verified. Since these two actions are plain
+// server-action + redirect (no client-side state), the only way to carry
+// that data across the "enter details" -> "enter the texted code" step is
+// to round-trip it through the URL as hidden form fields on the OTP page.
+// None of it is a secret (no password exists anymore), so that's fine.
+function otpRedirectParams(fields: Record<string, string>) {
+  return new URLSearchParams({ phase: "otp", ...fields }).toString();
+}
+
+export async function requestVendorOtpAction(formData: FormData) {
   const fullName = String(formData.get("full_name") ?? "").trim();
-  const phone = String(formData.get("phone") ?? "").trim();
+  const phoneRaw = String(formData.get("phone") ?? "").trim();
   const businessName = String(formData.get("business_name") ?? "").trim();
   const categoryId = String(formData.get("category_id") ?? "");
   const city = String(formData.get("city") ?? "").trim();
   const bio = String(formData.get("bio") ?? "").trim();
-  const experienceYears = Number(formData.get("experience_years") ?? 0) || null;
+  const experienceYears = String(formData.get("experience_years") ?? "");
 
-  if (!email || !password || !fullName || !businessName || !categoryId || !city) {
+  if (!fullName || !phoneRaw || !businessName || !categoryId || !city) {
     redirect(
       "/vendor/apply?error=" +
         encodeURIComponent("Please fill in all required fields.")
     );
   }
 
+  const phone = normalizePhone(phoneRaw);
   const supabase = await createClient();
-
-  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-    email,
-    password,
+  const { error } = await supabase.auth.signInWithOtp({
+    phone,
     options: {
+      shouldCreateUser: true,
       data: { full_name: fullName, role: "vendor" },
     },
   });
 
-  if (signUpError || !signUpData.user) {
+  if (error) {
+    redirect("/vendor/apply?error=" + encodeURIComponent(error.message));
+  }
+
+  redirect(
+    `/vendor/apply?${otpRedirectParams({
+      phone,
+      full_name: fullName,
+      business_name: businessName,
+      category_id: categoryId,
+      city,
+      bio,
+      experience_years: experienceYears,
+    })}`
+  );
+}
+
+export async function verifyVendorOtpAction(formData: FormData) {
+  const phone = String(formData.get("phone") ?? "").trim();
+  const token = String(formData.get("token") ?? "").trim();
+  const fullName = String(formData.get("full_name") ?? "").trim();
+  const businessName = String(formData.get("business_name") ?? "").trim();
+  const categoryId = String(formData.get("category_id") ?? "");
+  const city = String(formData.get("city") ?? "").trim();
+  const bio = String(formData.get("bio") ?? "").trim();
+  const experienceYearsRaw = String(formData.get("experience_years") ?? "");
+  const experienceYears = Number(experienceYearsRaw) || null;
+
+  const carriedFields = {
+    phone,
+    full_name: fullName,
+    business_name: businessName,
+    category_id: categoryId,
+    city,
+    bio,
+    experience_years: experienceYearsRaw,
+  };
+
+  const supabase = await createClient();
+  const { error: verifyError, data: verifyData } = await supabase.auth.verifyOtp({
+    phone,
+    token,
+    type: "sms",
+  });
+
+  if (verifyError || !verifyData.user) {
     redirect(
-      "/vendor/apply?error=" +
-        encodeURIComponent(signUpError?.message ?? "Could not create account.")
+      `/vendor/apply?${otpRedirectParams({
+        ...carriedFields,
+        error: verifyError?.message ?? "Could not verify that code.",
+      })}`
     );
   }
 
-  const userId = signUpData.user.id;
+  const userId = verifyData.user.id;
 
-  // Use the admin (service-role) client for these two writes, not the
-  // request-scoped `supabase` client used for signUp above. Right after
-  // signUp(), the new account has NO active session yet — Supabase requires
-  // the user to confirm their email first — so `auth.uid()` is still null
-  // for the rest of this request. The RLS policies on `profiles` and
-  // `vendor_profiles` correctly require auth.uid() = id, which would block
-  // these writes. That's fine: we already know `userId` is exactly the
-  // account we just created via our own signUp() call above (not
-  // client-supplied input), so finishing the same signup transaction with
-  // the admin client is safe and doesn't bypass any real security check.
+  // Use the admin (service-role) client for these two writes rather than
+  // the now-authenticated request-scoped client. This is the very first
+  // request for a brand-new phone number, and Supabase's own trigger that
+  // creates the `profiles` row runs asynchronously right around the same
+  // moment — writing through the admin client avoids racing that trigger,
+  // the same reason the original email-based flow used it too.
   const admin = createAdminClient();
 
-  await admin.from("profiles").update({ phone, city }).eq("id", userId);
+  await admin.from("profiles").update({ full_name: fullName, phone, city }).eq("id", userId);
 
   const { error: vendorError } = await admin.from("vendor_profiles").insert({
     id: userId,
@@ -65,13 +118,15 @@ export async function vendorApplyAction(formData: FormData) {
   });
 
   if (vendorError) {
-    redirect("/vendor/apply?error=" + encodeURIComponent(vendorError.message));
+    redirect(
+      `/vendor/apply?${otpRedirectParams({ ...carriedFields, error: vendorError.message })}`
+    );
   }
 
   redirect(
     "/login?message=" +
       encodeURIComponent(
-        "Application submitted! Check your email to confirm your account. Our team will review your application — you'll be notified once approved."
+        "Application submitted! Our team will review it and you'll be notified once approved."
       )
   );
 }

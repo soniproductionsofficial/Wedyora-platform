@@ -47,7 +47,7 @@ export default async function AccountPage({
         {profile?.full_name ?? "Your account"}
       </h1>
       <p className="text-brand-gray text-sm mb-8 capitalize">
-        {profile?.role ?? "customer"} account &middot; {user.email}
+        {profile?.role ?? "customer"} account &middot; {profile?.phone ?? user.phone}
       </p>
 
       {message && (
@@ -94,7 +94,7 @@ export default async function AccountPage({
                       bookingId={b.id}
                       amount={b.advance_amount}
                       customerName={profile?.full_name}
-                      customerEmail={user.email}
+                      customerPhone={profile?.phone ?? user.phone}
                     />
                   </div>
                 )}

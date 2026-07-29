@@ -15,12 +15,12 @@ export default function PayAdvanceButton({
   bookingId,
   amount,
   customerName,
-  customerEmail,
+  customerPhone,
 }: {
   bookingId: string;
   amount: number;
   customerName?: string | null;
-  customerEmail?: string | null;
+  customerPhone?: string | null;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +44,7 @@ export default function PayAdvanceButton({
         order_id: order.orderId,
         name: "Wedyora",
         description: "Wedding service advance payment",
-        prefill: { name: customerName ?? "", email: customerEmail ?? "" },
+        prefill: { name: customerName ?? "", contact: customerPhone ?? "" },
         theme: { color: "#e31e27" },
         handler: async (response: {
           razorpay_order_id: string;

@@ -13,8 +13,10 @@ This is the actual application — not the public marketing site
 What works right now (verified via `npm run build` + route smoke tests in
 the dev sandbox, but NOT yet against a real Supabase/Razorpay project):
 
-- Customer signup / login (Supabase Auth)
-- Vendor application form (creates a login + a `pending` vendor profile)
+- Customer signup / login by phone number + SMS one-time code (Supabase
+  Auth phone OTP — no email or password anywhere in the app)
+- Vendor application form, also phone + OTP (creates a login + a `pending`
+  vendor profile)
 - Public vendor browsing page, filterable by category/city (only shows
   `approved` vendors)
 - Admin panel (`/admin`) — approve/reject vendor applications, and manually
@@ -30,12 +32,20 @@ the dev sandbox, but NOT yet against a real Supabase/Razorpay project):
 
 **Making yourself an admin:** there's no public signup path to the `admin`
 role (intentionally). Sign up as a normal customer first, then in the
-Supabase SQL Editor run:
+Supabase SQL Editor run (phone number in E.164 format, e.g. `+919876543210`
+— note Supabase stores it *without* a leading `+`, so match on the digits
+only):
 
 ```sql
 update public.profiles set role = 'admin'
-where id = (select id from auth.users where email = 'you@example.com');
+where id = (select id from auth.users where phone = '919876543210');
 ```
+
+**Phone OTP requires an SMS provider:** Supabase itself doesn't send text
+messages — it needs to be connected to an SMS provider (Twilio is the
+best-documented option) in the Supabase dashboard under
+**Authentication → Providers → Phone**, the same way sending emails needed
+Resend connected first. See `ACCOUNT_SETUP_GUIDE.md` for the exact steps.
 
 Not built yet (tracked in the project task list):
 
