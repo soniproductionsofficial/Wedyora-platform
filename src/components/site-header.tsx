@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Camera } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function SiteHeader() {
@@ -21,14 +20,15 @@ export default async function SiteHeader() {
   return (
     <header className="bg-brand-black text-white sticky top-0 z-40 border-b border-white/10">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-heading text-xl font-semibold tracking-tight"
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-orange">
-            <Camera className="h-5 w-5 text-white" strokeWidth={2} />
+        <Link href="/" className="flex items-center">
+          <span className="flex items-center rounded-lg bg-brand-cream px-3 py-1.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/wedyora-logo.png"
+              alt="Wedyora"
+              className="h-7 w-auto"
+            />
           </span>
-          Wedyora
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-white/80">

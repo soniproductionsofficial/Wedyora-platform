@@ -1,19 +1,19 @@
 import Link from "next/link";
-import { Camera } from "lucide-react";
 
 export default function SiteFooter() {
   return (
     <footer className="border-t border-white/10 bg-brand-black text-white/60 mt-16">
       <div className="mx-auto max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-3 text-sm">
         <div>
-          <Link
-            href="/"
-            className="flex items-center gap-2 font-heading text-lg font-semibold text-white mb-3"
-          >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-orange">
-              <Camera className="h-4 w-4 text-white" strokeWidth={2} />
+          <Link href="/" className="inline-flex items-center mb-3">
+            <span className="flex items-center rounded-lg bg-brand-cream px-3 py-1.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/wedyora-logo.png"
+                alt="Wedyora"
+                className="h-6 w-auto"
+              />
             </span>
-            Wedyora
           </Link>
           <p className="max-w-xs">
             India&rsquo;s managed wedding-services platform — every vendor is
