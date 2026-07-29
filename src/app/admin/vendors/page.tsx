@@ -36,9 +36,6 @@ export default async function AdminVendorsPage({
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-semibold mb-2">
-        Vendor Applications
-      </h1>
       <p className="text-brand-gray text-sm mb-6">
         Every vendor must be reviewed before they appear publicly or can be
         assigned to a booking.
@@ -49,10 +46,10 @@ export default async function AdminVendorsPage({
           <a
             key={t}
             href={`/admin/vendors?status=${t}`}
-            className={`px-4 py-2 rounded-full text-sm font-medium capitalize border ${
+            className={`px-4 py-2 rounded-full text-sm font-medium capitalize border transition-colors ${
               activeStatus === t
-                ? "bg-brand-black text-white border-brand-black"
-                : "border-brand-line text-brand-gray"
+                ? "bg-brand-orange text-white border-brand-orange"
+                : "border-brand-line text-brand-gray hover:border-brand-orange hover:text-brand-orange"
             }`}
           >
             {t}
@@ -73,7 +70,7 @@ export default async function AdminVendorsPage({
           {vendors.map((v) => (
             <div
               key={v.id}
-              className="rounded-2xl border border-brand-line bg-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-4"
+              className="rounded-2xl border border-brand-line bg-white p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-sm transition-shadow"
             >
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-brand-gold mb-1">

@@ -40,17 +40,16 @@ export default async function AdminOverviewPage() {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-semibold mb-8">
-        Admin Overview
-      </h1>
       <div className="grid md:grid-cols-3 gap-6">
         {stats.map((s) => (
           <Link
             key={s.label}
             href={s.href}
-            className="rounded-2xl border border-brand-line bg-white p-6 hover:border-brand-orange transition-colors"
+            className="rounded-2xl border border-brand-line bg-white p-6 hover:border-brand-orange hover:shadow-md transition-all"
           >
-            <p className="text-4xl font-heading font-bold mb-2">{s.value}</p>
+            <p className="text-4xl font-heading font-bold mb-2 text-brand-orange">
+              {s.value}
+            </p>
             <p className="text-brand-gray text-sm">{s.label}</p>
           </Link>
         ))}

@@ -39,7 +39,6 @@ export default async function AdminBookingsPage() {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-semibold mb-2">Bookings</h1>
       <p className="text-brand-gray text-sm mb-8">
         Assign a verified vendor to each new booking request. (This manual
         step is a stand-in for the AI vendor-matching engine, which comes in

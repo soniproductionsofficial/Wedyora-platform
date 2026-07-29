@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { LayoutDashboard, Users, CalendarCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 // The proxy (src/proxy.ts) already blocks anonymous visitors from /admin.
@@ -32,19 +33,41 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10">
-      <nav className="flex gap-6 text-sm font-medium border-b border-brand-line mb-8 pb-4">
-        <Link href="/admin" className="hover:text-brand-orange">
-          Overview
-        </Link>
-        <Link href="/admin/vendors" className="hover:text-brand-orange">
-          Vendor Applications
-        </Link>
-        <Link href="/admin/bookings" className="hover:text-brand-orange">
-          Bookings
-        </Link>
-      </nav>
-      {children}
+    <div className="min-h-[calc(100vh-64px)] bg-brand-cream">
+      <div className="bg-brand-black text-white">
+        <div className="mx-auto max-w-6xl px-6 pt-8 pb-4">
+          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-1">
+            Wedyora
+          </p>
+          <h1 className="font-heading text-2xl font-bold mb-6">
+            Admin Dashboard
+          </h1>
+          <nav className="flex gap-2 text-sm font-medium">
+            <Link
+              href="/admin"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Overview
+            </Link>
+            <Link
+              href="/admin/vendors"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+            >
+              <Users className="h-4 w-4" />
+              Vendor Applications
+            </Link>
+            <Link
+              href="/admin/bookings"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+            >
+              <CalendarCheck className="h-4 w-4" />
+              Bookings
+            </Link>
+          </nav>
+        </div>
+      </div>
+      <div className="mx-auto max-w-6xl px-6 py-10">{children}</div>
     </div>
   );
 }
