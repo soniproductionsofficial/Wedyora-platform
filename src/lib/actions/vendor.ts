@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 export async function vendorApplyAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
@@ -40,9 +40,21 @@ export async function vendorApplyAction(formData: FormData) {
 
   const userId = signUpData.user.id;
 
-  await supabase.from("profiles").update({ phone, city }).eq("id", userId);
+  // Use the admin (service-role) client for these two writes, not the
+  // request-scoped `supabase` client used for signUp above. Right after
+  // signUp(), the new account has NO active session yet — Supabase requires
+  // the user to confirm their email first — so `auth.uid()` is still null
+  // for the rest of this request. The RLS policies on `profiles` and
+  // `vendor_profiles` correctly require auth.uid() = id, which would block
+  // these writes. That's fine: we already know `userId` is exactly the
+  // account we just created via our own signUp() call above (not
+  // client-supplied input), so finishing the same signup transaction with
+  // the admin client is safe and doesn't bypass any real security check.
+  const admin = createAdminClient();
 
-  const { error: vendorError } = await supabase.from("vendor_profiles").insert({
+  await admin.from("profiles").update({ phone, city }).eq("id", userId);
+
+  const { error: vendorError } = await admin.from("vendor_profiles").insert({
     id: userId,
     business_name: businessName,
     category_id: categoryId,
