@@ -30,7 +30,7 @@ export default async function CompleteProfilePage({
       </p>
 
       {error && (
-        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
           {error}
         </p>
       )}
@@ -42,19 +42,19 @@ export default async function CompleteProfilePage({
           <input
             name="full_name"
             required
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
         </label>
         <label className="flex flex-col gap-1.5 text-sm font-medium">
           City
           <input
             name="city"
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
         </label>
         <button
           type="submit"
-          className="mt-2 w-full rounded-full bg-brand-red text-white font-semibold py-3 hover:bg-brand-red-dark transition-colors"
+          className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
         >
           Continue
         </button>

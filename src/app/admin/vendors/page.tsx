@@ -61,7 +61,7 @@ export default async function AdminVendorsPage({
       </div>
 
       {vendorsError && (
-        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
           Couldn&apos;t load applications: {vendorsError.message}
         </p>
       )}
@@ -111,7 +111,7 @@ export default async function AdminVendorsPage({
                     <input type="hidden" name="decision" value="rejected" />
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded-full bg-brand-red text-white text-sm font-semibold hover:bg-brand-red-dark"
+                      className="px-4 py-2 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark"
                     >
                       Reject
                     </button>

@@ -47,7 +47,7 @@ export default async function VendorApplyPage({
       </p>
 
       {error && (
-        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
           {error}
         </p>
       )}
@@ -69,7 +69,7 @@ export default async function VendorApplyPage({
               autoComplete="one-time-code"
               maxLength={6}
               required
-              className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal tracking-widest focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+              className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal tracking-widest focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
             />
           </label>
           <button
@@ -99,11 +99,11 @@ export default async function VendorApplyPage({
             <Field label="Business Name" name="business_name" required />
 
             <label className="flex flex-col gap-1.5 text-sm font-medium">
-              Service Category <span className="text-brand-red">*</span>
+              Service Category <span className="text-brand-orange">*</span>
               <select
                 name="category_id"
                 required
-                className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+                className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
               >
                 <option value="">Select a category</option>
                 {categories?.map((c) => (
@@ -125,7 +125,7 @@ export default async function VendorApplyPage({
               <textarea
                 name="bio"
                 rows={4}
-                className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+                className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
               />
             </label>
           </fieldset>
@@ -158,13 +158,13 @@ function Field({
   return (
     <label className="flex flex-col gap-1.5 text-sm font-medium">
       {label}
-      {required ? <span className="text-brand-red"> *</span> : null}
+      {required ? <span className="text-brand-orange"> *</span> : null}
       <input
         name={name}
         type={type}
         required={required}
         minLength={minLength}
-        className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+        className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
       />
     </label>
   );

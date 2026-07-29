@@ -47,7 +47,7 @@ export default async function AdminBookingsPage() {
       </p>
 
       {bookingsError && (
-        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
           Couldn&apos;t load bookings: {bookingsError.message}
         </p>
       )}
@@ -199,7 +199,7 @@ async function BookingAssignCard({
           </button>
         </form>
       ) : (
-        <p className="text-sm text-brand-red-dark">
+        <p className="text-sm text-brand-orange-dark">
           No approved vendors in this category/city yet — approve one first.
         </p>
       )}

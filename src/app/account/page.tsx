@@ -64,7 +64,7 @@ export default async function AccountPage({
         {!bookings || bookings.length === 0 ? (
           <p className="text-brand-gray text-sm">
             You don&rsquo;t have any bookings yet.{" "}
-            <a href="/book" className="text-brand-red font-medium">
+            <a href="/book" className="text-brand-orange font-medium">
               Start planning
             </a>
             .

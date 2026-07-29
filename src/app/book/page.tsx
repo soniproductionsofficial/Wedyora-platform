@@ -33,18 +33,18 @@ export default async function BookPage({
       </p>
 
       {error && (
-        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
           {error}
         </p>
       )}
 
       <form action={createBookingAction} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1.5 text-sm font-medium">
-          Service Needed <span className="text-brand-red">*</span>
+          Service Needed <span className="text-brand-orange">*</span>
           <select
             name="category_id"
             required
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           >
             <option value="">Select a service</option>
             {categories?.map((c) => (
@@ -56,21 +56,21 @@ export default async function BookPage({
         </label>
 
         <label className="flex flex-col gap-1.5 text-sm font-medium">
-          Event Date <span className="text-brand-red">*</span>
+          Event Date <span className="text-brand-orange">*</span>
           <input
             type="date"
             name="event_date"
             required
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
         </label>
 
         <label className="flex flex-col gap-1.5 text-sm font-medium">
-          City <span className="text-brand-red">*</span>
+          City <span className="text-brand-orange">*</span>
           <input
             name="city"
             required
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
         </label>
 
@@ -80,7 +80,7 @@ export default async function BookPage({
             type="number"
             name="guest_count"
             min={1}
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
         </label>
 
@@ -91,7 +91,7 @@ export default async function BookPage({
               type="number"
               name="budget_min"
               min={0}
-              className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+              className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
             />
           </label>
           <label className="flex flex-col gap-1.5 text-sm font-medium">
@@ -100,7 +100,7 @@ export default async function BookPage({
               type="number"
               name="budget_max"
               min={0}
-              className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+              className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
             />
           </label>
         </div>
@@ -110,13 +110,13 @@ export default async function BookPage({
           <textarea
             name="special_requirements"
             rows={3}
-            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-red/40"
+            className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
         </label>
 
         <button
           type="submit"
-          className="mt-2 w-full rounded-full bg-brand-red text-white font-semibold py-3 hover:bg-brand-red-dark transition-colors"
+          className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
         >
           Submit Booking Request
         </button>

@@ -80,11 +80,11 @@ export default function PayAdvanceButton({
       <button
         onClick={handlePay}
         disabled={loading}
-        className="px-4 py-2 rounded-full bg-brand-red text-white text-sm font-semibold hover:bg-brand-red-dark disabled:opacity-60"
+        className="px-4 py-2 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark disabled:opacity-60"
       >
         {loading ? "Opening..." : `Pay Advance (₹${amount.toLocaleString("en-IN")})`}
       </button>
-      {error && <p className="text-xs text-brand-red-dark mt-1">{error}</p>}
+      {error && <p className="text-xs text-brand-orange-dark mt-1">{error}</p>}
     </>
   );
 }

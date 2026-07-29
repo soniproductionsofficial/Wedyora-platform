@@ -34,13 +34,13 @@ export default async function AdminLayout({
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
       <nav className="flex gap-6 text-sm font-medium border-b border-brand-line mb-8 pb-4">
-        <Link href="/admin" className="hover:text-brand-red">
+        <Link href="/admin" className="hover:text-brand-orange">
           Overview
         </Link>
-        <Link href="/admin/vendors" className="hover:text-brand-red">
+        <Link href="/admin/vendors" className="hover:text-brand-orange">
           Vendor Applications
         </Link>
-        <Link href="/admin/bookings" className="hover:text-brand-red">
+        <Link href="/admin/bookings" className="hover:text-brand-orange">
           Bookings
         </Link>
       </nav>

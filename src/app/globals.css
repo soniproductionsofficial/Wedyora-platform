@@ -4,12 +4,15 @@
   --background: #ffffff;
   --foreground: #151515;
 
-  /* Wedyora brand palette (matches the marketing site) */
-  --brand-red: #e31e27;
-  --brand-red-dark: #b3151c;
-  --brand-black: #151515;
-  --brand-charcoal: #232323;
-  --brand-gold: #c9a24b;
+  /* Wedyora brand palette — dark + orange, matching the photography-led
+     brand refresh (was red/gold; kept the same variable roles so every
+     existing bg-brand-orange / text-brand-gold usage across the app just
+     picked up the new colors automatically). */
+  --brand-orange: #e2711d;
+  --brand-orange-dark: #b85a13;
+  --brand-black: #100e0c;
+  --brand-charcoal: #221d19;
+  --brand-gold: #d9a441;
   --brand-cream: #fbf8f3;
   --brand-gray: #6b6b6b;
   --brand-line: #ececec;
@@ -18,8 +21,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-red: var(--brand-red);
-  --color-brand-red-dark: var(--brand-red-dark);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
   --color-brand-black: var(--brand-black);
   --color-brand-charcoal: var(--brand-charcoal);
   --color-brand-gold: var(--brand-gold);

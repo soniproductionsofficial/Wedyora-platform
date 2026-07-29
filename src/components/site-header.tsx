@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Camera } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function SiteHeader() {
@@ -18,24 +19,30 @@ export default async function SiteHeader() {
   }
 
   return (
-    <header className="border-b border-brand-line bg-white/90 backdrop-blur sticky top-0 z-40">
+    <header className="bg-brand-black text-white sticky top-0 z-40 border-b border-white/10">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="font-heading text-xl font-semibold tracking-tight">
-          <span className="text-brand-red">Wed</span>yora
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-heading text-xl font-semibold tracking-tight"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-orange">
+            <Camera className="h-5 w-5 text-white" strokeWidth={2} />
+          </span>
+          Wedyora
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-          <Link href="/book" className="hover:text-brand-red transition-colors">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-white/80">
+          <Link href="/book" className="hover:text-brand-orange transition-colors">
             Plan Your Wedding
           </Link>
-          <Link href="/vendors" className="hover:text-brand-red transition-colors">
+          <Link href="/vendors" className="hover:text-brand-orange transition-colors">
             Browse Vendors
           </Link>
-          <Link href="/vendor/apply" className="hover:text-brand-red transition-colors">
+          <Link href="/vendor/apply" className="hover:text-brand-orange transition-colors">
             Become a Vendor
           </Link>
           {role === "admin" && (
-            <Link href="/admin" className="hover:text-brand-red transition-colors">
+            <Link href="/admin" className="hover:text-brand-orange transition-colors">
               Admin
             </Link>
           )}
@@ -45,7 +52,7 @@ export default async function SiteHeader() {
           {user ? (
             <Link
               href="/account"
-              className="text-sm font-medium px-4 py-2 rounded-full border border-brand-black hover:bg-brand-black hover:text-white transition-colors"
+              className="text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black transition-colors"
             >
               My Account
             </Link>
@@ -53,13 +60,13 @@ export default async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="text-sm font-medium px-4 py-2 hover:text-brand-red transition-colors"
+                className="text-sm font-medium px-4 py-2 text-white/80 hover:text-white transition-colors"
               >
                 Log In
               </Link>
               <Link
                 href="/signup"
-                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-red text-white hover:bg-brand-red-dark transition-colors"
+                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors"
               >
                 Sign Up
               </Link>
