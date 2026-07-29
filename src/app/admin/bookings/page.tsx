@@ -13,12 +13,21 @@ const STATUS_LABEL: Record<string, string> = {
 export default async function AdminBookingsPage() {
   const supabase = await createClient();
 
-  const { data: bookings } = await supabase
+  // `profiles(...)` is ambiguous here because bookings has TWO foreign keys
+  // to profiles (customer_id, and assigned_by) — PostgREST can't tell which
+  // relationship to embed without the `!<fk>` hint. The
+  // `!bookings_customer_id_fkey` hint disambiguates it to the customer who
+  // made the booking (not the admin who assigned a vendor to it).
+  const { data: bookings, error: bookingsError } = await supabase
     .from("bookings")
     .select(
-      "id, event_date, city, guest_count, budget_min, budget_max, special_requirements, status, agreed_price, advance_amount, service_categories(id, name), profiles(full_name, phone), vendor_profiles(business_name)"
+      "id, event_date, city, guest_count, budget_min, budget_max, special_requirements, status, agreed_price, advance_amount, service_categories(id, name), profiles!bookings_customer_id_fkey(full_name, phone), vendor_profiles(business_name)"
     )
     .order("created_at", { ascending: true });
+
+  if (bookingsError) {
+    console.error("Failed to load bookings:", bookingsError);
+  }
 
   const bookingsByStatus = (bookings ?? []).reduce<Record<string, typeof bookings>>(
     (acc, b) => {
@@ -36,6 +45,12 @@ export default async function AdminBookingsPage() {
         step is a stand-in for the AI vendor-matching engine, which comes in
         a later phase.)
       </p>
+
+      {bookingsError && (
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+          Couldn&apos;t load bookings: {bookingsError.message}
+        </p>
+      )}
 
       <section className="mb-12">
         <h2 className="font-heading text-lg font-semibold mb-4">

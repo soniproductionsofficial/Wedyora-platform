@@ -15,13 +15,22 @@ export default async function AdminVendorsPage({
     : "pending";
 
   const supabase = await createClient();
-  const { data: vendors } = await supabase
+  // `profiles(...)` is ambiguous here because vendor_profiles has TWO
+  // foreign keys to profiles (id, and reviewed_by) — PostgREST can't tell
+  // which relationship to embed without the `!<fk>` hint, and errors out.
+  // The `!vendor_profiles_id_fkey` hint disambiguates it to the vendor's
+  // own profile row (not the admin who reviewed them).
+  const { data: vendors, error: vendorsError } = await supabase
     .from("vendor_profiles")
     .select(
-      "id, business_name, city, bio, experience_years, status, created_at, service_categories(name), profiles(full_name, phone)"
+      "id, business_name, city, bio, experience_years, status, created_at, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
     )
     .eq("status", activeStatus)
     .order("created_at", { ascending: true });
+
+  if (vendorsError) {
+    console.error("Failed to load vendor applications:", vendorsError);
+  }
 
   const tabs = TABS;
 
@@ -50,6 +59,12 @@ export default async function AdminVendorsPage({
           </a>
         ))}
       </div>
+
+      {vendorsError && (
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-red-dark text-sm px-4 py-3">
+          Couldn&apos;t load applications: {vendorsError.message}
+        </p>
+      )}
 
       {!vendors || vendors.length === 0 ? (
         <p className="text-brand-gray text-sm">No {activeStatus} applications.</p>
