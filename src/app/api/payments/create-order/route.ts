@@ -43,12 +43,32 @@ export async function POST(request: Request) {
   const amountInPaise = Math.round(booking.advance_amount * 100);
 
   const razorpay = getRazorpayClient();
-  const order = await razorpay.orders.create({
-    amount: amountInPaise,
-    currency: "INR",
-    receipt: `booking_${booking.id}`.slice(0, 40),
-    notes: { booking_id: booking.id },
-  });
+  let order;
+  try {
+    order = await razorpay.orders.create({
+      amount: amountInPaise,
+      currency: "INR",
+      receipt: `booking_${booking.id}`.slice(0, 40),
+      notes: { booking_id: booking.id },
+    });
+  } catch (err: unknown) {
+    // Without this, an uncaught error here (e.g. bad Razorpay credentials)
+    // crashes the route with no JSON body, and the browser just sees
+    // "Unexpected end of JSON input" with no clue what actually broke.
+    console.error("Razorpay order creation failed:", err);
+    const message =
+      err && typeof err === "object" && "error" in err
+        ? // Razorpay's SDK throws objects shaped like { error: { description } }
+          ((err as { error?: { description?: string } }).error?.description ??
+            "Razorpay rejected the order request.")
+        : err instanceof Error
+          ? err.message
+          : "Razorpay rejected the order request.";
+    return NextResponse.json(
+      { error: `Could not start payment: ${message}` },
+      { status: 502 }
+    );
+  }
 
   // Written with the service-role client: regular users have no INSERT
   // policy on `payments` (see migration) — only server code that has
