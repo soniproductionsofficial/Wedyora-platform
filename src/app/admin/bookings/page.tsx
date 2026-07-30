@@ -3,6 +3,7 @@ import { assignVendorToBookingAction } from "@/lib/actions/admin";
 
 const STATUS_LABEL: Record<string, string> = {
   pending_assignment: "Needs a vendor",
+  pending_vendor_acceptance: "Awaiting vendor response",
   awaiting_payment: "Awaiting payment",
   confirmed: "Confirmed",
   in_progress: "In progress",

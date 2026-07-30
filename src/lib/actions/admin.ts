@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 // These actions rely on the normal (cookie-authenticated) Supabase client,
 // NOT the service-role admin client. That's intentional: Row Level Security
@@ -145,7 +145,7 @@ export async function assignVendorToBookingAction(formData: FormData) {
     .select("id")
     .eq("vendor_id", pkg.vendor_id)
     .eq("event_date", booking.event_date)
-    .in("status", ["awaiting_payment", "confirmed", "in_progress"])
+    .in("status", ["pending_vendor_acceptance", "awaiting_payment", "confirmed", "in_progress"])
     .limit(1);
 
   if (clash && clash.length > 0) {
@@ -162,6 +162,10 @@ export async function assignVendorToBookingAction(formData: FormData) {
     );
   }
 
+  // Status goes to "pending_vendor_acceptance", not straight to
+  // "awaiting_payment" — the Vendor Journey poster's Lead Assigned ->
+  // Review Lead -> Accept/Reject steps mean the vendor has to confirm they
+  // can actually take this booking before the customer is asked to pay.
   const { error } = await supabase
     .from("bookings")
     .update({
@@ -169,7 +173,7 @@ export async function assignVendorToBookingAction(formData: FormData) {
       package_id: pkg.id,
       agreed_price: pkg.price,
       advance_amount: advanceAmount,
-      status: "awaiting_payment",
+      status: "pending_vendor_acceptance",
       assigned_by: user?.id,
       assigned_at: new Date().toISOString(),
     })
@@ -180,4 +184,36 @@ export async function assignVendorToBookingAction(formData: FormData) {
   }
 
   revalidatePath("/admin/bookings");
+}
+
+// --- Payouts (Vendor Journey "Payouts" page + poster's Payment &
+// Settlement step) ---
+//
+// Minimal ledger only: marks a collected payment as released to the
+// vendor. Writes go through the service-role client, same as every other
+// payments write in this app — regular RLS intentionally has no update
+// policy for payments at all, so this can't be done any other way, which
+// is the point (nobody can fake a payout from the browser).
+
+export async function markPayoutReleasedAction(formData: FormData) {
+  const paymentId = String(formData.get("payment_id") ?? "");
+  if (!paymentId) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user?.id ?? "")
+    .single();
+
+  if (profile?.role !== "admin") return;
+
+  const admin = createAdminClient();
+  await admin.from("payments").update({ payout_status: "released" }).eq("id", paymentId);
+
+  revalidatePath("/admin/payouts");
 }

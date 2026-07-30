@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, CalendarCheck, Tag } from "lucide-react";
+import { LayoutDashboard, Users, CalendarCheck, Tag, Banknote } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 // The proxy (src/proxy.ts) already blocks anonymous visitors from /admin.
@@ -70,6 +70,13 @@ export default async function AdminLayout({
             >
               <Tag className="h-4 w-4" />
               Packages
+            </Link>
+            <Link
+              href="/admin/payouts"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+            >
+              <Banknote className="h-4 w-4" />
+              Payouts
             </Link>
           </nav>
         </div>

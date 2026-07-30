@@ -1,10 +1,13 @@
 import { redirect } from "next/navigation";
+import { Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/lib/actions/auth";
+import { submitReviewAction } from "@/lib/actions/reviews";
 import PayAdvanceButton from "@/components/pay-advance-button";
 
 const STATUS_LABEL: Record<string, string> = {
   pending_assignment: "Matching you with a vendor",
+  pending_vendor_acceptance: "Vendor is reviewing your booking",
   awaiting_payment: "Vendor assigned — advance payment due",
   confirmed: "Confirmed",
   in_progress: "In progress",
@@ -36,9 +39,9 @@ function formatBudget(min: number | null, max: number | null): string | null {
 export default async function AccountPage({
   searchParams,
 }: {
-  searchParams: Promise<{ message?: string }>;
+  searchParams: Promise<{ message?: string; error?: string }>;
 }) {
-  const { message } = await searchParams;
+  const { message, error } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -66,10 +69,23 @@ export default async function AccountPage({
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
-      "id, event_date, city, status, advance_amount, service_categories(name), vendor_profiles(business_name)"
+      "id, event_date, city, status, advance_amount, vendor_id, service_categories(name), vendor_profiles(business_name)"
     )
     .eq("customer_id", user.id)
     .order("created_at", { ascending: false });
+
+  const completedBookingIds = (bookings ?? [])
+    .filter((b) => b.status === "completed")
+    .map((b) => b.id);
+
+  const { data: existingReviews } = completedBookingIds.length
+    ? await supabase
+        .from("reviews")
+        .select("booking_id")
+        .in("booking_id", completedBookingIds)
+    : { data: [] as { booking_id: string }[] };
+
+  const reviewedBookingIds = new Set((existingReviews ?? []).map((r) => r.booking_id));
 
   return (
     <div>
@@ -88,6 +104,11 @@ export default async function AccountPage({
       {message && (
         <p className="mb-6 rounded-lg bg-green-50 text-green-700 text-sm px-4 py-3">
           {message}
+        </p>
+      )}
+      {error && (
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
+          {error}
         </p>
       )}
 
@@ -183,6 +204,48 @@ export default async function AccountPage({
                     />
                   </div>
                 )}
+                {b.status === "completed" &&
+                  b.vendor_id &&
+                  !reviewedBookingIds.has(b.id) && (
+                    <form
+                      action={submitReviewAction}
+                      className="pt-2 border-t border-brand-line mt-2 flex flex-col gap-2"
+                    >
+                      <input type="hidden" name="booking_id" value={b.id} />
+                      <input type="hidden" name="vendor_id" value={b.vendor_id} />
+                      <p className="text-xs font-medium text-brand-gray">
+                        Rate your experience with {b.vendor_profiles?.business_name}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <select
+                          name="rating"
+                          required
+                          defaultValue=""
+                          className="rounded-lg border border-brand-line px-3 py-1.5 text-sm"
+                        >
+                          <option value="" disabled>
+                            Rating
+                          </option>
+                          {[5, 4, 3, 2, 1].map((n) => (
+                            <option key={n} value={n}>
+                              {n} {n === 1 ? "star" : "stars"}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          name="comment"
+                          placeholder="Optional comment"
+                          className="flex-1 rounded-lg border border-brand-line px-3 py-1.5 text-sm"
+                        />
+                        <button
+                          type="submit"
+                          className="flex items-center gap-1 px-4 py-1.5 rounded-full bg-brand-orange text-white text-xs font-semibold hover:bg-brand-orange-dark whitespace-nowrap"
+                        >
+                          <Star className="h-3 w-3" /> Submit
+                        </button>
+                      </div>
+                    </form>
+                  )}
               </div>
             ))}
           </div>

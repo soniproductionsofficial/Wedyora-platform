@@ -46,6 +46,11 @@ export default async function SiteHeader() {
               Admin
             </Link>
           )}
+          {role === "vendor" && (
+            <Link href="/vendor/dashboard" className="hover:text-brand-orange transition-colors">
+              Vendor Dashboard
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-3">

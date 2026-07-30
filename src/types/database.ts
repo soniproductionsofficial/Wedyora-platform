@@ -11,6 +11,7 @@ export type UserRole = "customer" | "vendor" | "admin";
 export type VendorStatus = "pending" | "approved" | "rejected" | "suspended";
 export type BookingStatus =
   | "pending_assignment"
+  | "pending_vendor_acceptance"
   | "awaiting_payment"
   | "confirmed"
   | "in_progress"
@@ -18,6 +19,7 @@ export type BookingStatus =
   | "cancelled";
 export type PaymentStatus = "created" | "paid" | "failed" | "refunded";
 export type PaymentType = "advance" | "final";
+export type PayoutStatus = "pending" | "released";
 
 export interface Database {
   public: {
@@ -194,6 +196,7 @@ export interface Database {
           amount: number;
           currency: string;
           status: PaymentStatus;
+          payout_status: PayoutStatus;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["payments"]["Row"]> & {
@@ -207,6 +210,47 @@ export interface Database {
             columns: ["booking_id"];
             isOneToOne: false;
             referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      reviews: {
+        Row: {
+          id: string;
+          booking_id: string;
+          customer_id: string;
+          vendor_id: string;
+          rating: number;
+          comment: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["reviews"]["Row"]> & {
+          booking_id: string;
+          customer_id: string;
+          vendor_id: string;
+          rating: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["reviews"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: true;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reviews_vendor_id_fkey";
+            columns: ["vendor_id"];
+            isOneToOne: false;
+            referencedRelation: "vendor_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reviews_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];

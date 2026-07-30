@@ -88,6 +88,11 @@ order, the same way — paste into the SQL Editor and run.
   running the SQL, go to Storage in the Supabase dashboard and confirm a
   `vendor-portfolios` bucket exists (the SQL creates it, but it's worth
   eyeballing once) and is set to Public.
+- `0005_vendor_journey.sql` — adds the `pending_vendor_acceptance` booking
+  status (a vendor must now accept a lead before the customer is asked to
+  pay), creates the `reviews` table (customer rates a vendor after a
+  completed booking), and adds a `payout_status` column to `payments`
+  (pending/released, tracked from Admin → Payouts).
 
 ## Deployment
 
