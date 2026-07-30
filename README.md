@@ -107,6 +107,21 @@ order, the same way — paste into the SQL Editor and run.
   auto-migrated** (their old `price` becomes `customer_price`, and
   `vendor_payout` defaults to the same value — i.e. 100% to the vendor —
   until you edit them with the real split).
+- `0007_wedding_day_operations.sql` — the web-feasible subset of Wedding
+  Day Operations: a pre-wedding checklist (separate customer/vendor items),
+  an auto-generated Call Sheet (computed from existing booking data — no
+  new table for it), a one-time vendor check-in (timestamp + optional
+  location, not continuous tracking), an incident log (issue type →
+  suggested action → escalation target), a checkout checklist +
+  confirmation, and post-event file uploads (RAW photos/videos, drone
+  footage, audio, backups). Live GPS map tracking, push notifications, and
+  the "Operations Command Center" KPI dashboard are deliberately left out —
+  the first two need a native mobile app, the third overlaps with the
+  later Business Intelligence Dashboard chapter. **This one needs one
+  extra manual step** — after running the SQL, go to Storage in the
+  Supabase dashboard and confirm a `wedding-day-deliverables` bucket
+  exists and is set to **Private** (not Public, unlike `vendor-portfolios`
+  — these are raw wedding-day files, not public marketing photos).
 
 ## Deployment
 

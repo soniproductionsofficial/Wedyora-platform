@@ -43,6 +43,19 @@ export type PayoutMilestoneKeyDb =
   | "quality_check_approved"
   | "customer_delivery_completed";
 export type PayoutMilestoneStatus = "pending" | "released";
+export type WeddingDayIncidentType =
+  | "vendor_running_late"
+  | "equipment_failure"
+  | "weather_disruption"
+  | "guest_count_mismatch"
+  | "vendor_no_show"
+  | "payment_dispute_onsite";
+export type WeddingDayDeliverableCategory =
+  | "raw_photos"
+  | "raw_videos"
+  | "drone_footage"
+  | "audio_files"
+  | "backup_files";
 
 export interface Database {
   public: {
@@ -395,6 +408,101 @@ export interface Database {
             columns: ["booking_id"];
             isOneToOne: false;
             referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wedding_day_ops: {
+        Row: {
+          booking_id: string;
+          customer_checklist_done: string[];
+          vendor_checklist_done: string[];
+          checked_in_at: string | null;
+          checkin_lat: number | null;
+          checkin_lng: number | null;
+          checkout_checklist_done: string[];
+          checked_out_at: string | null;
+          project_notes: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["wedding_day_ops"]["Row"]> & {
+          booking_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["wedding_day_ops"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "wedding_day_ops_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: true;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wedding_day_incidents: {
+        Row: {
+          id: string;
+          booking_id: string;
+          issue_type: WeddingDayIncidentType;
+          description: string | null;
+          suggested_action: string | null;
+          escalated_to: string | null;
+          reported_by: string | null;
+          resolved_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["wedding_day_incidents"]["Row"]> & {
+          booking_id: string;
+          issue_type: WeddingDayIncidentType;
+        };
+        Update: Partial<Database["public"]["Tables"]["wedding_day_incidents"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "wedding_day_incidents_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wedding_day_incidents_reported_by_fkey";
+            columns: ["reported_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wedding_day_deliverables: {
+        Row: {
+          id: string;
+          booking_id: string;
+          category: WeddingDayDeliverableCategory;
+          file_path: string;
+          file_name: string;
+          uploaded_by: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["wedding_day_deliverables"]["Row"]> & {
+          booking_id: string;
+          category: WeddingDayDeliverableCategory;
+          file_path: string;
+          file_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["wedding_day_deliverables"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "wedding_day_deliverables_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wedding_day_deliverables_uploaded_by_fkey";
+            columns: ["uploaded_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];

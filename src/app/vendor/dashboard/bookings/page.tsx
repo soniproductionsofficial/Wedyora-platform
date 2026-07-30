@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CalendarCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -46,9 +47,10 @@ export default async function VendorBookingsPage() {
       ) : (
         <div className="flex flex-col gap-3">
           {bookings.map((b) => (
-            <div
+            <Link
               key={b.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-brand-line bg-white p-5"
+              href={`/vendor/dashboard/bookings/${b.id}`}
+              className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-orange transition-colors"
             >
               <div>
                 <p className="font-medium">
@@ -67,7 +69,7 @@ export default async function VendorBookingsPage() {
               >
                 {STATUS_LABEL[b.status] ?? b.status}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       )}

@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/lib/actions/auth";
 import { submitReviewAction } from "@/lib/actions/reviews";
 import PayAdvanceButton from "@/components/pay-advance-button";
+import { CUSTOMER_PRE_WEDDING_CHECKLIST } from "@/lib/wedding-day-ops";
+import { toggleCustomerChecklistItemAction } from "@/lib/actions/wedding-day-ops";
 
 const STATUS_LABEL: Record<string, string> = {
   pending_assignment: "Matching you with a vendor",
@@ -86,6 +88,24 @@ export default async function AccountPage({
     : { data: [] as { booking_id: string }[] };
 
   const reviewedBookingIds = new Set((existingReviews ?? []).map((r) => r.booking_id));
+
+  // Pre-wedding checklist only matters once a booking is confirmed (and
+  // still applies while it's in progress) — no point showing it before a
+  // vendor is even assigned.
+  const preWeddingBookingIds = (bookings ?? [])
+    .filter((b) => b.status === "confirmed" || b.status === "in_progress")
+    .map((b) => b.id);
+
+  const { data: opsRows } = preWeddingBookingIds.length
+    ? await supabase
+        .from("wedding_day_ops")
+        .select("booking_id, customer_checklist_done")
+        .in("booking_id", preWeddingBookingIds)
+    : { data: [] as { booking_id: string; customer_checklist_done: string[] }[] };
+
+  const checklistByBooking = new Map(
+    (opsRows ?? []).map((o) => [o.booking_id, o.customer_checklist_done])
+  );
 
   return (
     <div>
@@ -203,6 +223,42 @@ export default async function AccountPage({
                       .filter(Boolean)
                       .join(", ")}
                   </p>
+                )}
+                {(b.status === "confirmed" || b.status === "in_progress") && (
+                  <div className="pt-2 border-t border-brand-line mt-1">
+                    <p className="text-xs font-medium text-brand-gray mb-2">
+                      Pre-Wedding Checklist
+                    </p>
+                    <ul className="flex flex-col gap-1.5">
+                      {CUSTOMER_PRE_WEDDING_CHECKLIST.map((item) => {
+                        const done = (checklistByBooking.get(b.id) ?? []).includes(item.key);
+                        return (
+                          <li
+                            key={item.key}
+                            className="flex items-center justify-between gap-2 text-sm"
+                          >
+                            <span className={done ? "line-through text-brand-gray" : ""}>
+                              {item.label}
+                            </span>
+                            <form action={toggleCustomerChecklistItemAction}>
+                              <input type="hidden" name="booking_id" value={b.id} />
+                              <input type="hidden" name="item_key" value={item.key} />
+                              <button
+                                type="submit"
+                                className={`text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
+                                  done
+                                    ? "border border-brand-line text-brand-gray hover:bg-brand-cream"
+                                    : "bg-brand-orange text-white hover:bg-brand-orange-dark"
+                                }`}
+                              >
+                                {done ? "Undo" : "Mark Done"}
+                              </button>
+                            </form>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 )}
                 {b.status === "awaiting_payment" && b.advance_amount && (
                   <div className="pt-2">

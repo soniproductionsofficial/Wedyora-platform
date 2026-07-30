@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { assignVendorToBookingAction, markBookingCompletedAction } from "@/lib/actions/admin";
@@ -113,6 +114,12 @@ export default async function AdminBookingsPage({
                   <span className="px-3 py-1 rounded-full bg-brand-cream border border-brand-line text-xs font-medium">
                     {STATUS_LABEL[b.status] ?? b.status}
                   </span>
+                  <Link
+                    href={`/admin/bookings/${b.id}`}
+                    className="text-xs font-semibold text-brand-orange hover:underline whitespace-nowrap"
+                  >
+                    View Details
+                  </Link>
                   {(b.status === "confirmed" || b.status === "in_progress") && (
                     <form action={markBookingCompletedAction}>
                       <input type="hidden" name="booking_id" value={b.id} />
