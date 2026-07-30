@@ -23,7 +23,7 @@ export default async function AdminVendorsPage({
   const { data: vendors, error: vendorsError } = await supabase
     .from("vendor_profiles")
     .select(
-      "id, business_name, city, bio, experience_years, status, created_at, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
+      "id, business_name, city, bio, experience_years, status, created_at, team_size, service_areas, available_from, equipment_details, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, portfolio_urls, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
     )
     .eq("status", activeStatus)
     .order("created_at", { ascending: true });
@@ -84,10 +84,58 @@ export default async function AdminVendorsPage({
                   {v.city}
                 </p>
                 {v.bio && <p className="text-sm mt-2 max-w-xl">{v.bio}</p>}
-                {v.experience_years != null && (
+                <p className="text-xs text-brand-gray mt-1">
+                  {v.experience_years != null && `${v.experience_years} yrs experience`}
+                  {v.team_size != null && ` · Team of ${v.team_size}`}
+                  {v.available_from &&
+                    ` · Available from ${new Date(v.available_from).toLocaleDateString("en-IN")}`}
+                </p>
+                {v.service_areas && v.service_areas.length > 0 && (
                   <p className="text-xs text-brand-gray mt-1">
-                    {v.experience_years} years of experience
+                    Service areas: {v.service_areas.join(", ")}
                   </p>
+                )}
+                {v.equipment_details && (
+                  <p className="text-xs text-brand-gray mt-1">
+                    Equipment: {v.equipment_details}
+                  </p>
+                )}
+
+                <div className="mt-3 pt-3 border-t border-brand-line grid sm:grid-cols-2 gap-x-6 gap-y-1 text-xs text-brand-gray max-w-xl">
+                  <p>
+                    <span className="font-medium text-brand-black">PAN:</span>{" "}
+                    {v.pan_number || "—"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-brand-black">Aadhaar:</span>{" "}
+                    {v.aadhaar_number || "—"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-brand-black">GST:</span>{" "}
+                    {v.gst_number || "—"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-brand-black">Bank A/C:</span>{" "}
+                    {v.bank_account_number
+                      ? `${v.bank_account_holder_name ?? ""} · ${v.bank_account_number} · ${v.bank_ifsc ?? ""}`
+                      : "—"}
+                  </p>
+                </div>
+
+                {v.portfolio_urls && v.portfolio_urls.length > 0 && (
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {v.portfolio_urls.map((url) => (
+                      <a
+                        key={url}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-brand-orange underline"
+                      >
+                        Portfolio file
+                      </a>
+                    ))}
+                  </div>
                 )}
               </div>
 

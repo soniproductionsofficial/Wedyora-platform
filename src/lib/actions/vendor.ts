@@ -5,39 +5,63 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { normalizePhone } from "@/lib/phone";
 
 // The vendor application form is longer than the customer one (business
-// details, category, experience, bio) and none of it should be re-typed
-// after the phone is verified. Since these two actions are plain
-// server-action + redirect (no client-side state), the only way to carry
-// that data across the "enter details" -> "enter the texted code" step is
-// to round-trip it through the URL as hidden form fields on the OTP page.
-// None of it is a secret (no password exists anymore), so that's fine.
+// details, KYC, bank details, category, experience, bio) and none of it
+// should be re-typed after the phone is verified. Since these two actions
+// are plain server-action + redirect (no client-side state), the only way
+// to carry that data across the "enter details" -> "enter the texted code"
+// step is to round-trip it through the URL as hidden form fields on the
+// OTP page. None of it is a secret in the password sense (no password
+// exists anymore), so that's fine — though see the migration file for a
+// note on why PAN/Aadhaar are still protected at the database level.
 function otpRedirectParams(fields: Record<string, string>) {
   return new URLSearchParams({ phase: "otp", ...fields }).toString();
 }
 
-export async function requestVendorOtpAction(formData: FormData) {
-  const fullName = String(formData.get("full_name") ?? "").trim();
-  const phoneRaw = String(formData.get("phone") ?? "").trim();
-  const businessName = String(formData.get("business_name") ?? "").trim();
-  const categoryId = String(formData.get("category_id") ?? "");
-  const city = String(formData.get("city") ?? "").trim();
-  const bio = String(formData.get("bio") ?? "").trim();
-  const experienceYears = String(formData.get("experience_years") ?? "");
+const APPLICATION_FIELDS = [
+  "full_name",
+  "phone",
+  "business_name",
+  "category_id",
+  "city",
+  "bio",
+  "experience_years",
+  "equipment_details",
+  "team_size",
+  "service_areas",
+  "available_from",
+  "pan_number",
+  "aadhaar_number",
+  "gst_number",
+  "bank_account_holder_name",
+  "bank_account_number",
+  "bank_ifsc",
+] as const;
 
-  if (!fullName || !phoneRaw || !businessName || !categoryId || !city) {
+function collectFields(formData: FormData): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const key of APPLICATION_FIELDS) {
+    out[key] = String(formData.get(key) ?? "").trim();
+  }
+  return out;
+}
+
+export async function requestVendorOtpAction(formData: FormData) {
+  const fields = collectFields(formData);
+
+  if (!fields.full_name || !fields.phone || !fields.business_name || !fields.category_id || !fields.city) {
     redirect(
       "/vendor/apply?error=" +
         encodeURIComponent("Please fill in all required fields.")
     );
   }
 
-  const phone = normalizePhone(phoneRaw);
+  const phone = normalizePhone(fields.phone);
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     phone,
     options: {
       shouldCreateUser: true,
-      data: { full_name: fullName, role: "vendor" },
+      data: { full_name: fields.full_name, role: "vendor" },
     },
   });
 
@@ -45,39 +69,13 @@ export async function requestVendorOtpAction(formData: FormData) {
     redirect("/vendor/apply?error=" + encodeURIComponent(error.message));
   }
 
-  redirect(
-    `/vendor/apply?${otpRedirectParams({
-      phone,
-      full_name: fullName,
-      business_name: businessName,
-      category_id: categoryId,
-      city,
-      bio,
-      experience_years: experienceYears,
-    })}`
-  );
+  redirect(`/vendor/apply?${otpRedirectParams({ ...fields, phone })}`);
 }
 
 export async function verifyVendorOtpAction(formData: FormData) {
-  const phone = String(formData.get("phone") ?? "").trim();
   const token = String(formData.get("token") ?? "").trim();
-  const fullName = String(formData.get("full_name") ?? "").trim();
-  const businessName = String(formData.get("business_name") ?? "").trim();
-  const categoryId = String(formData.get("category_id") ?? "");
-  const city = String(formData.get("city") ?? "").trim();
-  const bio = String(formData.get("bio") ?? "").trim();
-  const experienceYearsRaw = String(formData.get("experience_years") ?? "");
-  const experienceYears = Number(experienceYearsRaw) || null;
-
-  const carriedFields = {
-    phone,
-    full_name: fullName,
-    business_name: businessName,
-    category_id: categoryId,
-    city,
-    bio,
-    experience_years: experienceYearsRaw,
-  };
+  const fields = collectFields(formData);
+  const phone = fields.phone;
 
   const supabase = await createClient();
   const { error: verifyError, data: verifyData } = await supabase.auth.verifyOtp({
@@ -89,13 +87,18 @@ export async function verifyVendorOtpAction(formData: FormData) {
   if (verifyError || !verifyData.user) {
     redirect(
       `/vendor/apply?${otpRedirectParams({
-        ...carriedFields,
+        ...fields,
         error: verifyError?.message ?? "Could not verify that code.",
       })}`
     );
   }
 
   const userId = verifyData.user.id;
+  const experienceYears = Number(fields.experience_years) || null;
+  const teamSize = Number(fields.team_size) || null;
+  const serviceAreas = fields.service_areas
+    ? fields.service_areas.split(",").map((s) => s.trim()).filter(Boolean)
+    : [];
 
   // Use the admin (service-role) client for these two writes rather than
   // the now-authenticated request-scoped client. This is the very first
@@ -105,28 +108,93 @@ export async function verifyVendorOtpAction(formData: FormData) {
   // the same reason the original email-based flow used it too.
   const admin = createAdminClient();
 
-  await admin.from("profiles").update({ full_name: fullName, phone, city }).eq("id", userId);
+  await admin
+    .from("profiles")
+    .update({ full_name: fields.full_name, phone, city: fields.city })
+    .eq("id", userId);
 
   const { error: vendorError } = await admin.from("vendor_profiles").insert({
     id: userId,
-    business_name: businessName,
-    category_id: categoryId,
-    city,
-    bio,
+    business_name: fields.business_name,
+    category_id: fields.category_id,
+    city: fields.city,
+    bio: fields.bio || null,
     experience_years: experienceYears,
+    equipment_details: fields.equipment_details || null,
+    team_size: teamSize,
+    service_areas: serviceAreas,
+    available_from: fields.available_from || null,
+    pan_number: fields.pan_number || null,
+    aadhaar_number: fields.aadhaar_number || null,
+    gst_number: fields.gst_number || null,
+    bank_account_holder_name: fields.bank_account_holder_name || null,
+    bank_account_number: fields.bank_account_number || null,
+    bank_ifsc: fields.bank_ifsc || null,
     status: "pending",
   });
 
   if (vendorError) {
     redirect(
-      `/vendor/apply?${otpRedirectParams({ ...carriedFields, error: vendorError.message })}`
+      `/vendor/apply?${otpRedirectParams({ ...fields, error: vendorError.message })}`
     );
   }
 
-  redirect(
-    "/login?message=" +
-      encodeURIComponent(
-        "Application submitted! Our team will review it and you'll be notified once approved."
-      )
-  );
+  // Portfolio upload needs an actual file, which can't survive the
+  // hidden-input/URL round trip the rest of this form uses — it happens
+  // here instead, now that verifyOtp() has activated a real session tied
+  // to this exact new vendor.
+  redirect("/vendor/apply?phase=portfolio");
+}
+
+// --- Portfolio upload (Chapter 5, step 8) — optional, skippable ---
+
+export async function uploadPortfolioAction(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const files = formData
+    .getAll("portfolio_files")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (files.length === 0) {
+    redirect("/vendor/apply?phase=done");
+  }
+
+  const { data: existing } = await supabase
+    .from("vendor_profiles")
+    .select("portfolio_urls")
+    .eq("id", user.id)
+    .single();
+
+  const uploadedUrls: string[] = [];
+
+  for (const file of files) {
+    const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+    const path = `${user.id}/${Date.now()}-${safeName}`;
+    const { error: uploadError } = await supabase.storage
+      .from("vendor-portfolios")
+      .upload(path, file, { contentType: file.type || undefined });
+
+    if (!uploadError) {
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("vendor-portfolios").getPublicUrl(path);
+      uploadedUrls.push(publicUrl);
+    }
+  }
+
+  if (uploadedUrls.length > 0) {
+    await supabase
+      .from("vendor_profiles")
+      .update({ portfolio_urls: [...(existing?.portfolio_urls ?? []), ...uploadedUrls] })
+      .eq("id", user.id);
+  }
+
+  redirect("/vendor/apply?phase=done");
 }

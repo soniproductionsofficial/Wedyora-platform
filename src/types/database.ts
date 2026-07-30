@@ -64,6 +64,16 @@ export interface Database {
           status: VendorStatus;
           reviewed_by: string | null;
           reviewed_at: string | null;
+          pan_number: string | null;
+          aadhaar_number: string | null;
+          gst_number: string | null;
+          bank_account_holder_name: string | null;
+          bank_account_number: string | null;
+          bank_ifsc: string | null;
+          team_size: number | null;
+          service_areas: string[];
+          available_from: string | null;
+          equipment_details: string | null;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["vendor_profiles"]["Row"]> & {

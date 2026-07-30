@@ -81,6 +81,13 @@ order, the same way — paste into the SQL Editor and run.
   multi-step signup wizard (email, language, wedding date/venue, budget).
 - `0003_booking_workflow.sql` — adds a few more service categories (Album,
   Live Streaming, Invitations, Entertainment, Lighting, Flower Arrangement).
+- `0004_vendor_registration_workflow.sql` — adds the vendor KYC/bank/team
+  fields (PAN, Aadhaar, GST, bank details, team size, service areas,
+  equipment) and creates the `vendor-portfolios` Storage bucket + policies
+  for portfolio uploads. **This one needs one extra manual step** — after
+  running the SQL, go to Storage in the Supabase dashboard and confirm a
+  `vendor-portfolios` bucket exists (the SQL creates it, but it's worth
+  eyeballing once) and is set to Public.
 
 ## Deployment
 
