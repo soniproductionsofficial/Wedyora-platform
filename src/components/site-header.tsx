@@ -20,33 +20,58 @@ export default async function SiteHeader() {
 
   return (
     <header className="bg-brand-black text-white sticky top-0 z-40 border-b border-white/10">
-      <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <span className="flex items-center rounded-lg bg-brand-cream px-3 py-1.5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/wedyora-logo.png"
-              alt="Wedyora"
-              className="h-7 w-auto"
-            />
-          </span>
-        </Link>
+      <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between gap-4">
+        {/* Left: logo + Become a Partner */}
+        <div className="flex items-center gap-4 shrink-0">
+          <Link href="/" className="flex items-center">
+            <span className="flex items-center rounded-lg bg-brand-cream px-3 py-1.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/wedyora-logo.png"
+                alt="Wedyora"
+                className="h-7 w-auto"
+              />
+            </span>
+          </Link>
+          {!user && (
+            <Link
+              href="/vendor/apply"
+              className="hidden md:inline-block text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black transition-colors whitespace-nowrap"
+            >
+              Become a Partner
+            </Link>
+          )}
+        </div>
 
-        <nav className="hidden md:flex items-center gap-4 text-sm font-medium text-white/80">
-          <SiteNavMenu />
+        {/* Center: Photography in Minutes */}
+        <div className="hidden md:flex flex-1 justify-center">
+          <Link
+            href="/photography-in-minutes"
+            className="text-sm font-bold text-red-500 hover:text-red-400 transition-colors whitespace-nowrap"
+          >
+            Photography in Minutes
+          </Link>
+        </div>
+
+        {/* Right: sign up / log in / more, plus account-specific links */}
+        <div className="flex items-center gap-3 shrink-0">
           {role === "admin" && (
-            <Link href="/admin" className="hover:text-brand-orange transition-colors">
+            <Link
+              href="/admin"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-orange transition-colors"
+            >
               Admin
             </Link>
           )}
           {role === "vendor" && (
-            <Link href="/vendor/dashboard" className="hover:text-brand-orange transition-colors">
+            <Link
+              href="/vendor/dashboard"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-orange transition-colors"
+            >
               Vendor Dashboard
             </Link>
           )}
-        </nav>
 
-        <div className="flex items-center gap-3">
           {user ? (
             <Link
               href="/account"
@@ -58,7 +83,7 @@ export default async function SiteHeader() {
             <>
               <Link
                 href="/signup"
-                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors"
+                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors whitespace-nowrap"
               >
                 Customer Sign Up
               </Link>
@@ -68,14 +93,10 @@ export default async function SiteHeader() {
               >
                 Log In
               </Link>
-              <Link
-                href="/vendor/apply"
-                className="text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black transition-colors"
-              >
-                Become a Partner
-              </Link>
             </>
           )}
+
+          <SiteNavMenu />
         </div>
       </div>
     </header>

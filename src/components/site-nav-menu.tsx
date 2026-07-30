@@ -11,14 +11,10 @@ const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/services", label: "Services" },
-  { href: "/photography-in-minutes", label: "Photography in Minutes" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact Us" },
   { href: "/faq", label: "FAQ" },
-  { href: "/privacy-policy", label: "Privacy Policy" },
-  { href: "/terms-and-conditions", label: "Terms and Conditions" },
-  { href: "/refund-policy", label: "Refund Policy" },
 ];
 
 export default function SiteNavMenu() {
@@ -52,11 +48,11 @@ export default function SiteNavMenu() {
         className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/20 hover:border-white/40"
       >
         {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-        Menu
+        More
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-2 w-64 rounded-2xl bg-white text-brand-black border border-brand-line shadow-lg py-2 z-50">
+        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white text-brand-black border border-brand-line shadow-lg py-2 z-50">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
