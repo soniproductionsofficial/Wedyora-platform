@@ -3,6 +3,7 @@ import {
   Video,
   Drone,
   Flower2,
+  Flower,
   WandSparkles,
   UtensilsCrossed,
   Building2,
@@ -10,6 +11,11 @@ import {
   Music,
   ScrollText,
   Car,
+  Image,
+  Radio,
+  Mail,
+  PartyPopper,
+  Lightbulb,
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
@@ -30,6 +36,12 @@ const ICONS: Record<string, LucideIcon> = {
   music: Music,
   priest: ScrollText,
   transportation: Car,
+  album: Image,
+  "live-streaming": Radio,
+  invitation: Mail,
+  entertainment: PartyPopper,
+  lighting: Lightbulb,
+  "flower-arrangement": Flower,
 };
 
 export function getCategoryIcon(slug: string): LucideIcon {

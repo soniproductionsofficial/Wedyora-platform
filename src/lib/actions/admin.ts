@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
@@ -35,16 +36,76 @@ export async function reviewVendorAction(formData: FormData) {
   revalidatePath("/admin/vendors");
 }
 
+// --- Vendor packages (Chapter 4: Booking Workflow "Price Locked" step) ---
+//
+// There's no vendor dashboard yet (that's the later Vendor Journey
+// chapter), so for now admin enters a vendor's packages on their behalf —
+// same as how admin already handles vendor pricing today, just structured
+// as a reusable priced package instead of a number typed fresh each time.
+
+export async function createPackageAction(formData: FormData) {
+  const vendorId = String(formData.get("vendor_id") ?? "");
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const price = Number(formData.get("price") ?? 0);
+
+  if (!vendorId || !title || !price || price <= 0) {
+    redirect(
+      "/admin/packages?error=" +
+        encodeURIComponent("Please choose a vendor, a title, and a price greater than zero.")
+    );
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("packages").insert({
+    vendor_id: vendorId,
+    title,
+    description: description || null,
+    price,
+  });
+
+  if (error) {
+    redirect("/admin/packages?error=" + encodeURIComponent(error.message));
+  }
+
+  revalidatePath("/admin/packages");
+  revalidatePath("/admin/bookings");
+}
+
+export async function togglePackageActiveAction(formData: FormData) {
+  const packageId = String(formData.get("package_id") ?? "");
+  const isActive = String(formData.get("is_active") ?? "") === "true";
+
+  if (!packageId) return;
+
+  const supabase = await createClient();
+  await supabase.from("packages").update({ is_active: !isActive }).eq("id", packageId);
+
+  revalidatePath("/admin/packages");
+  revalidatePath("/admin/bookings");
+}
+
+// --- Booking assignment ---
+//
+// The admin picks one entry from a combined "vendor + package" dropdown
+// (see BookingAssignCard) — but per the framework's own security guidance,
+// we never trust a price the client hands back. Only the package's ID
+// travels in the form; its price and its vendor's approval status are
+// re-read from the database here, and the vendor's availability on the
+// requested date is re-checked here too (Chapter 4's "Date Available? /
+// Vendor Available?" validation), so nothing about the actual charge
+// depends on what the browser submitted.
+
 export async function assignVendorToBookingAction(formData: FormData) {
   const bookingId = String(formData.get("booking_id") ?? "");
-  const vendorId = String(formData.get("vendor_id") ?? "");
-  const agreedPrice = Number(formData.get("agreed_price") ?? 0);
+  const packageId = String(formData.get("package_id") ?? "");
   const advanceAmount = Number(formData.get("advance_amount") ?? 0);
 
-  if (!bookingId || !vendorId || !agreedPrice || !advanceAmount) {
-    // Missing/invalid input from the assignment form — nothing to do.
-    // (Booking stays visibly "pending_assignment" in the admin list.)
-    return;
+  if (!bookingId || !packageId || !advanceAmount || advanceAmount <= 0) {
+    redirect(
+      "/admin/bookings?error=" +
+        encodeURIComponent("Please choose a package and enter an advance amount.")
+    );
   }
 
   const supabase = await createClient();
@@ -52,11 +113,61 @@ export async function assignVendorToBookingAction(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data: booking } = await supabase
+    .from("bookings")
+    .select("id, event_date, status")
+    .eq("id", bookingId)
+    .single();
+
+  if (!booking || booking.status !== "pending_assignment") {
+    redirect(
+      "/admin/bookings?error=" +
+        encodeURIComponent("This booking is no longer waiting for a vendor.")
+    );
+  }
+
+  const { data: pkg } = await supabase
+    .from("packages")
+    .select("id, price, is_active, vendor_id, vendor_profiles(status)")
+    .eq("id", packageId)
+    .single();
+
+  if (!pkg || !pkg.is_active || pkg.vendor_profiles?.status !== "approved") {
+    redirect(
+      "/admin/bookings?error=" +
+        encodeURIComponent("That package is no longer available.")
+    );
+  }
+
+  // Availability check: don't double-book this vendor for the same date.
+  const { data: clash } = await supabase
+    .from("bookings")
+    .select("id")
+    .eq("vendor_id", pkg.vendor_id)
+    .eq("event_date", booking.event_date)
+    .in("status", ["awaiting_payment", "confirmed", "in_progress"])
+    .limit(1);
+
+  if (clash && clash.length > 0) {
+    redirect(
+      "/admin/bookings?error=" +
+        encodeURIComponent("This vendor already has another booking on that date.")
+    );
+  }
+
+  if (advanceAmount > pkg.price) {
+    redirect(
+      "/admin/bookings?error=" +
+        encodeURIComponent("Advance amount can't be more than the package price.")
+    );
+  }
+
   const { error } = await supabase
     .from("bookings")
     .update({
-      vendor_id: vendorId,
-      agreed_price: agreedPrice,
+      vendor_id: pkg.vendor_id,
+      package_id: pkg.id,
+      agreed_price: pkg.price,
       advance_amount: advanceAmount,
       status: "awaiting_payment",
       assigned_by: user?.id,
@@ -65,7 +176,7 @@ export async function assignVendorToBookingAction(formData: FormData) {
     .eq("id", bookingId);
 
   if (error) {
-    console.error("assignVendorToBookingAction failed:", error.message);
+    redirect("/admin/bookings?error=" + encodeURIComponent(error.message));
   }
 
   revalidatePath("/admin/bookings");

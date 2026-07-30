@@ -77,6 +77,11 @@ only run it once, on a fresh project. Any later file
 to run on a live database with real signups) and should be run once, in
 order, the same way — paste into the SQL Editor and run.
 
+- `0002_customer_registration_wizard.sql` — adds the profile fields for the
+  multi-step signup wizard (email, language, wedding date/venue, budget).
+- `0003_booking_workflow.sql` — adds a few more service categories (Album,
+  Live Streaming, Invitations, Entertainment, Lighting, Flower Arrangement).
+
 ## Deployment
 
 - **Hosting:** [Vercel](https://vercel.com) — connect this GitHub repo, add

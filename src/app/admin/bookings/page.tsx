@@ -10,7 +10,12 @@ const STATUS_LABEL: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
-export default async function AdminBookingsPage() {
+export default async function AdminBookingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error: actionError } = await searchParams;
   const supabase = await createClient();
 
   // `profiles(...)` is ambiguous here because bookings has TWO foreign keys
@@ -44,6 +49,12 @@ export default async function AdminBookingsPage() {
         step is a stand-in for the AI vendor-matching engine, which comes in
         a later phase.)
       </p>
+
+      {actionError && (
+        <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
+          {actionError}
+        </p>
+      )}
 
       {bookingsError && (
         <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
@@ -89,6 +100,9 @@ export default async function AdminBookingsPage() {
                       &rarr; {b.vendor_profiles.business_name}
                     </span>
                   )}
+                  {b.agreed_price && (
+                    <span className="text-brand-gray">₹{b.agreed_price}</span>
+                  )}
                   <span className="px-3 py-1 rounded-full bg-brand-cream border border-brand-line text-xs font-medium">
                     {STATUS_LABEL[b.status] ?? b.status}
                   </span>
@@ -128,6 +142,21 @@ async function BookingAssignCard({
         .eq("category_id", booking.service_categories.id)
     : { data: [] as { id: string; business_name: string; city: string }[] };
 
+  const vendorIds = (eligibleVendors ?? []).map((v) => v.id);
+  const { data: packages } = vendorIds.length
+    ? await supabase
+        .from("packages")
+        .select("id, vendor_id, title, price")
+        .in("vendor_id", vendorIds)
+        .eq("is_active", true)
+    : { data: [] as { id: string; vendor_id: string; title: string; price: number }[] };
+
+  const vendorsWithPackages = (eligibleVendors ?? []).map((v) => ({
+    ...v,
+    packages: (packages ?? []).filter((p) => p.vendor_id === v.id),
+  }));
+  const hasAnyPackage = vendorsWithPackages.some((v) => v.packages.length > 0);
+
   return (
     <div className="rounded-2xl border border-brand-line bg-white p-6">
       <p className="text-xs font-semibold uppercase tracking-wide text-brand-gold mb-1">
@@ -150,35 +179,44 @@ async function BookingAssignCard({
         </p>
       )}
 
-      {eligibleVendors && eligibleVendors.length > 0 ? (
+      {!eligibleVendors || eligibleVendors.length === 0 ? (
+        <p className="text-sm text-brand-orange-dark">
+          No approved vendors in this category/city yet — approve one first.
+        </p>
+      ) : !hasAnyPackage ? (
+        <p className="text-sm text-brand-orange-dark">
+          Eligible vendors exist, but none have a priced package set up yet —{" "}
+          <a href="/admin/packages" className="underline">
+            add one on the Packages page
+          </a>{" "}
+          before you can assign this booking.
+        </p>
+      ) : (
         <form
           action={assignVendorToBookingAction}
           className="flex flex-wrap items-end gap-3"
         >
           <input type="hidden" name="booking_id" value={booking.id} />
           <label className="flex flex-col gap-1 text-xs font-medium">
-            Vendor
+            Vendor &amp; Package
             <select
-              name="vendor_id"
+              name="package_id"
               required
-              className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+              className="rounded-lg border border-brand-line px-3 py-2 text-sm min-w-[220px]"
             >
-              {eligibleVendors.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.business_name} ({v.city})
-                </option>
-              ))}
+              <option value="">Select a package</option>
+              {vendorsWithPackages
+                .filter((v) => v.packages.length > 0)
+                .map((v) => (
+                  <optgroup key={v.id} label={`${v.business_name} (${v.city})`}>
+                    {v.packages.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.title} — ₹{p.price}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
             </select>
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium">
-            Agreed Price (₹)
-            <input
-              type="number"
-              name="agreed_price"
-              required
-              min={1}
-              className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
-            />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium">
             Advance Due (₹)
@@ -197,10 +235,6 @@ async function BookingAssignCard({
             Assign
           </button>
         </form>
-      ) : (
-        <p className="text-sm text-brand-orange-dark">
-          No approved vendors in this category/city yet — approve one first.
-        </p>
       )}
     </div>
   );
