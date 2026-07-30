@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { normalizePhone } from "@/lib/phone";
+import { getVendorPlan } from "@/lib/vendor-plans";
 
 // The vendor application form is longer than the customer one (business
 // details, KYC, bank details, category, experience, bio) and none of it
@@ -20,6 +21,7 @@ function otpRedirectParams(fields: Record<string, string>) {
 const APPLICATION_FIELDS = [
   "full_name",
   "phone",
+  "plan",
   "business_name",
   "category_id",
   "city",
@@ -48,10 +50,18 @@ function collectFields(formData: FormData): Record<string, string> {
 export async function requestVendorOtpAction(formData: FormData) {
   const fields = collectFields(formData);
 
-  if (!fields.full_name || !fields.phone || !fields.business_name || !fields.category_id || !fields.city) {
+  if (
+    !fields.full_name ||
+    !fields.phone ||
+    !fields.plan ||
+    !getVendorPlan(fields.plan) ||
+    !fields.business_name ||
+    !fields.category_id ||
+    !fields.city
+  ) {
     redirect(
       "/vendor/apply?error=" +
-        encodeURIComponent("Please fill in all required fields.")
+        encodeURIComponent("Please fill in all required fields, including a registration plan.")
     );
   }
 
@@ -99,6 +109,13 @@ export async function verifyVendorOtpAction(formData: FormData) {
   const serviceAreas = fields.service_areas
     ? fields.service_areas.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
+  const plan = getVendorPlan(fields.plan);
+
+  if (!plan) {
+    redirect(
+      `/vendor/apply?${otpRedirectParams({ ...fields, error: "Please choose a registration plan." })}`
+    );
+  }
 
   // Use the admin (service-role) client for these two writes rather than
   // the now-authenticated request-scoped client. This is the very first
@@ -130,7 +147,12 @@ export async function verifyVendorOtpAction(formData: FormData) {
     bank_account_holder_name: fields.bank_account_holder_name || null,
     bank_account_number: fields.bank_account_number || null,
     bank_ifsc: fields.bank_ifsc || null,
-    status: "pending",
+    plan: plan.key,
+    security_deposit_amount: plan.securityDeposit,
+    // Not "pending" yet — the application only becomes visible for admin
+    // review once the registration fee + security deposit are actually
+    // paid (see the "fees" phase below).
+    status: "pending_payment",
   });
 
   if (vendorError) {
@@ -139,11 +161,28 @@ export async function verifyVendorOtpAction(formData: FormData) {
     );
   }
 
-  // Portfolio upload needs an actual file, which can't survive the
-  // hidden-input/URL round trip the rest of this form uses — it happens
-  // here instead, now that verifyOtp() has activated a real session tied
-  // to this exact new vendor.
-  redirect("/vendor/apply?phase=portfolio");
+  await admin.from("vendor_payments").insert([
+    {
+      vendor_id: userId,
+      type: "registration_fee",
+      direction: "debit",
+      amount: plan.registrationFee,
+      status: "pending",
+      reason: `${plan.label} plan registration fee`,
+    },
+    {
+      vendor_id: userId,
+      type: "security_deposit",
+      direction: "debit",
+      amount: plan.securityDeposit,
+      status: "pending",
+      reason: `${plan.label} plan security deposit (refundable)`,
+    },
+  ]);
+
+  // The registration fee + security deposit need to be paid before the
+  // application is reviewable — see the "fees" phase below.
+  redirect("/vendor/apply?phase=fees");
 }
 
 // --- Portfolio upload (Chapter 5, step 8) — optional, skippable ---

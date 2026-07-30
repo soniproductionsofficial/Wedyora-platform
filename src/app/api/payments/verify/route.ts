@@ -75,5 +75,18 @@ export async function POST(request: Request) {
     .update({ status: "confirmed" })
     .eq("id", booking.id);
 
+  // The "Booking Confirmation" payout milestone (20% of the vendor's
+  // total payout, per the Vendor Payment Timeline) is the one milestone
+  // tied to something that already happens automatically — the customer's
+  // advance clearing — rather than a manual admin judgment call like the
+  // other four, so it releases itself right here instead of waiting on
+  // the Admin Payouts page.
+  await admin
+    .from("payout_milestones")
+    .update({ status: "released", released_at: new Date().toISOString() })
+    .eq("booking_id", booking.id)
+    .eq("milestone", "booking_confirmation")
+    .eq("status", "pending");
+
   return NextResponse.json({ success: true });
 }

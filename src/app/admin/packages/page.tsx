@@ -17,7 +17,9 @@ export default async function AdminPackagesPage({
       .order("business_name"),
     supabase
       .from("packages")
-      .select("id, vendor_id, title, description, price, is_active, vendor_profiles(business_name)")
+      .select(
+        "id, vendor_id, title, description, tier, customer_price, vendor_payout, is_active, vendor_profiles(business_name)"
+      )
       .order("created_at", { ascending: false }),
   ]);
 
@@ -79,10 +81,32 @@ export default async function AdminPackagesPage({
               />
             </label>
             <label className="flex flex-col gap-1 text-xs font-medium">
-              Price (₹)
+              Tier
+              <select
+                name="tier"
+                className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+              >
+                <option value="">No tier</option>
+                <option value="basic">Basic</option>
+                <option value="premium">Premium</option>
+                <option value="luxury">Luxury</option>
+              </select>
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-medium">
+              Customer Price (₹)
               <input
                 type="number"
-                name="price"
+                name="customer_price"
+                required
+                min={1}
+                className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-medium">
+              Vendor Payout (₹)
+              <input
+                type="number"
+                name="vendor_payout"
                 required
                 min={1}
                 className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
@@ -129,7 +153,12 @@ export default async function AdminPackagesPage({
                         className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-brand-line px-4 py-2 text-sm"
                       >
                         <span>
-                          <strong>{p.title}</strong> — ₹{p.price}
+                          <strong>{p.title}</strong>
+                          {p.tier && <span className="capitalize text-brand-gray"> ({p.tier})</span>} —
+                          Customer ₹{p.customer_price} · Vendor gets ₹{p.vendor_payout}{" "}
+                          <span className="text-brand-gray">
+                            (margin ₹{p.customer_price - p.vendor_payout})
+                          </span>
                           {p.description && (
                             <span className="text-brand-gray"> · {p.description}</span>
                           )}

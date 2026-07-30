@@ -1,5 +1,6 @@
 import { Wallet } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { labelForMilestone } from "@/lib/payout-milestones";
 
 export default async function VendorEarningsPage() {
   const supabase = await createClient();
@@ -8,18 +9,19 @@ export default async function VendorEarningsPage() {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: payments } = await supabase
-    .from("payments")
-    .select("id, amount, type, payout_status, created_at, bookings!inner(vendor_id, event_date, service_categories(name))")
+  const { data: milestones } = await supabase
+    .from("payout_milestones")
+    .select(
+      "id, milestone, percentage, amount, status, created_at, released_at, bookings!inner(vendor_id, event_date, service_categories(name))"
+    )
     .eq("bookings.vendor_id", user.id)
-    .eq("status", "paid")
     .order("created_at", { ascending: false });
 
-  const allPayments = payments ?? [];
-  const totalEarnings = allPayments.reduce((sum, p) => sum + Number(p.amount), 0);
-  const totalReleased = allPayments
-    .filter((p) => p.payout_status === "released")
-    .reduce((sum, p) => sum + Number(p.amount), 0);
+  const allMilestones = milestones ?? [];
+  const totalEarnings = allMilestones.reduce((sum, m) => sum + Number(m.amount), 0);
+  const totalReleased = allMilestones
+    .filter((m) => m.status === "released")
+    .reduce((sum, m) => sum + Number(m.amount), 0);
   const totalPending = totalEarnings - totalReleased;
 
   // Last 6 months, oldest to newest, computed without Date.now() tricks
@@ -35,11 +37,11 @@ export default async function VendorEarningsPage() {
       total: 0,
     });
   }
-  for (const p of allPayments) {
-    const d = new Date(p.created_at);
+  for (const m of allMilestones) {
+    const d = new Date(m.created_at);
     const key = `${d.getFullYear()}-${d.getMonth()}`;
-    const bucket = months.find((m) => m.key === key);
-    if (bucket) bucket.total += Number(p.amount);
+    const bucket = months.find((b) => b.key === key);
+    if (bucket) bucket.total += Number(m.amount);
   }
   const maxBar = Math.max(...months.map((m) => m.total), 1);
 
@@ -69,25 +71,23 @@ export default async function VendorEarningsPage() {
       </div>
 
       <div className="rounded-2xl border border-brand-line bg-white p-6">
-        <h2 className="font-heading text-lg font-semibold mb-4">Payment History</h2>
-        {allPayments.length === 0 ? (
-          <p className="text-brand-gray text-sm">No payments received yet.</p>
+        <h2 className="font-heading text-lg font-semibold mb-4">Payout History</h2>
+        {allMilestones.length === 0 ? (
+          <p className="text-brand-gray text-sm">No earnings recorded yet.</p>
         ) : (
           <div className="flex flex-col gap-2">
-            {allPayments.map((p) => (
+            {allMilestones.map((m) => (
               <div
-                key={p.id}
+                key={m.id}
                 className="flex items-center justify-between text-sm border-b border-brand-line pb-2 last:border-0"
               >
                 <span>
-                  {p.bookings?.service_categories?.name ?? "Booking"} &middot;{" "}
-                  {p.type === "advance" ? "Advance" : "Final"} payment
+                  {m.bookings?.service_categories?.name ?? "Booking"} &middot;{" "}
+                  {labelForMilestone(m.milestone)} ({m.percentage}%)
                 </span>
                 <span className="flex items-center gap-3">
-                  <span className="font-semibold">₹{Number(p.amount).toLocaleString("en-IN")}</span>
-                  <span className="text-xs text-brand-gray">
-                    {new Date(p.created_at).toLocaleDateString("en-IN")}
-                  </span>
+                  <span className="font-semibold">₹{Number(m.amount).toLocaleString("en-IN")}</span>
+                  <span className="text-xs text-brand-gray capitalize">{m.status}</span>
                 </span>
               </div>
             ))}

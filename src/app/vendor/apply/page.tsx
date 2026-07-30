@@ -6,12 +6,15 @@ import {
   verifyVendorOtpAction,
   uploadPortfolioAction,
 } from "@/lib/actions/vendor";
+import { VENDOR_PLANS } from "@/lib/vendor-plans";
+import PayVendorFeesButton from "@/components/pay-vendor-fees-button";
 
 type ApplyFields = {
   error?: string;
   phase?: string;
   phone?: string;
   full_name?: string;
+  plan?: string;
   business_name?: string;
   category_id?: string;
   city?: string;
@@ -44,6 +47,29 @@ export default async function VendorApplyPage({
     .select("id, name")
     .order("name");
 
+  let feesTotal = 0;
+  let vendorName: string | null = null;
+  let vendorPhone: string | null = null;
+  if (phase === "fees") {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const [{ data: pendingFees }, { data: profile }] = await Promise.all([
+        supabase
+          .from("vendor_payments")
+          .select("amount")
+          .eq("vendor_id", user.id)
+          .eq("status", "pending")
+          .in("type", ["registration_fee", "security_deposit"]),
+        supabase.from("profiles").select("full_name, phone").eq("id", user.id).single(),
+      ]);
+      feesTotal = (pendingFees ?? []).reduce((sum, r) => sum + Number(r.amount), 0);
+      vendorName = profile?.full_name ?? null;
+      vendorPhone = profile?.phone ?? null;
+    }
+  }
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-brand-cream flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-xl">
@@ -61,6 +87,8 @@ export default async function VendorApplyPage({
             {phase === "form" &&
               "Join our verified vendor network. Our team reviews every application before you start receiving bookings."}
             {phase === "otp" && `Enter the code we texted to ${phone} to submit your application.`}
+            {phase === "fees" &&
+              "One last step — pay your plan's registration fee and refundable security deposit to submit your application for review."}
             {phase === "portfolio" &&
               "Upload a few photos or samples of your work (optional — you can add more later)."}
             {phase === "done" &&
@@ -111,6 +139,37 @@ export default async function VendorApplyPage({
                 </legend>
                 <Field label="Full Name" name="full_name" required />
                 <Field label="Phone" name="phone" type="tel" required />
+              </fieldset>
+
+              <fieldset className="flex flex-col gap-3 border-b border-brand-line pb-6 mb-2">
+                <legend className="text-xs font-semibold uppercase tracking-wide text-brand-gray mb-1">
+                  Registration Plan <span className="text-brand-orange">*</span>
+                </legend>
+                {VENDOR_PLANS.map((p, i) => (
+                  <label
+                    key={p.key}
+                    className="flex items-start gap-3 rounded-xl border border-brand-line px-4 py-3 text-sm cursor-pointer hover:border-brand-orange transition-colors has-[:checked]:border-brand-orange has-[:checked]:bg-brand-orange/5"
+                  >
+                    <input
+                      type="radio"
+                      name="plan"
+                      value={p.key}
+                      required
+                      defaultChecked={i === 0}
+                      className="mt-1"
+                    />
+                    <span>
+                      <span className="font-medium">{p.label}</span>{" "}
+                      <span className="text-brand-gray text-xs">— best for {p.targetVendor}</span>
+                      <br />
+                      <span className="text-xs text-brand-gray">
+                        ₹{p.registrationFee.toLocaleString("en-IN")} registration &middot; ₹
+                        {p.annualRenewal.toLocaleString("en-IN")}/yr renewal &middot; ₹
+                        {p.securityDeposit.toLocaleString("en-IN")} refundable deposit
+                      </span>
+                    </span>
+                  </label>
+                ))}
               </fieldset>
 
               <fieldset className="flex flex-col gap-4 border-b border-brand-line pb-6 mb-2">
@@ -196,6 +255,37 @@ export default async function VendorApplyPage({
                 Send Code
               </button>
             </form>
+          )}
+
+          {phase === "fees" && (
+            <div className="flex flex-col gap-4">
+              {feesTotal > 0 ? (
+                <>
+                  <div className="rounded-xl border border-brand-line bg-brand-cream p-5 text-center">
+                    <p className="text-xs text-brand-gray mb-1">Total due now</p>
+                    <p className="font-heading text-2xl font-bold">
+                      ₹{feesTotal.toLocaleString("en-IN")}
+                    </p>
+                    <p className="text-xs text-brand-gray mt-1">
+                      Registration fee (one-time) + refundable security deposit
+                    </p>
+                  </div>
+                  <PayVendorFeesButton
+                    amount={feesTotal}
+                    vendorName={vendorName}
+                    vendorPhone={vendorPhone}
+                  />
+                </>
+              ) : (
+                <p className="text-brand-gray text-sm text-center">
+                  Nothing pending — you can{" "}
+                  <Link href="/vendor/apply?phase=portfolio" className="text-brand-orange underline">
+                    continue to the portfolio step
+                  </Link>
+                  .
+                </p>
+              )}
+            </div>
           )}
 
           {phase === "portfolio" && (

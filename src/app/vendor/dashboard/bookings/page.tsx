@@ -29,7 +29,7 @@ export default async function VendorBookingsPage() {
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
-      "id, event_date, city, status, agreed_price, service_categories(name), profiles!bookings_customer_id_fkey(full_name)"
+      "id, event_date, city, status, agreed_vendor_payout, service_categories(name), profiles!bookings_customer_id_fkey(full_name)"
     )
     .eq("vendor_id", user.id)
     .order("event_date", { ascending: false });
@@ -56,7 +56,8 @@ export default async function VendorBookingsPage() {
                 </p>
                 <p className="text-xs text-brand-gray">
                   {b.city} &middot; {new Date(b.event_date).toLocaleDateString("en-IN")}
-                  {b.agreed_price && ` · ₹${Number(b.agreed_price).toLocaleString("en-IN")}`}
+                  {b.agreed_vendor_payout &&
+                    ` · You get ₹${Number(b.agreed_vendor_payout).toLocaleString("en-IN")}`}
                 </p>
               </div>
               <span

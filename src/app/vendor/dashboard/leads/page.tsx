@@ -17,7 +17,7 @@ export default async function VendorLeadsPage({
   const { data: leads } = await supabase
     .from("bookings")
     .select(
-      "id, event_date, city, guest_count, budget_min, budget_max, special_requirements, agreed_price, advance_amount, service_categories(name), profiles!bookings_customer_id_fkey(full_name, phone)"
+      "id, event_date, city, guest_count, budget_min, budget_max, special_requirements, agreed_price, agreed_vendor_payout, advance_amount, service_categories(name), profiles!bookings_customer_id_fkey(full_name, phone), booking_add_ons(vendor_payout, add_ons(name))"
     )
     .eq("vendor_id", user.id)
     .eq("status", "pending_vendor_acceptance")
@@ -57,13 +57,14 @@ export default async function VendorLeadsPage({
                     {lead.guest_count && ` · ${lead.guest_count} guests`}
                   </p>
                 </div>
-                {lead.agreed_price && (
+                {lead.agreed_vendor_payout && (
                   <span className="text-sm font-semibold text-brand-orange">
-                    ₹{Number(lead.agreed_price).toLocaleString("en-IN")}
+                    You get ₹{Number(lead.agreed_vendor_payout).toLocaleString("en-IN")}
                     {lead.advance_amount && (
                       <span className="text-xs text-brand-gray font-normal">
                         {" "}
-                        (₹{Number(lead.advance_amount).toLocaleString("en-IN")} advance)
+                        (customer pays ₹{Number(lead.agreed_price ?? 0).toLocaleString("en-IN")}, ₹
+                        {Number(lead.advance_amount).toLocaleString("en-IN")} advance)
                       </span>
                     )}
                   </span>
@@ -81,6 +82,17 @@ export default async function VendorLeadsPage({
                   </p>
                 )}
                 {lead.special_requirements && <p>Notes: {lead.special_requirements}</p>}
+                {lead.booking_add_ons && lead.booking_add_ons.length > 0 && (
+                  <p>
+                    Add-ons:{" "}
+                    {lead.booking_add_ons
+                      .map(
+                        (a) =>
+                          `${a.add_ons?.name} (+₹${Number(a.vendor_payout).toLocaleString("en-IN")})`
+                      )
+                      .join(", ")}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-3">

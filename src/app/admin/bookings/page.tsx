@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { assignVendorToBookingAction } from "@/lib/actions/admin";
+import { assignVendorToBookingAction, markBookingCompletedAction } from "@/lib/actions/admin";
 
 const STATUS_LABEL: Record<string, string> = {
   pending_assignment: "Needs a vendor",
@@ -27,7 +27,7 @@ export default async function AdminBookingsPage({
   const { data: bookings, error: bookingsError } = await supabase
     .from("bookings")
     .select(
-      "id, event_date, city, guest_count, budget_min, budget_max, special_requirements, status, agreed_price, advance_amount, service_categories(id, name), profiles!bookings_customer_id_fkey(full_name, phone), vendor_profiles(business_name)"
+      "id, event_date, city, guest_count, budget_min, budget_max, special_requirements, status, agreed_price, agreed_vendor_payout, advance_amount, service_categories(id, name), profiles!bookings_customer_id_fkey(full_name, phone), vendor_profiles(business_name)"
     )
     .order("created_at", { ascending: true });
 
@@ -102,11 +102,25 @@ export default async function AdminBookingsPage({
                     </span>
                   )}
                   {b.agreed_price && (
-                    <span className="text-brand-gray">₹{b.agreed_price}</span>
+                    <span className="text-brand-gray">
+                      ₹{b.agreed_price}
+                      {b.agreed_vendor_payout && ` (vendor ₹${b.agreed_vendor_payout})`}
+                    </span>
                   )}
                   <span className="px-3 py-1 rounded-full bg-brand-cream border border-brand-line text-xs font-medium">
                     {STATUS_LABEL[b.status] ?? b.status}
                   </span>
+                  {(b.status === "confirmed" || b.status === "in_progress") && (
+                    <form action={markBookingCompletedAction}>
+                      <input type="hidden" name="booking_id" value={b.id} />
+                      <button
+                        type="submit"
+                        className="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-semibold hover:bg-green-700"
+                      >
+                        Mark Completed
+                      </button>
+                    </form>
+                  )}
                 </span>
               </div>
             ))}
@@ -135,22 +149,37 @@ async function BookingAssignCard({
   booking: AssignableBooking;
   supabase: Awaited<ReturnType<typeof createClient>>;
 }) {
-  const { data: eligibleVendors } = booking.service_categories
-    ? await supabase
-        .from("vendor_profiles")
-        .select("id, business_name, city")
-        .eq("status", "approved")
-        .eq("category_id", booking.service_categories.id)
-    : { data: [] as { id: string; business_name: string; city: string }[] };
+  const [{ data: eligibleVendors }, { data: addOns }] = await Promise.all([
+    booking.service_categories
+      ? supabase
+          .from("vendor_profiles")
+          .select("id, business_name, city")
+          .eq("status", "approved")
+          .eq("category_id", booking.service_categories.id)
+      : Promise.resolve({ data: [] as { id: string; business_name: string; city: string }[] }),
+    supabase
+      .from("add_ons")
+      .select("id, name, customer_price, vendor_payout")
+      .eq("is_active", true)
+      .order("name"),
+  ]);
 
   const vendorIds = (eligibleVendors ?? []).map((v) => v.id);
   const { data: packages } = vendorIds.length
     ? await supabase
         .from("packages")
-        .select("id, vendor_id, title, price")
+        .select("id, vendor_id, title, customer_price, vendor_payout")
         .in("vendor_id", vendorIds)
         .eq("is_active", true)
-    : { data: [] as { id: string; vendor_id: string; title: string; price: number }[] };
+    : {
+        data: [] as {
+          id: string;
+          vendor_id: string;
+          title: string;
+          customer_price: number;
+          vendor_payout: number;
+        }[],
+      };
 
   const vendorsWithPackages = (eligibleVendors ?? []).map((v) => ({
     ...v,
@@ -195,43 +224,63 @@ async function BookingAssignCard({
       ) : (
         <form
           action={assignVendorToBookingAction}
-          className="flex flex-wrap items-end gap-3"
+          className="flex flex-col gap-3"
         >
           <input type="hidden" name="booking_id" value={booking.id} />
-          <label className="flex flex-col gap-1 text-xs font-medium">
-            Vendor &amp; Package
-            <select
-              name="package_id"
-              required
-              className="rounded-lg border border-brand-line px-3 py-2 text-sm min-w-[220px]"
-            >
-              <option value="">Select a package</option>
-              {vendorsWithPackages
-                .filter((v) => v.packages.length > 0)
-                .map((v) => (
-                  <optgroup key={v.id} label={`${v.business_name} (${v.city})`}>
-                    {v.packages.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.title} — ₹{p.price}
-                      </option>
-                    ))}
-                  </optgroup>
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="flex flex-col gap-1 text-xs font-medium">
+              Vendor &amp; Package
+              <select
+                name="package_id"
+                required
+                className="rounded-lg border border-brand-line px-3 py-2 text-sm min-w-[220px]"
+              >
+                <option value="">Select a package</option>
+                {vendorsWithPackages
+                  .filter((v) => v.packages.length > 0)
+                  .map((v) => (
+                    <optgroup key={v.id} label={`${v.business_name} (${v.city})`}>
+                      {v.packages.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.title} — ₹{p.customer_price} (vendor ₹{p.vendor_payout})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-medium">
+              Advance Due (₹)
+              <input
+                type="number"
+                name="advance_amount"
+                required
+                min={1}
+                className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
+              />
+            </label>
+          </div>
+
+          {addOns && addOns.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-xs font-medium text-brand-gray">Add-ons (optional)</p>
+              <div className="grid sm:grid-cols-2 gap-1.5">
+                {addOns.map((a) => (
+                  <label
+                    key={a.id}
+                    className="flex items-center gap-2 text-xs rounded-lg border border-brand-line px-3 py-2 cursor-pointer hover:border-brand-orange"
+                  >
+                    <input type="checkbox" name="add_on_ids" value={a.id} />
+                    {a.name} — ₹{a.customer_price} (vendor ₹{a.vendor_payout})
+                  </label>
                 ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-medium">
-            Advance Due (₹)
-            <input
-              type="number"
-              name="advance_amount"
-              required
-              min={1}
-              className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
-            />
-          </label>
+              </div>
+            </div>
+          )}
+
           <button
             type="submit"
-            className="px-4 py-2 rounded-full bg-brand-black text-white text-sm font-semibold hover:bg-brand-charcoal"
+            className="self-start px-4 py-2 rounded-full bg-brand-black text-white text-sm font-semibold hover:bg-brand-charcoal"
           >
             Assign
           </button>

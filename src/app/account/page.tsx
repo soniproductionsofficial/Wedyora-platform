@@ -69,7 +69,7 @@ export default async function AccountPage({
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
-      "id, event_date, city, status, advance_amount, vendor_id, service_categories(name), vendor_profiles(business_name)"
+      "id, event_date, city, status, agreed_price, advance_amount, vendor_id, service_categories(name), vendor_profiles(business_name), booking_add_ons(customer_price, add_ons(name))"
     )
     .eq("customer_id", user.id)
     .order("created_at", { ascending: false });
@@ -193,7 +193,17 @@ export default async function AccountPage({
                   {new Date(b.event_date).toLocaleDateString("en-IN")}
                   {b.vendor_profiles?.business_name &&
                     ` · ${b.vendor_profiles.business_name}`}
+                  {b.agreed_price && ` · ₹${Number(b.agreed_price).toLocaleString("en-IN")}`}
                 </p>
+                {b.booking_add_ons && b.booking_add_ons.length > 0 && (
+                  <p className="text-xs text-brand-gray">
+                    Add-ons:{" "}
+                    {b.booking_add_ons
+                      .map((a) => a.add_ons?.name)
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                )}
                 {b.status === "awaiting_payment" && b.advance_amount && (
                   <div className="pt-2">
                     <PayAdvanceButton

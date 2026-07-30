@@ -8,7 +8,7 @@
 // so joined `.select("related(...)")` queries type-check correctly.
 
 export type UserRole = "customer" | "vendor" | "admin";
-export type VendorStatus = "pending" | "approved" | "rejected" | "suspended";
+export type VendorStatus = "pending_payment" | "pending" | "approved" | "rejected" | "suspended";
 export type BookingStatus =
   | "pending_assignment"
   | "pending_vendor_acceptance"
@@ -20,6 +20,29 @@ export type BookingStatus =
 export type PaymentStatus = "created" | "paid" | "failed" | "refunded";
 export type PaymentType = "advance" | "final";
 export type PayoutStatus = "pending" | "released";
+export type VendorPlanKeyDb =
+  | "basic_verified"
+  | "professional_partner"
+  | "premium_partner"
+  | "studio_partner";
+export type PartnerTierDb = "standard" | "gold" | "platinum";
+export type PackageTier = "basic" | "premium" | "luxury";
+export type VendorPaymentType =
+  | "registration_fee"
+  | "security_deposit"
+  | "annual_renewal"
+  | "incentive_bonus"
+  | "penalty"
+  | "security_deposit_refund";
+export type VendorPaymentDirection = "credit" | "debit";
+export type VendorPaymentStatus = "pending" | "paid" | "waived";
+export type PayoutMilestoneKeyDb =
+  | "booking_confirmation"
+  | "wedding_completed"
+  | "raw_files_uploaded"
+  | "quality_check_approved"
+  | "customer_delivery_completed";
+export type PayoutMilestoneStatus = "pending" | "released";
 
 export interface Database {
   public: {
@@ -76,6 +99,12 @@ export interface Database {
           service_areas: string[];
           available_from: string | null;
           equipment_details: string | null;
+          plan: VendorPlanKeyDb | null;
+          security_deposit_amount: number | null;
+          plan_paid_at: string | null;
+          plan_expires_at: string | null;
+          successful_events_count: number;
+          partner_tier: PartnerTierDb;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["vendor_profiles"]["Row"]> & {
@@ -108,14 +137,17 @@ export interface Database {
           vendor_id: string;
           title: string;
           description: string | null;
-          price: number;
+          customer_price: number;
+          vendor_payout: number;
+          tier: PackageTier | null;
           is_active: boolean;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["packages"]["Row"]> & {
           vendor_id: string;
           title: string;
-          price: number;
+          customer_price: number;
+          vendor_payout: number;
         };
         Update: Partial<Database["public"]["Tables"]["packages"]["Row"]>;
         Relationships: [
@@ -145,6 +177,7 @@ export interface Database {
           assigned_by: string | null;
           assigned_at: string | null;
           agreed_price: number | null;
+          agreed_vendor_payout: number | null;
           advance_amount: number | null;
           created_at: string;
         };
@@ -251,6 +284,117 @@ export interface Database {
             columns: ["customer_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      add_ons: {
+        Row: {
+          id: string;
+          name: string;
+          customer_price: number;
+          vendor_payout: number;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["add_ons"]["Row"]> & {
+          name: string;
+          customer_price: number;
+          vendor_payout: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["add_ons"]["Row"]>;
+        Relationships: [];
+      };
+      booking_add_ons: {
+        Row: {
+          id: string;
+          booking_id: string;
+          add_on_id: string;
+          customer_price: number;
+          vendor_payout: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["booking_add_ons"]["Row"]> & {
+          booking_id: string;
+          add_on_id: string;
+          customer_price: number;
+          vendor_payout: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["booking_add_ons"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "booking_add_ons_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "booking_add_ons_add_on_id_fkey";
+            columns: ["add_on_id"];
+            isOneToOne: false;
+            referencedRelation: "add_ons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      vendor_payments: {
+        Row: {
+          id: string;
+          vendor_id: string;
+          type: VendorPaymentType;
+          direction: VendorPaymentDirection;
+          amount: number;
+          status: VendorPaymentStatus;
+          reason: string | null;
+          razorpay_order_id: string | null;
+          razorpay_payment_id: string | null;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["vendor_payments"]["Row"]> & {
+          vendor_id: string;
+          type: VendorPaymentType;
+          direction: VendorPaymentDirection;
+          amount: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["vendor_payments"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "vendor_payments_vendor_id_fkey";
+            columns: ["vendor_id"];
+            isOneToOne: false;
+            referencedRelation: "vendor_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      payout_milestones: {
+        Row: {
+          id: string;
+          booking_id: string;
+          milestone: PayoutMilestoneKeyDb;
+          sort_order: number;
+          percentage: number;
+          amount: number;
+          status: PayoutMilestoneStatus;
+          released_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["payout_milestones"]["Row"]> & {
+          booking_id: string;
+          milestone: PayoutMilestoneKeyDb;
+          sort_order: number;
+          percentage: number;
+          amount: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["payout_milestones"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "payout_milestones_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
             referencedColumns: ["id"];
           },
         ];

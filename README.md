@@ -93,6 +93,20 @@ order, the same way — paste into the SQL Editor and run.
   pay), creates the `reviews` table (customer rates a vendor after a
   completed booking), and adds a `payout_status` column to `payments`
   (pending/released, tracked from Admin → Payouts).
+- `0006_vendor_pricing_quote_structure.sql` — the big one. Splits every
+  package's price into what the customer pays vs. what the vendor is paid
+  (so Wedyora's margin is tracked, not implied); adds a platform-wide
+  add-on price list (`add_ons`/`booking_add_ons`); adds four paid vendor
+  registration plans with a registration fee + refundable security deposit
+  (`vendor_profiles.plan`, a new `pending_payment` vendor status, and the
+  `vendor_payments` ledger table); adds a performance bonus program
+  (`vendor_profiles.successful_events_count`/`partner_tier`); adds a
+  penalty policy (also logged in `vendor_payments`); and replaces the
+  single payout flag on `payments` with a 5-stage `payout_milestones`
+  schedule per booking (20/30/20/20/10). **Existing packages get
+  auto-migrated** (their old `price` becomes `customer_price`, and
+  `vendor_payout` defaults to the same value — i.e. 100% to the vendor —
+  until you edit them with the real split).
 
 ## Deployment
 

@@ -1,4 +1,4 @@
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, Award } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import {
   updateVendorProfileAction,
@@ -6,6 +6,8 @@ import {
   toggleVendorPackageActiveAction,
 } from "@/lib/actions/vendor-dashboard";
 import { uploadPortfolioAction } from "@/lib/actions/vendor";
+import { getVendorPlan } from "@/lib/vendor-plans";
+import { nextIncentiveTier } from "@/lib/vendor-incentives";
 
 export default async function VendorProfilePage({
   searchParams,
@@ -19,28 +21,100 @@ export default async function VendorProfilePage({
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const [{ data: vendorProfile }, { data: packages }] = await Promise.all([
+  const [{ data: vendorProfile }, { data: packages }, { data: ledgerRows }] = await Promise.all([
     supabase
       .from("vendor_profiles")
       .select(
-        "business_name, city, bio, service_areas, team_size, available_from, equipment_details, portfolio_urls, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, service_categories(name)"
+        "business_name, city, bio, service_areas, team_size, available_from, equipment_details, portfolio_urls, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, plan, security_deposit_amount, plan_paid_at, plan_expires_at, successful_events_count, partner_tier, service_categories(name)"
       )
       .eq("id", user.id)
       .single(),
     supabase
       .from("packages")
-      .select("id, title, description, price, is_active")
+      .select("id, title, description, tier, customer_price, vendor_payout, is_active")
       .eq("vendor_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("vendor_payments")
+      .select("id, type, direction, amount, status, reason, created_at")
+      .eq("vendor_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10),
   ]);
 
   if (!vendorProfile) return <p className="text-brand-gray text-sm">Profile not found.</p>;
+
+  const plan = getVendorPlan(vendorProfile.plan);
+  const nextTier = nextIncentiveTier(vendorProfile.successful_events_count);
 
   return (
     <div className="flex flex-col gap-8">
       {error && (
         <p className="rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">{error}</p>
       )}
+
+      <div className="rounded-2xl border border-brand-line bg-white p-6">
+        <h2 className="font-heading text-lg font-semibold mb-4 flex items-center gap-2">
+          <Award className="h-5 w-5 text-brand-orange" /> Membership &amp; Performance
+        </h2>
+        <div className="grid sm:grid-cols-2 gap-4 text-sm mb-4">
+          <div>
+            <p className="text-brand-gray text-xs mb-0.5">Plan</p>
+            <p className="font-medium">{plan?.label ?? "—"}</p>
+          </div>
+          <div>
+            <p className="text-brand-gray text-xs mb-0.5">Security Deposit</p>
+            <p className="font-medium">
+              {vendorProfile.security_deposit_amount != null
+                ? `₹${Number(vendorProfile.security_deposit_amount).toLocaleString("en-IN")} (refundable)`
+                : "—"}
+            </p>
+          </div>
+          <div>
+            <p className="text-brand-gray text-xs mb-0.5">Renewal Due</p>
+            <p className="font-medium">
+              {vendorProfile.plan_expires_at
+                ? new Date(vendorProfile.plan_expires_at).toLocaleDateString("en-IN")
+                : "—"}
+            </p>
+          </div>
+          <div>
+            <p className="text-brand-gray text-xs mb-0.5">Performance</p>
+            <p className="font-medium capitalize">
+              {vendorProfile.successful_events_count} events &middot; {vendorProfile.partner_tier} tier
+            </p>
+            {nextTier && (
+              <p className="text-xs text-brand-gray mt-0.5">
+                Next bonus: ₹{nextTier.bonus.toLocaleString("en-IN")} at {nextTier.events} events
+              </p>
+            )}
+          </div>
+        </div>
+        {ledgerRows && ledgerRows.length > 0 && (
+          <div className="pt-4 border-t border-brand-line">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-gray mb-2">
+              Recent Ledger Activity
+            </p>
+            <div className="flex flex-col gap-1">
+              {ledgerRows.map((r) => (
+                <div key={r.id} className="flex items-center justify-between text-xs gap-2">
+                  <span className="text-brand-gray">
+                    {r.reason ?? r.type} &middot; {new Date(r.created_at).toLocaleDateString("en-IN")}
+                  </span>
+                  <span className="flex items-center gap-2 shrink-0">
+                    <span className={r.direction === "credit" ? "text-green-700" : "text-brand-orange-dark"}>
+                      {r.direction === "credit" ? "+" : "−"}₹{Number(r.amount).toLocaleString("en-IN")}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-brand-cream border border-brand-line capitalize">
+                      {r.status}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="rounded-2xl border border-brand-line bg-white p-6">
         <h2 className="font-heading text-lg font-semibold mb-4">Business Info</h2>
@@ -178,10 +252,29 @@ export default async function VendorProfilePage({
             />
           </label>
           <label className="flex flex-col gap-1 text-xs font-medium">
-            Price (₹)
+            Tier
+            <select name="tier" className="rounded-lg border border-brand-line px-3 py-2 text-sm">
+              <option value="">No tier</option>
+              <option value="basic">Basic</option>
+              <option value="premium">Premium</option>
+              <option value="luxury">Luxury</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            Customer Price (₹)
             <input
               type="number"
-              name="price"
+              name="customer_price"
+              required
+              min={1}
+              className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            Your Payout (₹)
+            <input
+              type="number"
+              name="vendor_payout"
               required
               min={1}
               className="rounded-lg border border-brand-line px-3 py-2 text-sm w-32"
@@ -213,7 +306,9 @@ export default async function VendorProfilePage({
                 className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-brand-line px-4 py-2 text-sm"
               >
                 <span>
-                  <strong>{p.title}</strong> — ₹{p.price}
+                  <strong>{p.title}</strong>
+                  {p.tier && <span className="capitalize text-brand-gray"> ({p.tier})</span>} —
+                  Customer pays ₹{p.customer_price}, you get ₹{p.vendor_payout}
                   {p.description && <span className="text-brand-gray"> · {p.description}</span>}
                 </span>
                 <div className="flex items-center gap-2">

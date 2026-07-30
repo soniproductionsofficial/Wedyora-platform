@@ -1,8 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
-import { reviewVendorAction } from "@/lib/actions/admin";
+import { reviewVendorAction, logVendorPenaltyAction } from "@/lib/actions/admin";
+import { getVendorPlan } from "@/lib/vendor-plans";
+import { PENALTY_ISSUES } from "@/lib/vendor-penalties";
+import { nextIncentiveTier } from "@/lib/vendor-incentives";
 import type { VendorStatus } from "@/types/database";
 
-const TABS: VendorStatus[] = ["pending", "approved", "rejected"];
+const TABS: VendorStatus[] = ["pending_payment", "pending", "approved", "rejected", "suspended"];
+const TAB_LABEL: Record<VendorStatus, string> = {
+  pending_payment: "Awaiting Fee Payment",
+  pending: "Pending Review",
+  approved: "Approved",
+  rejected: "Rejected",
+  suspended: "Suspended",
+};
 
 export default async function AdminVendorsPage({
   searchParams,
@@ -23,7 +33,7 @@ export default async function AdminVendorsPage({
   const { data: vendors, error: vendorsError } = await supabase
     .from("vendor_profiles")
     .select(
-      "id, business_name, city, bio, experience_years, status, created_at, team_size, service_areas, available_from, equipment_details, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, portfolio_urls, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
+      "id, business_name, city, bio, experience_years, status, created_at, team_size, service_areas, available_from, equipment_details, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, portfolio_urls, plan, security_deposit_amount, plan_paid_at, plan_expires_at, successful_events_count, partner_tier, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
     )
     .eq("status", activeStatus)
     .order("created_at", { ascending: true });
@@ -31,6 +41,23 @@ export default async function AdminVendorsPage({
   if (vendorsError) {
     console.error("Failed to load vendor applications:", vendorsError);
   }
+
+  const vendorIds = (vendors ?? []).map((v) => v.id);
+  const { data: ledgerRows } = vendorIds.length
+    ? await supabase
+        .from("vendor_payments")
+        .select("id, vendor_id, type, direction, amount, status, reason, created_at")
+        .in("vendor_id", vendorIds)
+        .order("created_at", { ascending: false })
+    : { data: [] as never[] };
+
+  const ledgerByVendor = (ledgerRows ?? []).reduce<Record<string, typeof ledgerRows>>(
+    (acc, r) => {
+      (acc[r.vendor_id] ??= []).push(r);
+      return acc;
+    },
+    {}
+  );
 
   const tabs = TABS;
 
@@ -46,13 +73,13 @@ export default async function AdminVendorsPage({
           <a
             key={t}
             href={`/admin/vendors?status=${t}`}
-            className={`px-4 py-2 rounded-full text-sm font-medium capitalize border transition-colors ${
+            className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
               activeStatus === t
                 ? "bg-brand-orange text-white border-brand-orange"
                 : "border-brand-line text-brand-gray hover:border-brand-orange hover:text-brand-orange"
             }`}
           >
-            {t}
+            {TAB_LABEL[t]}
           </a>
         ))}
       </div>
@@ -64,7 +91,7 @@ export default async function AdminVendorsPage({
       )}
 
       {!vendors || vendors.length === 0 ? (
-        <p className="text-brand-gray text-sm">No {activeStatus} applications.</p>
+        <p className="text-brand-gray text-sm">No {TAB_LABEL[activeStatus].toLowerCase()} vendors.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {vendors.map((v) => (
@@ -136,6 +163,98 @@ export default async function AdminVendorsPage({
                       </a>
                     ))}
                   </div>
+                )}
+
+                <div className="mt-3 pt-3 border-t border-brand-line text-xs text-brand-gray max-w-xl">
+                  <p>
+                    <span className="font-medium text-brand-black">Plan:</span>{" "}
+                    {getVendorPlan(v.plan)?.label ?? "—"}
+                    {v.security_deposit_amount != null &&
+                      ` · Deposit ₹${Number(v.security_deposit_amount).toLocaleString("en-IN")}`}
+                    {v.plan_paid_at
+                      ? ` · Paid ${new Date(v.plan_paid_at).toLocaleDateString("en-IN")}`
+                      : " · Not yet paid"}
+                    {v.plan_expires_at &&
+                      ` · Renews ${new Date(v.plan_expires_at).toLocaleDateString("en-IN")}`}
+                  </p>
+                  <p className="mt-1">
+                    <span className="font-medium text-brand-black">Performance:</span>{" "}
+                    {v.successful_events_count} completed event
+                    {v.successful_events_count === 1 ? "" : "s"} &middot;{" "}
+                    <span className="capitalize">{v.partner_tier}</span> tier
+                    {nextIncentiveTier(v.successful_events_count) &&
+                      ` · next bonus at ${nextIncentiveTier(v.successful_events_count)!.events} events (₹${nextIncentiveTier(v.successful_events_count)!.bonus.toLocaleString("en-IN")})`}
+                  </p>
+                </div>
+
+                {ledgerByVendor[v.id] && ledgerByVendor[v.id]!.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-brand-line max-w-xl">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-gray mb-2">
+                      Ledger
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      {ledgerByVendor[v.id]!.slice(0, 5).map((r) => (
+                        <div
+                          key={r.id}
+                          className="flex items-center justify-between text-xs gap-2"
+                        >
+                          <span className="text-brand-gray">
+                            {r.reason ?? r.type} &middot;{" "}
+                            {new Date(r.created_at).toLocaleDateString("en-IN")}
+                          </span>
+                          <span className="flex items-center gap-2 shrink-0">
+                            <span className={r.direction === "credit" ? "text-green-700" : "text-brand-orange-dark"}>
+                              {r.direction === "credit" ? "+" : "−"}₹{Number(r.amount).toLocaleString("en-IN")}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-brand-cream border border-brand-line capitalize">
+                              {r.status}
+                            </span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(activeStatus === "approved" || activeStatus === "suspended") && (
+                  <form
+                    action={logVendorPenaltyAction}
+                    className="mt-3 pt-3 border-t border-brand-line flex flex-wrap items-end gap-2 max-w-xl"
+                  >
+                    <input type="hidden" name="vendor_id" value={v.id} />
+                    <label className="flex flex-col gap-1 text-xs font-medium">
+                      Log Penalty
+                      <select
+                        name="issue"
+                        required
+                        className="rounded-lg border border-brand-line px-3 py-1.5 text-xs min-w-[180px]"
+                      >
+                        <option value="">Select an issue</option>
+                        {PENALTY_ISSUES.map((i) => (
+                          <option key={i.key} value={i.key}>
+                            {i.label} (₹{i.amount.toLocaleString("en-IN")}
+                            {i.perDay ? "/day" : ""})
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="flex flex-col gap-1 text-xs font-medium">
+                      Days late (if applicable)
+                      <input
+                        type="number"
+                        name="days_late"
+                        min={1}
+                        defaultValue={1}
+                        className="rounded-lg border border-brand-line px-3 py-1.5 text-xs w-24"
+                      />
+                    </label>
+                    <button
+                      type="submit"
+                      className="px-3 py-1.5 rounded-full border border-brand-line text-xs font-semibold hover:bg-brand-cream"
+                    >
+                      Log
+                    </button>
+                  </form>
                 )}
               </div>
 

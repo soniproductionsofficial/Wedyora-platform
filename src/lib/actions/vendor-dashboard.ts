@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { PAYOUT_MILESTONES } from "@/lib/payout-milestones";
 
 // Everything here relies on Row Level Security, not application logic, to
 // keep a vendor confined to their own data — "packages: vendor manages
@@ -24,15 +25,39 @@ export async function acceptLeadAction(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { error } = await supabase
+  const { data: booking, error } = await supabase
     .from("bookings")
     .update({ status: "awaiting_payment" })
     .eq("id", bookingId)
     .eq("vendor_id", user.id)
-    .eq("status", "pending_vendor_acceptance");
+    .eq("status", "pending_vendor_acceptance")
+    .select("id, agreed_vendor_payout")
+    .single();
 
   if (error) {
     redirect("/vendor/dashboard/leads?error=" + encodeURIComponent(error.message));
+  }
+
+  // Set up the 5-stage payout schedule (Vendor Payment Timeline) now that
+  // this booking has a locked-in vendor payout. Uses the service-role
+  // client — payout_milestones has no insert policy for regular users,
+  // same reasoning as `payments` (amounts are server-computed, never
+  // submitted by the browser, but only trusted server code may write them).
+  if (booking?.agreed_vendor_payout) {
+    const admin = createAdminClient();
+    // Clear out any milestone rows from an earlier accept on this same
+    // booking (e.g. it was rejected and reassigned, then accepted again)
+    // before re-inserting, since (booking_id, milestone) is unique.
+    await admin.from("payout_milestones").delete().eq("booking_id", bookingId);
+    await admin.from("payout_milestones").insert(
+      PAYOUT_MILESTONES.map((m) => ({
+        booking_id: bookingId,
+        milestone: m.key,
+        sort_order: m.sortOrder,
+        percentage: m.percentage,
+        amount: Math.round((booking.agreed_vendor_payout! * m.percentage) / 100),
+      }))
+    );
   }
 
   revalidatePath("/vendor/dashboard/leads");
@@ -82,12 +107,22 @@ export async function rejectLeadAction(formData: FormData) {
 export async function createVendorPackageAction(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
-  const price = Number(formData.get("price") ?? 0);
+  const tier = String(formData.get("tier") ?? "").trim();
+  const customerPrice = Number(formData.get("customer_price") ?? 0);
+  const vendorPayout = Number(formData.get("vendor_payout") ?? 0);
 
-  if (!title || !price || price <= 0) {
+  if (!title || !customerPrice || customerPrice <= 0 || !vendorPayout || vendorPayout <= 0) {
     redirect(
       "/vendor/dashboard/profile?error=" +
-        encodeURIComponent("Please enter a title and a price greater than zero.")
+        encodeURIComponent(
+          "Please enter a title, a customer price, and a payout to you — all greater than zero."
+        )
+    );
+  }
+  if (vendorPayout > customerPrice) {
+    redirect(
+      "/vendor/dashboard/profile?error=" +
+        encodeURIComponent("Your payout can't be more than the customer price.")
     );
   }
 
@@ -101,7 +136,13 @@ export async function createVendorPackageAction(formData: FormData) {
     vendor_id: user.id,
     title,
     description: description || null,
-    price,
+    tier: (["basic", "premium", "luxury"].includes(tier) ? tier : null) as
+      | "basic"
+      | "premium"
+      | "luxury"
+      | null,
+    customer_price: customerPrice,
+    vendor_payout: vendorPayout,
   });
 
   if (error) {

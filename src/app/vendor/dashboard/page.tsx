@@ -23,13 +23,25 @@ export default async function VendorDashboardHome() {
     return (
       <div className="rounded-2xl border border-brand-line bg-white p-8 text-center">
         <p className="font-heading text-lg font-semibold mb-2">
-          {vendorProfile.status === "pending"
-            ? "Your application is under review"
-            : vendorProfile.status === "rejected"
-              ? "Your application wasn't approved"
-              : "Your account is suspended"}
+          {vendorProfile.status === "pending_payment"
+            ? "Finish your registration to submit your application"
+            : vendorProfile.status === "pending"
+              ? "Your application is under review"
+              : vendorProfile.status === "rejected"
+                ? "Your application wasn't approved"
+                : "Your account is suspended"}
         </p>
         <p className="text-brand-gray text-sm">
+          {vendorProfile.status === "pending_payment" && (
+            <>
+              You still need to pay your plan&rsquo;s registration fee and
+              security deposit before we can review your application.{" "}
+              <a href="/vendor/apply?phase=fees" className="text-brand-orange underline">
+                Finish payment
+              </a>
+              .
+            </>
+          )}
           {vendorProfile.status === "pending" &&
             "Once our team verifies your documents and approves your application, your full dashboard — leads, bookings, earnings — unlocks here."}
           {vendorProfile.status === "rejected" &&
@@ -41,7 +53,7 @@ export default async function VendorDashboardHome() {
     );
   }
 
-  const [{ data: bookings }, { data: payments }] = await Promise.all([
+  const [{ data: bookings }, { data: milestones }] = await Promise.all([
     supabase
       .from("bookings")
       .select(
@@ -50,14 +62,15 @@ export default async function VendorDashboardHome() {
       .eq("vendor_id", user.id)
       .order("event_date", { ascending: true }),
     supabase
-      .from("payments")
-      .select("id, amount, status, payout_status, created_at, bookings!inner(vendor_id)")
-      .eq("bookings.vendor_id", user.id)
-      .eq("status", "paid"),
+      .from("payout_milestones")
+      .select(
+        "id, milestone, amount, status, created_at, released_at, bookings!inner(vendor_id, service_categories(name))"
+      )
+      .eq("bookings.vendor_id", user.id),
   ]);
 
   const allBookings = bookings ?? [];
-  const allPayments = payments ?? [];
+  const allMilestones = milestones ?? [];
 
   const newLeads = allBookings.filter((b) => b.status === "pending_vendor_acceptance").length;
   const upcomingEvents = allBookings.filter(
@@ -68,10 +81,10 @@ export default async function VendorDashboardHome() {
   const confirmedBookings = allBookings.filter((b) =>
     ["confirmed", "in_progress", "completed"].includes(b.status)
   ).length;
-  const totalEarnings = allPayments.reduce((sum, p) => sum + Number(p.amount), 0);
-  const pendingPayout = allPayments
-    .filter((p) => p.payout_status === "pending")
-    .reduce((sum, p) => sum + Number(p.amount), 0);
+  const totalEarnings = allMilestones.reduce((sum, m) => sum + Number(m.amount), 0);
+  const pendingPayout = allMilestones
+    .filter((m) => m.status === "pending")
+    .reduce((sum, m) => sum + Number(m.amount), 0);
 
   const today = new Date();
   const in7Days = new Date();
@@ -89,11 +102,11 @@ export default async function VendorDashboardHome() {
   const lastMonthKey = `${lastMonthDate.getFullYear()}-${lastMonthDate.getMonth()}`;
   let thisMonthTotal = 0;
   let lastMonthTotal = 0;
-  for (const p of allPayments) {
-    const d = new Date(p.created_at);
+  for (const m of allMilestones) {
+    const d = new Date(m.created_at);
     const key = `${d.getFullYear()}-${d.getMonth()}`;
-    if (key === thisMonthKey) thisMonthTotal += Number(p.amount);
-    else if (key === lastMonthKey) lastMonthTotal += Number(p.amount);
+    if (key === thisMonthKey) thisMonthTotal += Number(m.amount);
+    else if (key === lastMonthKey) lastMonthTotal += Number(m.amount);
   }
   const maxBar = Math.max(thisMonthTotal, lastMonthTotal, 1);
 
@@ -104,10 +117,12 @@ export default async function VendorDashboardHome() {
         label: `Lead received — ${b.service_categories?.name ?? "booking"}`,
         date: b.assigned_at as string,
       })),
-    ...allPayments.map((p) => ({
-      label: `Payment received — ₹${p.amount}`,
-      date: p.created_at,
-    })),
+    ...allMilestones
+      .filter((m) => m.status === "released" && m.released_at)
+      .map((m) => ({
+        label: `Payout released — ₹${m.amount} (${m.bookings?.service_categories?.name ?? "booking"})`,
+        date: m.released_at as string,
+      })),
   ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
