@@ -12,6 +12,27 @@ const STATUS_LABEL: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
+const LANGUAGE_LABEL: Record<string, string> = {
+  en: "English",
+  hi: "Hindi",
+  ta: "Tamil",
+  te: "Telugu",
+  kn: "Kannada",
+  ml: "Malayalam",
+  mr: "Marathi",
+  bn: "Bengali",
+  gu: "Gujarati",
+  pa: "Punjabi",
+};
+
+function formatBudget(min: number | null, max: number | null): string | null {
+  if (min == null && max == null) return null;
+  const fmt = (n: number) => `₹${(n / 100000).toFixed(n % 100000 === 0 ? 0 : 1)}L`;
+  if (min != null && max != null) return `${fmt(min)} – ${fmt(max)}`;
+  if (min != null) return `${fmt(min)}+`;
+  return max != null ? `Under ${fmt(max)}` : null;
+}
+
 export default async function AccountPage({
   searchParams,
 }: {
@@ -29,9 +50,18 @@ export default async function AccountPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role, phone, city")
+    .select(
+      "full_name, role, phone, city, email, preferred_language, wedding_date, wedding_venue_name, budget_min, budget_max"
+    )
     .eq("id", user.id)
     .single();
+
+  const budgetLabel = profile
+    ? formatBudget(profile.budget_min, profile.budget_max)
+    : null;
+  const hasWeddingDetails =
+    !!profile &&
+    (profile.wedding_date || profile.wedding_venue_name || profile.city || budgetLabel);
 
   const { data: bookings } = await supabase
     .from("bookings")
@@ -59,6 +89,56 @@ export default async function AccountPage({
         <p className="mb-6 rounded-lg bg-green-50 text-green-700 text-sm px-4 py-3">
           {message}
         </p>
+      )}
+
+      {hasWeddingDetails && (
+        <div className="rounded-2xl border border-brand-line bg-white p-8 mb-6">
+          <h2 className="font-heading text-lg font-semibold mb-4">
+            Your Wedding Details
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            {profile?.wedding_date && (
+              <div>
+                <p className="text-brand-gray text-xs mb-0.5">Wedding Date</p>
+                <p className="font-medium">
+                  {new Date(profile.wedding_date).toLocaleDateString("en-IN")}
+                </p>
+              </div>
+            )}
+            {profile?.wedding_venue_name && (
+              <div>
+                <p className="text-brand-gray text-xs mb-0.5">Venue</p>
+                <p className="font-medium">{profile.wedding_venue_name}</p>
+              </div>
+            )}
+            {profile?.city && (
+              <div>
+                <p className="text-brand-gray text-xs mb-0.5">City</p>
+                <p className="font-medium">{profile.city}</p>
+              </div>
+            )}
+            {budgetLabel && (
+              <div>
+                <p className="text-brand-gray text-xs mb-0.5">Budget</p>
+                <p className="font-medium">{budgetLabel}</p>
+              </div>
+            )}
+            {profile?.preferred_language && (
+              <div>
+                <p className="text-brand-gray text-xs mb-0.5">Preferred Language</p>
+                <p className="font-medium">
+                  {LANGUAGE_LABEL[profile.preferred_language] ?? profile.preferred_language}
+                </p>
+              </div>
+            )}
+            {profile?.email && (
+              <div>
+                <p className="text-brand-gray text-xs mb-0.5">Email</p>
+                <p className="font-medium">{profile.email}</p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       <div className="rounded-2xl border border-brand-line bg-white p-8 mb-6">

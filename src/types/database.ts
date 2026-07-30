@@ -29,6 +29,15 @@ export interface Database {
           full_name: string | null;
           phone: string | null;
           city: string | null;
+          email: string | null;
+          preferred_language: string;
+          wedding_date: string | null;
+          wedding_venue_name: string | null;
+          budget_min: number | null;
+          budget_max: number | null;
+          location_lat: number | null;
+          location_lng: number | null;
+          onboarding_completed_at: string | null;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & {

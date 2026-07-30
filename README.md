@@ -71,6 +71,12 @@ The schema lives in `supabase/migrations/0001_phase1_init.sql`. Once you
 have a Supabase project, run it via the Supabase SQL Editor (paste the file
 contents and run) or the Supabase CLI (`supabase db push`).
 
+**Important:** `0001_phase1_init.sql` starts by dropping every app table —
+only run it once, on a fresh project. Any later file
+(`0002_...`, `0003_...`, etc.) is additive (`add column if not exists`, safe
+to run on a live database with real signups) and should be run once, in
+order, the same way — paste into the SQL Editor and run.
+
 ## Deployment
 
 - **Hosting:** [Vercel](https://vercel.com) — connect this GitHub repo, add
