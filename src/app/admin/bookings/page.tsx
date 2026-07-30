@@ -1,5 +1,7 @@
+import { Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { assignVendorToBookingAction, markBookingCompletedAction } from "@/lib/actions/admin";
+import { scoreVendor, MATCH_WEIGHTS, type VendorMatchScore } from "@/lib/vendor-matching";
 
 const STATUS_LABEL: Record<string, string> = {
   pending_assignment: "Needs a vendor",
@@ -46,9 +48,10 @@ export default async function AdminBookingsPage({
   return (
     <div>
       <p className="text-brand-gray text-sm mb-8">
-        Assign a verified vendor to each new booking request. (This manual
-        step is a stand-in for the AI vendor-matching engine, which comes in
-        a later phase.)
+        Assign a verified vendor to each new booking request. Each eligible
+        vendor now gets an AI Match Score (availability, rating, distance,
+        experience, equipment, reliability) to help you decide — it&rsquo;s
+        informational only, you still choose and assign the vendor yourself.
       </p>
 
       {actionError && (
@@ -153,10 +156,21 @@ async function BookingAssignCard({
     booking.service_categories
       ? supabase
           .from("vendor_profiles")
-          .select("id, business_name, city")
+          .select(
+            "id, business_name, city, experience_years, successful_events_count, equipment_details"
+          )
           .eq("status", "approved")
           .eq("category_id", booking.service_categories.id)
-      : Promise.resolve({ data: [] as { id: string; business_name: string; city: string }[] }),
+      : Promise.resolve({
+          data: [] as {
+            id: string;
+            business_name: string;
+            city: string;
+            experience_years: number | null;
+            successful_events_count: number;
+            equipment_details: string | null;
+          }[],
+        }),
     supabase
       .from("add_ons")
       .select("id, name, customer_price, vendor_payout")
@@ -165,27 +179,71 @@ async function BookingAssignCard({
   ]);
 
   const vendorIds = (eligibleVendors ?? []).map((v) => v.id);
-  const { data: packages } = vendorIds.length
-    ? await supabase
-        .from("packages")
-        .select("id, vendor_id, title, customer_price, vendor_payout")
-        .in("vendor_id", vendorIds)
-        .eq("is_active", true)
-    : {
-        data: [] as {
-          id: string;
-          vendor_id: string;
-          title: string;
-          customer_price: number;
-          vendor_payout: number;
-        }[],
-      };
+  const [{ data: packages }, { data: reviewRows }, { data: vendorBookings }] = await Promise.all([
+    vendorIds.length
+      ? supabase
+          .from("packages")
+          .select("id, vendor_id, title, customer_price, vendor_payout")
+          .in("vendor_id", vendorIds)
+          .eq("is_active", true)
+      : Promise.resolve({
+          data: [] as {
+            id: string;
+            vendor_id: string;
+            title: string;
+            customer_price: number;
+            vendor_payout: number;
+          }[],
+        }),
+    vendorIds.length
+      ? supabase.from("reviews").select("vendor_id, rating").in("vendor_id", vendorIds)
+      : Promise.resolve({ data: [] as { vendor_id: string; rating: number }[] }),
+    vendorIds.length
+      ? supabase
+          .from("bookings")
+          .select("vendor_id, event_date, status")
+          .in("vendor_id", vendorIds)
+      : Promise.resolve({
+          data: [] as { vendor_id: string; event_date: string; status: string }[],
+        }),
+  ]);
 
   const vendorsWithPackages = (eligibleVendors ?? []).map((v) => ({
     ...v,
     packages: (packages ?? []).filter((p) => p.vendor_id === v.id),
   }));
   const hasAnyPackage = vendorsWithPackages.some((v) => v.packages.length > 0);
+
+  // AI Vendor Matching Engine score (see src/lib/vendor-matching.ts) — this
+  // ranks eligible vendors to help you decide, it never assigns on its own.
+  const targetDate = new Date(booking.event_date).getTime();
+  const NEARBY_WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
+  const NON_ACTIVE_STATUSES = ["cancelled", "pending_assignment"];
+
+  const scoredVendors = (eligibleVendors ?? [])
+    .map((v) => {
+      const vReviews = (reviewRows ?? []).filter((r) => r.vendor_id === v.id);
+      const averageRating = vReviews.length
+        ? vReviews.reduce((sum, r) => sum + r.rating, 0) / vReviews.length
+        : null;
+      const vBookings = (vendorBookings ?? []).filter((b) => b.vendor_id === v.id);
+      const nearbyBookingsCount = vBookings.filter(
+        (b) =>
+          !NON_ACTIVE_STATUSES.includes(b.status) &&
+          Math.abs(new Date(b.event_date).getTime() - targetDate) <= NEARBY_WINDOW_MS
+      ).length;
+      const completedCount = vBookings.filter((b) => b.status === "completed").length;
+      const cancelledCount = vBookings.filter((b) => b.status === "cancelled").length;
+
+      const score = scoreVendor(v, booking.city, {
+        averageRating,
+        nearbyBookingsCount,
+        completedCount,
+        cancelledCount,
+      });
+      return { businessName: v.business_name, score };
+    })
+    .sort((a, b) => b.score.overall - a.score.overall);
 
   return (
     <div className="rounded-2xl border border-brand-line bg-white p-6">
@@ -208,6 +266,8 @@ async function BookingAssignCard({
           &ldquo;{booking.special_requirements}&rdquo;
         </p>
       )}
+
+      {scoredVendors.length > 0 && <MatchScorePanel vendors={scoredVendors} />}
 
       {!eligibleVendors || eligibleVendors.length === 0 ? (
         <p className="text-sm text-brand-orange-dark">
@@ -286,6 +346,62 @@ async function BookingAssignCard({
           </button>
         </form>
       )}
+    </div>
+  );
+}
+
+const BREAKDOWN_LABELS: { key: keyof VendorMatchScore["breakdown"]; label: string; weight: number }[] = [
+  { key: "availability", label: "Availability", weight: MATCH_WEIGHTS.availability },
+  { key: "rating", label: "Rating", weight: MATCH_WEIGHTS.rating },
+  { key: "distance", label: "Distance", weight: MATCH_WEIGHTS.distance },
+  { key: "experience", label: "Experience", weight: MATCH_WEIGHTS.experience },
+  { key: "equipment", label: "Equipment", weight: MATCH_WEIGHTS.equipment },
+  { key: "reliability", label: "Reliability", weight: MATCH_WEIGHTS.reliability },
+];
+
+function MatchScorePanel({
+  vendors,
+}: {
+  vendors: { businessName: string; score: VendorMatchScore }[];
+}) {
+  return (
+    <div className="rounded-xl border border-brand-line bg-brand-cream/60 p-4 mb-4">
+      <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-gray mb-3">
+        <Sparkles className="h-3.5 w-3.5 text-brand-orange" /> AI Match Scores (informational —
+        pick any vendor below)
+      </p>
+      <div className="flex flex-col gap-2">
+        {vendors.map(({ businessName, score }, i) => (
+          <div
+            key={score.vendorId}
+            className={`rounded-lg border px-3 py-2 text-xs ${
+              i === 0
+                ? "border-brand-orange bg-white"
+                : "border-brand-line bg-white/60"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-medium">
+                {businessName}
+                {i === 0 && (
+                  <span className="ml-2 px-2 py-0.5 rounded-full bg-brand-orange text-white text-[10px] font-semibold">
+                    Best Match
+                  </span>
+                )}
+              </span>
+              <span className="font-heading font-bold">{score.overall}/100</span>
+            </div>
+            <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-brand-gray">
+              {BREAKDOWN_LABELS.map(({ key, label, weight }) => (
+                <span key={key}>
+                  {label} {score.breakdown[key]}
+                  <span className="text-[10px]"> ({weight}%)</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
