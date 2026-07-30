@@ -47,7 +47,7 @@ export default function SiteFooter() {
           <ul className="flex flex-col gap-2">
             <li>
               <Link href="/vendor/apply" className="hover:text-brand-orange transition-colors">
-                Become a Vendor
+                Become a Partner
               </Link>
             </li>
             <li>
@@ -56,6 +56,40 @@ export default function SiteFooter() {
               </Link>
             </li>
           </ul>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="mx-auto max-w-6xl px-6 py-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs justify-center">
+            <Link href="/about" className="hover:text-brand-orange transition-colors">
+              About Us
+            </Link>
+            <Link href="/services" className="hover:text-brand-orange transition-colors">
+              Services
+            </Link>
+            <Link href="/portfolio" className="hover:text-brand-orange transition-colors">
+              Portfolio
+            </Link>
+            <Link href="/blog" className="hover:text-brand-orange transition-colors">
+              Blog
+            </Link>
+            <Link href="/faq" className="hover:text-brand-orange transition-colors">
+              FAQ
+            </Link>
+            <Link href="/contact" className="hover:text-brand-orange transition-colors">
+              Contact Us
+            </Link>
+            <Link href="/privacy-policy" className="hover:text-brand-orange transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-and-conditions" className="hover:text-brand-orange transition-colors">
+              Terms and Conditions
+            </Link>
+            <Link href="/refund-policy" className="hover:text-brand-orange transition-colors">
+              Refund Policy
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -5,8 +5,10 @@ and get verified, and (in later phases) an AI matching engine assigns
 vendors to bookings automatically. Built with Next.js (App Router) +
 Supabase (auth, Postgres database, file storage) + Razorpay (payments).
 
-This is the actual application — not the public marketing site
-(`wedyora_site/wedyora.html`, deployed separately on standard web hosting).
+The public-facing marketing pages (About, Services, Portfolio, Blog, FAQ,
+Contact Us, and the legal pages) now live directly in this app under
+`src/app/`, alongside the booking/vendor/admin functionality — there's no
+separate static marketing site.
 
 ## Status: Phase 1 (MVP) — core loop built, not yet tested against a real database
 
@@ -122,6 +124,9 @@ order, the same way — paste into the SQL Editor and run.
   Supabase dashboard and confirm a `wedding-day-deliverables` bucket
   exists and is set to **Private** (not Public, unlike `vendor-portfolios`
   — these are raw wedding-day files, not public marketing photos).
+- `0008_contact_messages.sql` — adds the `contact_messages` table backing
+  the public Contact Us page, so submissions land somewhere you can read
+  them (`/admin/contact-messages`) instead of needing an email service.
 
 ## Deployment
 

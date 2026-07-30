@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import SiteNavMenu from "@/components/site-nav-menu";
 
 export default async function SiteHeader() {
   const supabase = await createClient();
@@ -31,16 +32,8 @@ export default async function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-white/80">
-          <Link href="/book" className="hover:text-brand-orange transition-colors">
-            Plan Your Wedding
-          </Link>
-          <Link href="/vendors" className="hover:text-brand-orange transition-colors">
-            Browse Vendors
-          </Link>
-          <Link href="/vendor/apply" className="hover:text-brand-orange transition-colors">
-            Become a Vendor
-          </Link>
+        <nav className="hidden md:flex items-center gap-4 text-sm font-medium text-white/80">
+          <SiteNavMenu />
           {role === "admin" && (
             <Link href="/admin" className="hover:text-brand-orange transition-colors">
               Admin
@@ -64,16 +57,22 @@ export default async function SiteHeader() {
           ) : (
             <>
               <Link
+                href="/signup"
+                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors"
+              >
+                Customer Sign Up
+              </Link>
+              <Link
                 href="/login"
                 className="text-sm font-medium px-4 py-2 text-white/80 hover:text-white transition-colors"
               >
                 Log In
               </Link>
               <Link
-                href="/signup"
-                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors"
+                href="/vendor/apply"
+                className="text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black transition-colors"
               >
-                Sign Up
+                Become a Partner
               </Link>
             </>
           )}

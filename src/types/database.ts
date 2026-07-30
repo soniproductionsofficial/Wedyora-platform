@@ -56,6 +56,7 @@ export type WeddingDayDeliverableCategory =
   | "drone_footage"
   | "audio_files"
   | "backup_files";
+export type ContactMessageStatus = "new" | "read" | "resolved";
 
 export interface Database {
   public: {
@@ -506,6 +507,23 @@ export interface Database {
             referencedColumns: ["id"];
           },
         ];
+      };
+      contact_messages: {
+        Row: {
+          id: string;
+          name: string;
+          email: string | null;
+          phone: string | null;
+          message: string;
+          status: ContactMessageStatus;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["contact_messages"]["Row"]> & {
+          name: string;
+          message: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["contact_messages"]["Row"]>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
