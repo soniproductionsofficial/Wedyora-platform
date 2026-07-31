@@ -119,6 +119,8 @@ export interface Database {
           plan_expires_at: string | null;
           successful_events_count: number;
           partner_tier: PartnerTierDb;
+          agreed_to_vendor_terms_at: string | null;
+          agreed_to_cancellation_policy_at: string | null;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["vendor_profiles"]["Row"]> & {

@@ -30,6 +30,8 @@ type ApplyFields = {
   bank_account_holder_name?: string;
   bank_account_number?: string;
   bank_ifsc?: string;
+  agree_vendor_terms?: string;
+  agree_cancellation_policy?: string;
 };
 
 export default async function VendorApplyPage({
@@ -246,6 +248,54 @@ export default async function VendorApplyPage({
                   <Field label="Account Number" name="bank_account_number" />
                   <Field label="IFSC Code" name="bank_ifsc" />
                 </div>
+              </fieldset>
+
+              <fieldset className="flex flex-col gap-3 border-t border-brand-line pt-6">
+                <legend className="text-xs font-semibold uppercase tracking-wide text-brand-gray mb-1">
+                  Agreements
+                </legend>
+                <label className="flex items-start gap-3 text-xs text-brand-gray">
+                  <input
+                    type="checkbox"
+                    name="agree_vendor_terms"
+                    value="yes"
+                    required
+                    className="mt-0.5 h-4 w-4 rounded border-brand-line accent-brand-orange"
+                  />
+                  <span>
+                    I HAVE READ, UNDERSTOOD, AND AGREE TO THE{" "}
+                    <Link
+                      href="/vendor-terms"
+                      target="_blank"
+                      className="text-brand-orange font-medium underline"
+                    >
+                      WEDYORA PHOTOGRAPHY VENDOR TERMS &amp; CONDITIONS
+                    </Link>
+                    .
+                  </span>
+                </label>
+                <label className="flex items-start gap-3 text-xs text-brand-gray">
+                  <input
+                    type="checkbox"
+                    name="agree_cancellation_policy"
+                    value="yes"
+                    required
+                    className="mt-0.5 h-4 w-4 rounded border-brand-line accent-brand-orange"
+                  />
+                  <span>
+                    By registering with WEDYORA and accepting assignments
+                    through the platform, the Vendor confirms that they have
+                    read, understood, and agree to comply with this{" "}
+                    <Link
+                      href="/vendor-cancellation-policy"
+                      target="_blank"
+                      className="text-brand-orange font-medium underline"
+                    >
+                      Vendor Cancellation Policy
+                    </Link>
+                    .
+                  </span>
+                </label>
               </fieldset>
 
               <button

@@ -127,6 +127,14 @@ order, the same way — paste into the SQL Editor and run.
 - `0008_contact_messages.sql` — adds the `contact_messages` table backing
   the public Contact Us page, so submissions land somewhere you can read
   them (`/admin/contact-messages`) instead of needing an email service.
+- `0009_vendor_agreement_consent.sql` — adds
+  `agreed_to_vendor_terms_at`/`agreed_to_cancellation_policy_at` timestamp
+  columns to `vendor_profiles`. The vendor application form now has two
+  required checkboxes (Vendor Terms & Conditions, Vendor Cancellation
+  Policy) linking to `/vendor-terms` and `/vendor-cancellation-policy`;
+  applying without ticking both is blocked. **The two policy pages are
+  placeholders right now** — the Word documents you shared didn't sync
+  into this session, so re-share them and I'll drop the real text in.
 
 ## Deployment
 

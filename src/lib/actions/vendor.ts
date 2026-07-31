@@ -37,6 +37,8 @@ const APPLICATION_FIELDS = [
   "bank_account_holder_name",
   "bank_account_number",
   "bank_ifsc",
+  "agree_vendor_terms",
+  "agree_cancellation_policy",
 ] as const;
 
 function collectFields(formData: FormData): Record<string, string> {
@@ -62,6 +64,15 @@ export async function requestVendorOtpAction(formData: FormData) {
     redirect(
       "/vendor/apply?error=" +
         encodeURIComponent("Please fill in all required fields, including a registration plan.")
+    );
+  }
+
+  if (fields.agree_vendor_terms !== "yes" || fields.agree_cancellation_policy !== "yes") {
+    redirect(
+      "/vendor/apply?error=" +
+        encodeURIComponent(
+          "Please tick both the Vendor Terms & Conditions and the Vendor Cancellation Policy to continue."
+        )
     );
   }
 
@@ -117,6 +128,21 @@ export async function verifyVendorOtpAction(formData: FormData) {
     );
   }
 
+  // Re-checked here, not just on the first form — these two hidden fields
+  // round-trip through the URL like everything else in this flow (see the
+  // comment on otpRedirectParams above), so a tampered request could
+  // otherwise skip straight past the checkboxes to a verified OTP.
+  if (fields.agree_vendor_terms !== "yes" || fields.agree_cancellation_policy !== "yes") {
+    redirect(
+      `/vendor/apply?${otpRedirectParams({
+        ...fields,
+        error: "Please tick both the Vendor Terms & Conditions and the Vendor Cancellation Policy to continue.",
+      })}`
+    );
+  }
+
+  const agreedAt = new Date().toISOString();
+
   // Use the admin (service-role) client for these two writes rather than
   // the now-authenticated request-scoped client. This is the very first
   // request for a brand-new phone number, and Supabase's own trigger that
@@ -149,6 +175,8 @@ export async function verifyVendorOtpAction(formData: FormData) {
     bank_ifsc: fields.bank_ifsc || null,
     plan: plan.key,
     security_deposit_amount: plan.securityDeposit,
+    agreed_to_vendor_terms_at: agreedAt,
+    agreed_to_cancellation_policy_at: agreedAt,
     // Not "pending" yet — the application only becomes visible for admin
     // review once the registration fee + security deposit are actually
     // paid (see the "fees" phase below).
