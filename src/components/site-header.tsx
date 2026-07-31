@@ -47,7 +47,7 @@ export default async function SiteHeader() {
         <div className="hidden md:flex flex-1 justify-center">
           <Link
             href="/photography-in-minutes"
-            className="text-sm font-bold text-red-500 hover:text-red-400 transition-colors whitespace-nowrap"
+            className="text-sm font-bold text-brand-orange bg-brand-orange/10 border border-brand-orange/30 rounded-full px-4 py-1.5 hover:bg-brand-orange/20 transition-colors whitespace-nowrap"
           >
             Photography in Minutes
           </Link>
