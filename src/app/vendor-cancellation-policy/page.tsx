@@ -24,7 +24,7 @@ export default function VendorCancellationPolicyPage() {
         <h1 className="font-heading text-3xl font-bold mb-2">
           Wedyora Vendor Cancellation Policy
         </h1>
-        <p className="text-brand-gray text-sm mb-8">Last updated: [add date when you publish this]</p>
+        <p className="text-brand-gray text-sm mb-8">Last updated: July 31, 2026</p>
 
         <p className="text-sm text-brand-gray leading-relaxed mb-8">
           This Vendor Cancellation Policy forms part of the WEDYORA Vendor
