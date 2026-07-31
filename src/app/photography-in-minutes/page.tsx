@@ -17,8 +17,9 @@ export default function PhotographyInMinutesPage() {
         </p>
         <h1 className="font-heading text-3xl font-bold mb-6">Coming Soon</h1>
         <p className="text-white/70 mb-10">
-          A new project from the Wedyora team is on its way. Check back soon
-          — or head back to the main site in the meantime.
+          A new project from the Wedyora team, launching soon. Check back
+          for the inauguration — or head back to the main site in the
+          meantime.
         </p>
         <Link
           href="/"
