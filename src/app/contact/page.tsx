@@ -1,4 +1,4 @@
-import { Mail, Phone } from "lucide-react";
+import { Mail, Phone, MessageCircle } from "lucide-react";
 import { submitContactMessageAction } from "@/lib/actions/contact";
 
 export default async function ContactPage({
@@ -21,6 +21,11 @@ export default async function ContactPage({
           <p className="text-white/70 max-w-2xl mx-auto">
             Questions about a booking, a vendor application, or anything
             else — send us a message and our team will get back to you.
+          </p>
+          <p className="mt-6 inline-flex items-center gap-2 text-sm text-brand-gold">
+            <MessageCircle className="h-4 w-4" />
+            Want an instant answer? Use the chat bubble in the bottom-right
+            corner — it&rsquo;s available 24/7.
           </p>
         </div>
       </section>

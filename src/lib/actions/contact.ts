@@ -34,6 +34,21 @@ export async function submitContactMessageAction(formData: FormData) {
   redirect("/contact?success=1");
 }
 
+// Called from the chat widget (src/components/chat-widget.tsx) whenever its
+// keyword matcher can't confidently answer a visitor's question. Logs it
+// into the same inbox as the Contact Us form so you can see what people are
+// actually asking and grow the FAQ from real questions instead of guessing.
+export async function logChatbotUnansweredQuestionAction(question: string) {
+  const trimmed = question.trim();
+  if (!trimmed) return;
+
+  const supabase = await createClient();
+  await supabase.from("contact_messages").insert({
+    name: "Website Chatbot (unanswered question)",
+    message: trimmed,
+  });
+}
+
 // Admin-only in the UI (RLS backs this — see migration 0008's "contact_messages:
 // admin updates status" policy, so a non-admin caller's update simply fails).
 export async function markContactMessageStatusAction(formData: FormData) {

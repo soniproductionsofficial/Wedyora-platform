@@ -29,6 +29,14 @@ the dev sandbox, but NOT yet against a real Supabase/Razorpay project):
 - Razorpay advance-payment checkout once a booking has a vendor assigned,
   with the server independently re-verifying the payment signature before
   marking anything as paid (never trusts the browser's word for it)
+- A 24/7 chat widget (bottom-right corner, every page) answering from the
+  `/faq` content via free keyword matching (`src/lib/chatbot-match.ts`) —
+  deliberately not a paid AI API, per a cost tradeoff you chose. It only
+  ever answers with text already published on the FAQ page, and anything
+  it can't confidently match gets logged into the same Admin → Messages
+  inbox as the Contact Us form, so you can see real questions and grow the
+  FAQ over time. Swapping in a real AI model later (e.g. Claude) is
+  possible if you ever want to pay for an API key, but isn't built now.
 - Database schema + Row Level Security policies for profiles, vendors,
   packages, bookings, and payments (`supabase/migrations/0001_phase1_init.sql`)
 
