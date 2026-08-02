@@ -21,7 +21,11 @@ max_rows = 1000
 # without explicit GRANTs. When unset, new entities are NOT auto-exposed, matching the new cloud
 # default. Set to `true` to keep the legacy behaviour of auto-exposing new entities; this is
 # deprecated and the field is removed on 2026-10-30 once the always-revoked behaviour is permanent.
-# auto_expose_new_tables = true
+# This app's SQL migrations rely on the legacy auto-expose behaviour (they add
+# RLS policies but no explicit GRANTs to anon/authenticated), matching the
+# hosted Supabase project it targets. Keep this true locally so the Data API
+# roles can read/write the app's tables.
+auto_expose_new_tables = true
 
 [api.tls]
 # Enable HTTPS endpoints locally using a self-signed certificate.
