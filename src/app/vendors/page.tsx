@@ -1,6 +1,10 @@
 import { MapPin } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import MotionEventCard from "@/components/motion/motion-event-card";
+import AnimatedTabSwitch from "@/components/motion/animated-tab-switch";
+import KineticButton from "@/components/motion/kinetic-button";
+import LiveBadge from "@/components/motion/live-badge";
 
 export default async function VendorsPage({
   searchParams,
@@ -27,6 +31,17 @@ export default async function VendorsPage({
 
   const vendors = vendorsQuery.data ?? [];
 
+  const categoryTabs = [
+    { id: "all", label: "All", href: city ? `/vendors?city=${encodeURIComponent(city)}` : "/vendors" },
+    ...(categories ?? []).slice(0, 8).map((c) => ({
+      id: c.slug,
+      label: c.name,
+      href: city
+        ? `/vendors?category=${c.slug}&city=${encodeURIComponent(city)}`
+        : `/vendors?category=${c.slug}`,
+    })),
+  ];
+
   return (
     <div>
       {/* Page header */}
@@ -36,6 +51,9 @@ export default async function VendorsPage({
           <div className="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-brand-rose/15 blur-3xl" />
         </div>
         <div className="relative mx-auto max-w-6xl px-6 py-14">
+          <div className="mb-4">
+            <LiveBadge label="Curated Network" />
+          </div>
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-brand-gold">
             Verified Network
           </p>
@@ -51,13 +69,13 @@ export default async function VendorsPage({
 
       <div className="mx-auto max-w-6xl px-6 py-12">
         <form
-          className="bg-white rounded-2xl border border-brand-line p-3 flex flex-col md:flex-row gap-3 mb-10 -mt-20 relative shadow-sm"
+          className="glass-panel relative z-10 -mt-20 mb-8 flex flex-col gap-3 rounded-2xl p-3 md:flex-row"
           method="get"
         >
           <select
             name="category"
             defaultValue={category ?? ""}
-            className="flex-1 rounded-xl px-4 py-3 text-sm bg-brand-cream focus:outline-none"
+            className="flex-1 rounded-xl bg-brand-cream/80 px-4 py-3 text-sm focus:outline-none"
           >
             <option value="">All Categories</option>
             {categories?.map((c) => (
@@ -70,33 +88,40 @@ export default async function VendorsPage({
             name="city"
             defaultValue={city ?? ""}
             placeholder="City"
-            className="flex-1 rounded-xl px-4 py-3 text-sm bg-brand-cream focus:outline-none"
+            className="flex-1 rounded-xl bg-brand-cream/80 px-4 py-3 text-sm focus:outline-none"
           />
-          <button
+          <KineticButton
             type="submit"
-            className="px-6 py-3 rounded-xl bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark transition-colors"
+            className="btn-luxury rounded-xl bg-brand-orange px-6 py-3 text-sm font-semibold text-white hover:bg-brand-orange-dark"
           >
             Filter
-          </button>
+          </KineticButton>
         </form>
 
+        {categories && categories.length > 0 && (
+          <div className="mb-10 overflow-x-auto pb-1">
+            <AnimatedTabSwitch
+              tabs={categoryTabs}
+              activeId={category ?? "all"}
+              className="inline-flex min-w-full md:min-w-0"
+            />
+          </div>
+        )}
+
         {vendors.length === 0 ? (
-          <p className="text-brand-gray text-sm">
+          <p className="text-sm text-brand-gray">
             No approved vendors yet
             {category || city ? " matching those filters" : ""}. Once vendor
             applications are approved, they&rsquo;ll appear here.
           </p>
         ) : (
-          <div className="grid md:grid-cols-3 gap-6">
-            {vendors.map((v) => {
+          <div className="grid gap-6 md:grid-cols-3">
+            {vendors.map((v, i) => {
               const Icon = getCategoryIcon(v.service_categories?.slug ?? "");
               return (
-                <div
-                  key={v.id}
-                  className="rounded-2xl border border-brand-line bg-white overflow-hidden hover:shadow-md transition-shadow"
-                >
+                <MotionEventCard key={v.id} index={i}>
                   <div
-                    className="h-36 bg-brand-charcoal bg-cover bg-center relative"
+                    className="relative h-36 bg-brand-charcoal bg-cover bg-center"
                     style={{
                       backgroundImage: `url(https://picsum.photos/seed/${v.id}/480/320)`,
                     }}
@@ -106,13 +131,13 @@ export default async function VendorsPage({
                     </span>
                   </div>
                   <div className="p-6">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-gold mb-2">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-gold">
                       {v.service_categories?.name}
                     </p>
-                    <h3 className="font-heading text-lg font-semibold mb-1">
+                    <h3 className="mb-1 font-heading text-lg font-semibold">
                       {v.business_name}
                     </h3>
-                    <p className="text-brand-gray text-sm mb-3 flex items-center gap-1">
+                    <p className="mb-3 flex items-center gap-1 text-sm text-brand-gray">
                       <MapPin className="h-3.5 w-3.5" />
                       {v.city}
                       {v.experience_years
@@ -120,12 +145,12 @@ export default async function VendorsPage({
                         : ""}
                     </p>
                     {v.bio && (
-                      <p className="text-sm text-brand-black/80 line-clamp-3">
+                      <p className="line-clamp-3 text-sm text-brand-black/80">
                         {v.bio}
                       </p>
                     )}
                   </div>
-                </div>
+                </MotionEventCard>
               );
             })}
           </div>

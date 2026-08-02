@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   ShieldCheck,
   CreditCard,
@@ -10,10 +9,13 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
 import HeroStage from "@/components/home/hero-stage";
-import GlassContainer from "@/components/ui/glass-container";
-import TiltCard from "@/components/ui/tilt-card";
 import Reveal from "@/components/ui/reveal";
-import MagneticButton from "@/components/ui/magnetic-button";
+import KineticButton from "@/components/motion/kinetic-button";
+import KineticText, { KineticReveal } from "@/components/motion/kinetic-text";
+import MotionEventCard from "@/components/motion/motion-event-card";
+import LiveBadge from "@/components/motion/live-badge";
+import NavLink from "@/components/motion/nav-link";
+import ParallaxLayer from "@/components/motion/parallax-layer";
 
 const HOW_IT_WORKS = [
   {
@@ -79,38 +81,43 @@ export default async function Home() {
       {/* Hero */}
       <HeroStage>
         <div className="mx-auto mb-10 max-w-3xl text-center">
-          <p className="mb-5 font-heading text-5xl font-semibold tracking-wide text-brand-champagne md:text-6xl">
+          <div className="mb-5 flex justify-center">
+            <LiveBadge label="Live Platform" />
+          </div>
+          <KineticText className="mb-5 font-heading text-5xl font-semibold tracking-wide text-brand-champagne md:text-6xl">
             Wedyora
-          </p>
+          </KineticText>
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-brand-gold">
             India&rsquo;s Managed Wedding Services Platform
           </p>
-          <h1 className="mb-6 font-heading text-4xl font-semibold leading-[1.1] md:text-6xl">
-            Find. Book.{" "}
-            <span className="text-gradient-gold italic">Celebrate.</span>
-          </h1>
+          <KineticReveal delay={0.15}>
+            <h1 className="mb-6 font-heading text-4xl font-semibold leading-[1.1] md:text-6xl">
+              Find. Book.{" "}
+              <span className="text-gradient-gold italic">Celebrate.</span>
+            </h1>
+          </KineticReveal>
           <p className="mx-auto mb-10 max-w-xl text-base text-white/70 md:text-lg">
             Photography, decor, catering and more — every vendor on Wedyora
             is verified by our team, so you can book with confidence.
           </p>
 
           <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
-            <MagneticButton>
-              <Link
+            <KineticButton asChild pulse>
+              <NavLink
                 href="/book"
                 className="btn-luxury inline-flex rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white hover:bg-brand-orange-dark"
               >
                 Plan Your Wedding
-              </Link>
-            </MagneticButton>
-            <MagneticButton>
-              <Link
+              </NavLink>
+            </KineticButton>
+            <KineticButton asChild>
+              <NavLink
                 href="/vendors"
                 className="inline-flex rounded-full border border-white/25 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:border-brand-gold/40 hover:bg-white/10"
               >
                 Browse Vendors
-              </Link>
-            </MagneticButton>
+              </NavLink>
+            </KineticButton>
           </div>
         </div>
 
@@ -183,7 +190,7 @@ export default async function Home() {
                 const Icon = getCategoryIcon(c.slug);
                 return (
                   <Reveal key={c.id} delay={i * 0.03} className="w-24">
-                    <Link
+                    <NavLink
                       href={`/vendors?category=${c.slug}`}
                       className="group flex flex-col items-center gap-2"
                     >
@@ -191,7 +198,7 @@ export default async function Home() {
                         <Icon className="h-6 w-6" />
                       </span>
                       <p className="text-center text-xs font-medium">{c.name}</p>
-                    </Link>
+                    </NavLink>
                   </Reveal>
                 );
               })}
@@ -208,12 +215,12 @@ export default async function Home() {
               <h2 className="font-heading text-3xl font-semibold">
                 Verified Vendors
               </h2>
-              <Link
+              <NavLink
                 href="/vendors"
                 className="text-sm font-semibold text-brand-orange transition-colors hover:text-brand-orange-dark"
               >
                 View All &rarr;
-              </Link>
+              </NavLink>
             </div>
           </Reveal>
 
@@ -221,41 +228,37 @@ export default async function Home() {
             <p className="text-sm text-brand-gray">
               We&rsquo;re reviewing our first vendor applications now — check
               back soon, or{" "}
-              <Link href="/vendor/apply" className="font-medium text-brand-orange">
+              <NavLink href="/vendor/apply" className="font-medium text-brand-orange">
                 apply to become one of our first verified vendors
-              </Link>
+              </NavLink>
               .
             </p>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
               {vendors.map((v, i) => (
-                <Reveal key={v.id} delay={i * 0.05}>
-                  <TiltCard>
-                    <GlassContainer className="overflow-hidden rounded-2xl">
-                      <div
-                        className="h-40 bg-brand-charcoal bg-cover bg-center"
-                        style={{
-                          backgroundImage: `url(https://picsum.photos/seed/${v.id}/480/320)`,
-                        }}
-                      />
-                      <div className="p-5">
-                        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gold">
-                          {v.service_categories?.name}
-                        </p>
-                        <h3 className="mb-1 font-heading text-xl font-semibold">
-                          {v.business_name}
-                        </h3>
-                        <p className="flex items-center gap-1 text-sm text-brand-gray">
-                          <MapPin className="h-3.5 w-3.5" />
-                          {v.city}
-                          {v.experience_years
-                            ? ` · ${v.experience_years} yrs experience`
-                            : ""}
-                        </p>
-                      </div>
-                    </GlassContainer>
-                  </TiltCard>
-                </Reveal>
+                <MotionEventCard key={v.id} index={i}>
+                  <div
+                    className="h-40 bg-brand-charcoal bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url(https://picsum.photos/seed/${v.id}/480/320)`,
+                    }}
+                  />
+                  <div className="p-5">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gold">
+                      {v.service_categories?.name}
+                    </p>
+                    <h3 className="mb-1 font-heading text-xl font-semibold">
+                      {v.business_name}
+                    </h3>
+                    <p className="flex items-center gap-1 text-sm text-brand-gray">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {v.city}
+                      {v.experience_years
+                        ? ` · ${v.experience_years} yrs experience`
+                        : ""}
+                    </p>
+                  </div>
+                </MotionEventCard>
               ))}
             </div>
           )}
@@ -300,21 +303,19 @@ export default async function Home() {
           </Reveal>
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
             {WHY_WEDYORA.map(({ icon: Icon, title, body }, i) => (
-              <Reveal key={title} delay={i * 0.05}>
-                <TiltCard>
-                  <GlassContainer className="rounded-2xl p-6">
-                    <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <h3 className="mb-2 font-heading text-lg font-semibold">
-                      {title}
-                    </h3>
-                    <p className="text-xs leading-relaxed text-brand-gray">
-                      {body}
-                    </p>
-                  </GlassContainer>
-                </TiltCard>
-              </Reveal>
+              <MotionEventCard key={title} index={i}>
+                <div className="p-6">
+                  <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mb-2 font-heading text-lg font-semibold">
+                    {title}
+                  </h3>
+                  <p className="text-xs leading-relaxed text-brand-gray">
+                    {body}
+                  </p>
+                </div>
+              </MotionEventCard>
             ))}
           </div>
         </div>
@@ -322,10 +323,10 @@ export default async function Home() {
 
       {/* Vendor CTA */}
       <section className="relative overflow-hidden luxury-gradient-dark text-white">
-        <div className="pointer-events-none absolute inset-0">
+        <ParallaxLayer className="pointer-events-none absolute inset-0" offset={60}>
           <div className="absolute left-1/4 top-0 h-48 w-48 rounded-full bg-brand-gold/20 blur-3xl" />
           <div className="absolute bottom-0 right-1/4 h-56 w-56 rounded-full bg-brand-rose/15 blur-3xl" />
-        </div>
+        </ParallaxLayer>
         <Reveal>
           <div className="relative mx-auto max-w-6xl px-6 py-20 text-center">
             <h2 className="mb-4 font-heading text-3xl font-semibold md:text-4xl">
@@ -335,14 +336,14 @@ export default async function Home() {
               Join Wedyora&rsquo;s verified vendor network and get matched with
               couples planning their wedding in your city.
             </p>
-            <MagneticButton>
-              <Link
+            <KineticButton asChild pulse>
+              <NavLink
                 href="/vendor/apply"
                 className="btn-luxury inline-flex rounded-full bg-brand-orange px-6 py-3 font-semibold text-white hover:bg-brand-orange-dark"
               >
                 Apply as a Vendor
-              </Link>
-            </MagneticButton>
+              </NavLink>
+            </KineticButton>
           </div>
         </Reveal>
       </section>

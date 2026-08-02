@@ -1,6 +1,8 @@
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import { submitContactMessageAction } from "@/lib/actions/contact";
 import PageHero from "@/components/ui/page-hero";
+import ConfettiBurst from "@/components/motion/confetti-burst";
+import KineticButton from "@/components/motion/kinetic-button";
 
 export default async function ContactPage({
   searchParams,
@@ -34,9 +36,12 @@ export default async function ContactPage({
             <h2 className="font-heading text-xl font-semibold mb-4">Send a Message</h2>
 
             {success && (
-              <p className="mb-6 rounded-lg bg-green-50 text-green-700 text-sm px-4 py-3">
-                Thanks — we&rsquo;ve received your message and will be in touch soon.
-              </p>
+              <>
+                <ConfettiBurst fire />
+                <p className="mb-6 rounded-lg bg-green-50 text-green-700 text-sm px-4 py-3">
+                  Thanks — we&rsquo;ve received your message and will be in touch soon.
+                </p>
+              </>
             )}
             {error && (
               <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
@@ -83,12 +88,12 @@ export default async function ContactPage({
                   className="w-full rounded-lg border border-brand-line px-4 py-2.5 text-sm"
                 />
               </div>
-              <button
+              <KineticButton
                 type="submit"
-                className="self-start rounded-full bg-brand-orange text-white font-semibold px-6 py-2.5 text-sm hover:bg-brand-orange-dark transition-colors"
+                className="btn-luxury self-start rounded-full bg-brand-orange px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-orange-dark"
               >
                 Send Message
-              </button>
+              </KineticButton>
             </form>
           </div>
 

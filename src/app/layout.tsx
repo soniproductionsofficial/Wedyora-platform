@@ -4,6 +4,7 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ChatWidget from "@/components/chat-widget";
 import SmoothScroll from "@/components/providers/smooth-scroll";
+import ScrollProgress from "@/components/motion/scroll-progress";
 
 // Loaded via a runtime <link> tag rather than next/font/google: next/font
 // fetches fonts at BUILD time, which fails in network-restricted build
@@ -37,6 +38,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-brand-cream text-brand-black">
         <SmoothScroll>
+          <ScrollProgress />
           <SiteHeader />
           <main className="flex-1">{children}</main>
           <SiteFooter />

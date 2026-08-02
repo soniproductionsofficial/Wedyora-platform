@@ -4,6 +4,8 @@
 :root {
   --background: #fbf6ef;
   --foreground: #1a1410;
+  --duration-exit: 150ms;
+  --duration-enter: 220ms;
 
   /* Core brand — kept so existing bg-brand-* classes keep working */
   --brand-orange: #e2711d;
@@ -219,5 +221,123 @@ h4 {
   .ambient-glow::before {
     opacity: 0.35;
     filter: blur(28px);
+  }
+}
+
+/* ---- View Transitions (route navigations) ---- */
+
+::view-transition-old(.page-fade),
+::view-transition-new(.page-fade) {
+  animation-duration: 280ms;
+  animation-timing-function: ease;
+}
+
+::view-transition-old(.page-fade) {
+  animation-name: vt-fade-out;
+}
+
+::view-transition-new(.page-fade) {
+  animation-name: vt-fade-in;
+}
+
+::view-transition-old(.nav-forward) {
+  --slide-offset: -48px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade-out,
+    380ms ease-in-out both vt-slide reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --slide-offset: 48px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade-in,
+    380ms ease-in-out both vt-slide;
+}
+
+::view-transition-old(.nav-back) {
+  --slide-offset: 48px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade-out,
+    380ms ease-in-out both vt-slide reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --slide-offset: -48px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade-in,
+    380ms ease-in-out both vt-slide;
+}
+
+@keyframes vt-fade-in {
+  from {
+    filter: blur(4px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes vt-fade-out {
+  from {
+    filter: blur(0);
+    opacity: 1;
+  }
+  to {
+    filter: blur(4px);
+    opacity: 0;
+  }
+}
+
+@keyframes vt-slide {
+  from {
+    translate: var(--slide-offset) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+/* Keep chrome anchored while page content transitions */
+::view-transition-group(site-header),
+::view-transition-group(site-footer) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header),
+::view-transition-old(site-footer) {
+  display: none;
+}
+
+::view-transition-new(site-header),
+::view-transition-new(site-footer) {
+  animation: none;
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(226, 113, 29, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(226, 113, 29, 0);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  .animate-pulse-glow {
+    animation: none !important;
   }
 }
