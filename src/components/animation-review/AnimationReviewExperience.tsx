@@ -167,15 +167,16 @@ export default function AnimationReviewExperience({
       setLoading(false);
       return;
     }
-    let p = 6;
+    // Longer, more obvious loader so the motion intro is unmistakable.
+    let p = 4;
     const id = window.setInterval(() => {
-      p += 10 + Math.random() * 12;
+      p += 4 + Math.random() * 6;
       if (p >= 100) {
         setProgress(100);
         window.clearInterval(id);
-        window.setTimeout(() => setLoading(false), 320);
+        window.setTimeout(() => setLoading(false), 600);
       } else setProgress(p);
-    }, 140);
+    }, 120);
     return () => window.clearInterval(id);
   }, [reduce]);
 
@@ -189,24 +190,22 @@ export default function AnimationReviewExperience({
         label={accent.loaderLabel}
       />
 
-      {/* Review chrome only */}
-      <div className="relative z-40 border-b border-white/10 bg-brand-black px-4 py-2.5 text-center text-xs text-white/80 md:text-sm">
-        <strong className="text-brand-gold">Animation review</strong>
-        {" — same Wedyora layout + visible 3D/motion. "}
-        <Link href="/" className="underline underline-offset-2 hover:text-white">
-          Current live homepage
+      {/* Review chrome — proves you are on the animated preview route */}
+      <div className="relative z-40 border-b border-brand-orange/40 bg-brand-orange px-4 py-3 text-center text-sm font-semibold text-white md:text-base">
+        YOU ARE ON THE ANIMATED PREVIEW (/animation-review) — 3D rings + motion live here
+        <span className="mx-2 text-white/50">·</span>
+        <Link href="/" className="underline underline-offset-2">
+          Open normal homepage
         </Link>
-        <span className="mx-2 text-white/30">|</span>
-        <span className="inline-flex items-center gap-1 rounded-full border border-white/20 p-0.5 align-middle">
+        <span className="mx-2 text-white/50">·</span>
+        <span className="inline-flex items-center gap-1 rounded-full border border-white/30 bg-black/20 p-0.5 align-middle text-xs font-semibold">
           {(Object.keys(ACCENTS) as AccentMode[]).map((id) => (
             <button
               key={id}
               type="button"
               onClick={() => setMode(id)}
-              className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${
-                mode === id
-                  ? "bg-brand-orange text-white"
-                  : "text-white/70 hover:text-white"
+              className={`rounded-full px-3 py-1 transition-colors ${
+                mode === id ? "bg-white text-brand-orange" : "text-white/80 hover:text-white"
               }`}
             >
               {ACCENTS[id].label}
