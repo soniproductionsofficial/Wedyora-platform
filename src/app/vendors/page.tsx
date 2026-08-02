@@ -30,12 +30,19 @@ export default async function VendorsPage({
   return (
     <div>
       {/* Page header */}
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-6xl px-6 py-14">
-          <h1 className="font-heading text-3xl font-bold mb-2">
+      <section className="relative overflow-hidden luxury-gradient-dark text-white">
+        <div className="pointer-events-none absolute inset-0 opacity-40">
+          <div className="absolute -left-16 top-0 h-56 w-56 rounded-full bg-brand-gold/20 blur-3xl" />
+          <div className="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-brand-rose/15 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-6 py-14">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-brand-gold">
+            Verified Network
+          </p>
+          <h1 className="mb-2 font-heading text-4xl font-semibold md:text-5xl">
             Browse Verified Vendors
           </h1>
-          <p className="text-white/70 text-sm max-w-xl">
+          <p className="max-w-xl text-sm text-white/70 md:text-base">
             Every vendor listed here has been reviewed and approved by the
             Wedyora team — search by service and city to find your match.
           </p>

@@ -3,6 +3,7 @@ import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ChatWidget from "@/components/chat-widget";
+import SmoothScroll from "@/components/providers/smooth-scroll";
 
 // Loaded via a runtime <link> tag rather than next/font/google: next/font
 // fetches fonts at BUILD time, which fails in network-restricted build
@@ -30,15 +31,17 @@ export default function RootLayout({
             font stylesheet from the App Router's root layout <head> is the
             documented pattern here and applies to every page. */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="min-h-full flex flex-col bg-brand-cream text-brand-black">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-        <ChatWidget />
+        <SmoothScroll>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <ChatWidget />
+        </SmoothScroll>
       </body>
     </html>
   );

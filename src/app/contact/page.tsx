@@ -1,5 +1,6 @@
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import { submitContactMessageAction } from "@/lib/actions/contact";
+import PageHero from "@/components/ui/page-hero";
 
 export default async function ContactPage({
   searchParams,
@@ -10,25 +11,22 @@ export default async function ContactPage({
 
   return (
     <div>
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
-            Contact Us
-          </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-            We&rsquo;re Here to Help
-          </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+      <PageHero
+        eyebrow="Contact Us"
+        title={<>We&rsquo;re Here to Help</>}
+        description={
+          <>
             Questions about a booking, a vendor application, or anything
             else — send us a message and our team will get back to you.
-          </p>
-          <p className="mt-6 inline-flex items-center gap-2 text-sm text-brand-gold">
-            <MessageCircle className="h-4 w-4" />
-            Want an instant answer? Use the chat bubble in the bottom-right
-            corner — it&rsquo;s available 24/7.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+      >
+        <p className="inline-flex items-center gap-2 text-sm text-brand-gold">
+          <MessageCircle className="h-4 w-4" />
+          Want an instant answer? Use the chat bubble in the bottom-right
+          corner — it&rsquo;s available 24/7.
+        </p>
+      </PageHero>
 
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-6 py-16 grid md:grid-cols-2 gap-10">

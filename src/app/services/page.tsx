@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import PageHero from "@/components/ui/page-hero";
+import GlassContainer from "@/components/ui/glass-container";
 
 export default async function ServicesPage() {
   const supabase = await createClient();
@@ -11,20 +13,16 @@ export default async function ServicesPage() {
 
   return (
     <div>
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
-            What We Offer
-          </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-            Every Wedding Service, One Verified Platform
-          </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+      <PageHero
+        eyebrow="What We Offer"
+        title="Every Wedding Service, One Verified Platform"
+        description={
+          <>
             Browse by service, tell us your date and city, and we&rsquo;ll
             match you with a verified vendor who fits your budget.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       <section className="bg-white">
         <div className="mx-auto max-w-5xl px-6 py-16">
@@ -37,18 +35,16 @@ export default async function ServicesPage() {
               {categories.map((c) => {
                 const Icon = getCategoryIcon(c.slug);
                 return (
-                  <Link
-                    key={c.id}
-                    href={`/vendors?category=${c.slug}`}
-                    className="flex items-center gap-4 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-orange hover:shadow-md transition-all"
-                  >
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <div>
-                      <p className="font-heading font-semibold">{c.name}</p>
-                      <p className="text-xs text-brand-gray">View verified vendors &rarr;</p>
-                    </div>
+                  <Link key={c.id} href={`/vendors?category=${c.slug}`}>
+                    <GlassContainer className="flex items-center gap-4 rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(212,175,106,0.18)]">
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-champagne/70 text-brand-orange">
+                        <Icon className="h-6 w-6" />
+                      </span>
+                      <div>
+                        <p className="font-heading text-lg font-semibold">{c.name}</p>
+                        <p className="text-xs text-brand-gray">View verified vendors &rarr;</p>
+                      </div>
+                    </GlassContainer>
                   </Link>
                 );
               })}
@@ -68,7 +64,7 @@ export default async function ServicesPage() {
           </p>
           <Link
             href="/book"
-            className="px-6 py-3 rounded-full bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
+            className="btn-luxury px-6 py-3 rounded-full bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
           >
             Plan Your Wedding
           </Link>

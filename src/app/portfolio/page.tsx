@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import PageHero from "@/components/ui/page-hero";
+import GlassContainer from "@/components/ui/glass-container";
 
 export default async function PortfolioPage() {
   const supabase = await createClient();
@@ -20,20 +22,16 @@ export default async function PortfolioPage() {
 
   return (
     <div>
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
-            Portfolio
-          </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-            Real Work From Our Verified Vendors
-          </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+      <PageHero
+        eyebrow="Portfolio"
+        title="Real Work From Our Verified Vendors"
+        description={
+          <>
             A look at the photography, decor, and coverage our vendors have
             delivered for real weddings.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-6 py-16">
@@ -49,9 +47,9 @@ export default async function PortfolioPage() {
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               {photos.map((p, i) => (
-                <div
+                <GlassContainer
                   key={`${p.url}-${i}`}
-                  className="rounded-2xl bg-white border border-brand-line overflow-hidden hover:shadow-md transition-shadow"
+                  className="overflow-hidden rounded-2xl transition-shadow hover:shadow-[0_16px_40px_rgba(212,175,106,0.18)]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- vendor-uploaded portfolio images from Supabase Storage, not a local/known-size asset next/image can optimize confidently */}
                   <img
@@ -66,7 +64,7 @@ export default async function PortfolioPage() {
                     <p className="font-heading font-semibold text-sm">{p.vendorName}</p>
                     <p className="text-brand-gray text-xs">{p.city}</p>
                   </div>
-                </div>
+                </GlassContainer>
               ))}
             </div>
           )}

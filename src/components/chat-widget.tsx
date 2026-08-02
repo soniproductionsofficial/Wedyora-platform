@@ -70,10 +70,10 @@ export default function ChatWidget() {
   return (
     <div className="fixed bottom-5 right-5 z-50">
       {open && (
-        <div className="mb-3 w-80 sm:w-96 rounded-2xl border border-brand-line bg-white shadow-2xl flex flex-col overflow-hidden">
-          <div className="bg-brand-black text-white px-5 py-4 flex items-center justify-between">
+        <div className="glass-panel mb-3 flex w-80 flex-col overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(26,20,16,0.22)] sm:w-96">
+          <div className="luxury-gradient-dark flex items-center justify-between px-5 py-4 text-white">
             <div>
-              <p className="font-heading font-semibold text-sm">Wedyora Assistant</p>
+              <p className="font-heading text-base font-semibold">Wedyora Assistant</p>
               <p className="text-xs text-white/60">Usually replies instantly</p>
             </div>
             <button
@@ -86,13 +86,13 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          <div ref={listRef} className="flex flex-col gap-3 px-4 py-4 h-80 overflow-y-auto">
+          <div ref={listRef} className="flex h-80 flex-col gap-3 overflow-y-auto px-4 py-4">
             {messages.map((m) => (
               <div
                 key={m.id}
                 className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   m.from === "bot"
-                    ? "self-start bg-brand-cream text-brand-black"
+                    ? "self-start bg-brand-champagne/70 text-brand-black"
                     : "self-end bg-brand-orange text-white"
                 }`}
               >
@@ -101,17 +101,17 @@ export default function ChatWidget() {
             ))}
           </div>
 
-          <form onSubmit={handleSend} className="border-t border-brand-line p-3 flex gap-2">
+          <form onSubmit={handleSend} className="flex gap-2 border-t border-brand-line/80 p-3">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your question…"
-              className="flex-1 rounded-full border border-brand-line px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+              className="flex-1 rounded-full border border-brand-line bg-white/80 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
             />
             <button
               type="submit"
               aria-label="Send"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors"
+              className="btn-luxury flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark"
             >
               <Send className="h-4 w-4" />
             </button>
@@ -123,7 +123,7 @@ export default function ChatWidget() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close chat" : "Open chat"}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-orange text-white shadow-lg hover:bg-brand-orange-dark transition-colors"
+        className="btn-luxury flex h-14 w-14 items-center justify-center rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
       </button>

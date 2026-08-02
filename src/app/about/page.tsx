@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ShieldCheck, Heart, Users } from "lucide-react";
+import PageHero from "@/components/ui/page-hero";
+import GlassContainer from "@/components/ui/glass-container";
 
 // Starter copy — replace with your own founding story, team details, and
 // milestones whenever you're ready. Structure and headings are built to
@@ -7,22 +9,18 @@ import { ShieldCheck, Heart, Users } from "lucide-react";
 export default function AboutPage() {
   return (
     <div>
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
-            About Wedyora
-          </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-            For Every Moment, Forever
-          </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+      <PageHero
+        eyebrow="About Wedyora"
+        title="For Every Moment, Forever"
+        description={
+          <>
             Wedyora is India&rsquo;s managed wedding-services platform — we
             connect couples with verified photographers, decorators,
             caterers and more, and stay involved from the first booking to
             the final delivered album.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       <section className="bg-white border-b border-brand-line">
         <div className="mx-auto max-w-4xl px-6 py-16">
@@ -67,13 +65,13 @@ export default function AboutPage() {
                 body: "You're never left coordinating with a stranger — Wedyora stays your single point of contact.",
               },
             ].map(({ icon: Icon, title, body }) => (
-              <div key={title} className="rounded-2xl bg-white border border-brand-line p-6 text-center">
-                <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange">
+              <GlassContainer key={title} className="rounded-2xl p-6 text-center">
+                <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange">
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="font-heading text-sm font-semibold mb-2">{title}</h3>
+                <h3 className="font-heading text-lg font-semibold mb-2">{title}</h3>
                 <p className="text-brand-gray text-xs leading-relaxed">{body}</p>
-              </div>
+              </GlassContainer>
             ))}
           </div>
         </div>
@@ -87,7 +85,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               href="/book"
-              className="px-6 py-3 rounded-full bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
+              className="btn-luxury px-6 py-3 rounded-full bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
             >
               Plan Your Wedding
             </Link>

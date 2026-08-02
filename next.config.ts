@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Required for React Three Fiber / drei add-ons that ship untranspiled ESM.
+  transpilePackages: ["three"],
 };
 
 export default nextConfig;

@@ -1,33 +1,29 @@
 import { FAQS } from "@/lib/faqs";
+import PageHero from "@/components/ui/page-hero";
 
 export default function FaqPage() {
   return (
     <div>
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
-            FAQ
-          </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold">
-            Frequently Asked Questions
-          </h1>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="FAQ"
+        title="Frequently Asked Questions"
+        size="compact"
+      />
 
-      <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-16 flex flex-col gap-3">
+      <section className="bg-brand-ivory/60">
+        <div className="mx-auto flex max-w-3xl flex-col gap-3 px-6 py-16">
           {FAQS.map((item) => (
             <details
               key={item.question}
-              className="group rounded-2xl border border-brand-line bg-white p-5"
+              className="glass-panel group rounded-2xl p-5"
             >
-              <summary className="font-heading font-semibold text-sm cursor-pointer list-none flex items-center justify-between gap-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-heading text-sm font-semibold">
                 {item.question}
-                <span className="text-brand-orange group-open:rotate-45 transition-transform text-lg leading-none">
+                <span className="text-lg leading-none text-brand-orange transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="text-brand-gray text-sm mt-3 leading-relaxed">{item.answer}</p>
+              <p className="mt-3 text-sm leading-relaxed text-brand-gray">{item.answer}</p>
             </details>
           ))}
         </div>

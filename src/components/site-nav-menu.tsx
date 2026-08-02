@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 // The first dropdown menu in this app — needs client JS only for the
@@ -45,26 +46,34 @@ export default function SiteNavMenu() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/20 hover:border-white/40"
+        className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:border-brand-gold/40 hover:text-white"
       >
         {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
         More
       </button>
 
-      {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white text-brand-black border border-brand-line shadow-lg py-2 z-50">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className="block px-5 py-2.5 text-sm font-medium hover:bg-brand-cream hover:text-brand-orange transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="glass-panel absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl py-2 text-brand-black"
+          >
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="block px-5 py-2.5 text-sm font-medium transition-colors hover:bg-brand-champagne/50 hover:text-brand-orange"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

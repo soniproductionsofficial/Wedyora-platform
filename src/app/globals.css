@@ -1,21 +1,31 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #151515;
+  --background: #fbf6ef;
+  --foreground: #1a1410;
 
-  /* Wedyora brand palette — dark + orange, matching the photography-led
-     brand refresh (was red/gold; kept the same variable roles so every
-     existing bg-brand-orange / text-brand-gold usage across the app just
-     picked up the new colors automatically). */
+  /* Core brand — kept so existing bg-brand-* classes keep working */
   --brand-orange: #e2711d;
   --brand-orange-dark: #b85a13;
-  --brand-black: #100e0c;
-  --brand-charcoal: #221d19;
-  --brand-gold: #d9a441;
-  --brand-cream: #fbf8f3;
-  --brand-gray: #6b6b6b;
-  --brand-line: #ececec;
+  --brand-black: #0f0c0a;
+  --brand-charcoal: #1c1714;
+  --brand-gold: #d4af6a;
+  --brand-cream: #fbf6ef;
+  --brand-gray: #6f645c;
+  --brand-line: #ebe2d6;
+
+  /* Luxury extensions */
+  --brand-champagne: #f0e4d0;
+  --brand-rose: #c97b84;
+  --brand-ivory: #fffaf3;
+  --brand-bronze: #8a6a3d;
+  --glass-bg: rgba(255, 250, 243, 0.55);
+  --glass-border: rgba(212, 175, 106, 0.28);
+  --glass-dark: rgba(15, 12, 10, 0.55);
+  --glow-gold: rgba(212, 175, 106, 0.35);
+  --glow-rose: rgba(201, 123, 132, 0.22);
+  --glow-orange: rgba(226, 113, 29, 0.28);
 }
 
 @theme inline {
@@ -29,14 +39,22 @@
   --color-brand-cream: var(--brand-cream);
   --color-brand-gray: var(--brand-gray);
   --color-brand-line: var(--brand-line);
-  --font-sans: "Inter", Arial, Helvetica, sans-serif;
-  --font-heading: "Poppins", var(--font-sans);
+  --color-brand-champagne: var(--brand-champagne);
+  --color-brand-rose: var(--brand-rose);
+  --color-brand-ivory: var(--brand-ivory);
+  --color-brand-bronze: var(--brand-bronze);
+  --font-sans: "Outfit", "Segoe UI", sans-serif;
+  --font-heading: "Cormorant Garamond", "Times New Roman", serif;
 }
 
 body {
-  background: var(--brand-cream);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(212, 175, 106, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(201, 123, 132, 0.12), transparent 50%),
+    var(--brand-cream);
   color: var(--foreground);
   font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
 }
 
 h1,
@@ -44,4 +62,162 @@ h2,
 h3,
 h4 {
   font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+}
+
+/* ---- Luxury surface utilities ---- */
+
+.glass-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow:
+    0 10px 40px rgba(26, 20, 16, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.glass-panel-dark {
+  background: var(--glass-dark);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.luxury-gradient-dark {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 175, 106, 0.22), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 30%, rgba(201, 123, 132, 0.18), transparent 50%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(226, 113, 29, 0.12), transparent 45%),
+    linear-gradient(165deg, #17120f 0%, #0f0c0a 45%, #1a1410 100%);
+}
+
+.ambient-glow {
+  position: relative;
+}
+
+.ambient-glow::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10%;
+  background:
+    radial-gradient(circle at 30% 40%, var(--glow-gold), transparent 40%),
+    radial-gradient(circle at 70% 60%, var(--glow-rose), transparent 45%);
+  filter: blur(40px);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(120deg, #f0e4d0 0%, #d4af6a 40%, #e2711d 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-luxury {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  box-shadow: 0 8px 28px var(--glow-orange);
+}
+
+.btn-luxury:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 36px var(--glow-orange);
+}
+
+.btn-luxury::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.28), transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+}
+
+.btn-luxury:hover::after {
+  transform: translateX(120%);
+}
+
+.animated-border {
+  position: relative;
+}
+
+.animated-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    120deg,
+    rgba(212, 175, 106, 0.1),
+    rgba(226, 113, 29, 0.55),
+    rgba(201, 123, 132, 0.45),
+    rgba(212, 175, 106, 0.1)
+  );
+  background-size: 220% 220%;
+  animation: borderShift 6s ease infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes borderShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-soft {
+  animation: floatY 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-soft,
+  .animated-border::before,
+  .btn-luxury::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  html.lenis,
+  html.lenis body {
+    scroll-behavior: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .ambient-glow::before {
+    opacity: 0.35;
+    filter: blur(28px);
+  }
 }
