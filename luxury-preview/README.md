@@ -1,9 +1,9 @@
-# Wedyora Luxury Preview
+# Wedyora Luxury Preview — Motion Graphics
 
-Isolated **Vite + React + Tailwind** UI preview for Wedyora’s luxury marketing
-experience. The production Next.js app at `www.wedyora.com` is **not modified**.
+Isolated **Vite + React + Tailwind** preview with GSAP ScrollTrigger wedding
+motion graphics. Production Next.js at www.wedyora.com is **not modified**.
 
-## Run locally
+## Run
 
 ```bash
 cd luxury-preview
@@ -13,16 +13,16 @@ npm run dev
 
 Open **http://localhost:5173**
 
-## What’s included
+## Motion features
 
-- Animated full-bleed hero with brand-first Wedyora treatment
-- Interactive vendor directory (Venues / Photographers / Caterers / Decorators)
-- Vendor profile drawer + gallery lightbox + inquiry form mock
-- Wedding Budget Estimator tool
-- Light / dark theme toggle
-- Live-site CTAs pointing at `https://www.wedyora.com/*`
+- Pinned scroll journey (Hero → Categories → Featured)
+- Scroll-drawn SVG vines + golden rings
+- Floating petals / sparkles / ring parallax
+- Staggered vendor card + stats reveals
+- Morphing category filter tabs
+- Budget gauges + canvas-confetti celebrations
 
-## Merge later
+## Data
 
-When ready, port components from `luxury-preview/src` into the main Next.js
-app routes — keep this folder as the design sandbox until then.
+All vendor listings live in `src/data/vendors.ts` — live-site CTAs point at
+`https://www.wedyora.com/*`.
