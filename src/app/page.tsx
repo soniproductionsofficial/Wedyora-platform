@@ -179,7 +179,7 @@ export default async function Home() {
                 key={title}
                 className="rounded-2xl bg-white border border-brand-line p-6"
               >
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange mb-4">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-black/10 text-brand-black mb-4">
                   <Icon className="h-5 w-5" />
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">
