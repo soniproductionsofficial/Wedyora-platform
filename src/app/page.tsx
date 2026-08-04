@@ -57,10 +57,15 @@ const WHY_WEDYORA = [
 export default async function Home() {
   const supabase = await createClient();
 
-  const { data: categories } = await supabase
+  const { data: allCategories } = await supabase
     .from("service_categories")
     .select("id, name, slug")
     .order("name");
+
+  // Priest Services is still a bookable category (booking form, vendor
+  // applications, admin) — it's just left out of the homepage's
+  // "Popular Services" showcase strip specifically.
+  const categories = allCategories?.filter((c) => c.slug !== "priest");
 
   return (
     <div>
