@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import RunningPhotographer from "@/components/running-photographer";
 
 const HOW_IT_WORKS = [
   {
@@ -137,6 +138,8 @@ export default async function Home() {
             ))}
           </div>
         </div>
+
+        <RunningPhotographer />
       </section>
 
       {/* Category strip */}
