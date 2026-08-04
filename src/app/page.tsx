@@ -73,8 +73,13 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <section className="relative bg-brand-black text-white overflow-hidden">
+        <div className="hero-blob-field" aria-hidden="true">
+          <span className="hero-blob hero-blob-1" />
+          <span className="hero-blob hero-blob-2" />
+          <span className="hero-blob hero-blob-3" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:py-28">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <p
               className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4"
