@@ -66,3 +66,48 @@ h3,
 h4 {
   font-family: var(--font-heading);
 }
+
+/* Paper plane — a small looping clip (paper airplane trailing hearts)
+   that drifts diagonally across the hero on a loop. Self-contained like
+   the other one-off decorative animations on this site — easy to find
+   and remove again if it's not a keeper. */
+.paper-plane-track {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.paper-plane-video {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  mix-blend-mode: screen;
+  left: -120px;
+  top: 65%;
+  animation: paper-plane-fly 11s ease-in-out infinite;
+}
+@keyframes paper-plane-fly {
+  0% {
+    left: -120px;
+    top: 68%;
+    transform: rotate(-6deg);
+  }
+  50% {
+    top: 18%;
+    transform: rotate(4deg);
+  }
+  100% {
+    left: 100%;
+    top: 6%;
+    transform: rotate(-6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-plane-video {
+    animation: none !important;
+    left: 40%;
+    top: 30%;
+  }
+}

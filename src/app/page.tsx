@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import PaperPlane from "@/components/paper-plane";
 
 const HOW_IT_WORKS = [
   {
@@ -72,8 +73,9 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <section className="relative overflow-hidden bg-brand-black text-white">
+        <PaperPlane />
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:py-28">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
               India&rsquo;s Managed Wedding Services Platform
