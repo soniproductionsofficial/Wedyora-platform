@@ -364,7 +364,49 @@ button.bg-brand-button:active:not(:disabled) {
   transform-origin: left;
 }
 
+/* Used by the auto-cycling "Features" tab list (WeddingIntelligence
+   component) — a thin bar that fills left-to-right over the active
+   tab's dwell time, then disappears when React swaps to the next tab. */
+@keyframes progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+.feature-progress-fill {
+  animation: progress-fill linear forwards;
+}
+
+/* Blinking text-cursor used after the WeddingIntelligence heading while
+   it types itself out. */
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.typewriter-caret {
+  animation: caret-blink 1s step-end infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .feature-progress-fill {
+    animation: none !important;
+    width: 100%;
+  }
+  .typewriter-caret {
+    animation: none !important;
+    opacity: 0;
+  }
   .reveal {
     opacity: 1;
     transform: none;

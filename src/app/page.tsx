@@ -10,6 +10,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
 import Reveal from "@/components/reveal";
+import WeddingIntelligence from "@/components/wedding-intelligence";
 
 const HOW_IT_WORKS = [
   {
@@ -161,6 +162,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <WeddingIntelligence />
 
       {/* Category strip */}
       {categories && categories.length > 0 && (
