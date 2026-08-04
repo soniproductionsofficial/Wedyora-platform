@@ -1,6 +1,4 @@
-// Shared FAQ content — used by both the /faq page and the chat widget
-// (src/components/chat-widget.tsx), so there's one list to keep accurate
-// rather than two copies drifting apart.
+// FAQ content shown on the /faq page.
 
 export interface FaqItem {
   question: string;
