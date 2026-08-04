@@ -10,37 +10,37 @@ const FEATURES = [
   {
     label: "Verified Vendor Matching",
     description:
-      "Tell us your date, city, and budget — we match you with verified photographers, decorators, caterers, and more.",
+      "Tell us your date, city, and budget. Our team personally reviews your request and matches you with a verified vendor who actually fits — no open marketplace guesswork.",
     stats: [
-      { label: "Verified Vendors", value: "500+" },
-      { label: "Service Categories", value: "10" },
+      { label: "What You Get", value: "A Hand-Picked Vendor" },
+      { label: "Categories", value: "Photography to Catering" },
     ],
   },
   {
     label: "Transparent Pricing",
     description:
-      "Every quote is broken down clearly before you pay a rupee — no hidden costs, no surprise add-ons.",
+      "Every quote is broken down clearly before you pay a rupee — what the vendor charges, what Wedyora charges, laid out upfront.",
     stats: [
-      { label: "Hidden Fees", value: "0%" },
-      { label: "Price Clarity", value: "100%" },
+      { label: "Pricing", value: "Clear, Upfront Quotes" },
+      { label: "Surprises", value: "None — Ever" },
     ],
   },
   {
     label: "Secure Deposit Payments",
     description:
-      "Deposits are paid and tracked through Razorpay, from the day you book to the day your vendor delivers.",
+      "Pay your deposit safely through Razorpay. Wedyora tracks every payment from booking to final delivery, so nothing gets lost in cash or chat.",
     stats: [
-      { label: "Payments Tracked", value: "100%" },
       { label: "Payment Partner", value: "Razorpay" },
+      { label: "Tracked", value: "Booking to Delivery" },
     ],
   },
   {
     label: "End-to-End Support",
     description:
-      "One team stays with you from your first request through the big day itself — never a stranger to coordinate with alone.",
+      "One team stays with you from your first request through the big day itself — you're never left coordinating with a stranger alone.",
     stats: [
-      { label: "Point of Contact", value: "1 Team" },
-      { label: "Support", value: "Real People" },
+      { label: "Your Contact", value: "One Wedyora Team" },
+      { label: "Support", value: "Real People, Not Bots" },
     ],
   },
 ];
@@ -140,12 +140,12 @@ export default function WeddingIntelligence() {
             {/* Callout 1 */}
             <div
               key={`stat1-${active}`}
-              className="animate-fade-in absolute left-0 top-2 md:left-4 md:top-6 text-left max-w-[8.5rem]"
+              className="animate-fade-in absolute left-0 top-2 md:left-4 md:top-6 text-left max-w-[9.5rem]"
             >
               <p className="text-[10px] uppercase tracking-wide text-brand-black/50 font-semibold leading-tight">
                 {activeFeature.stats[0].label}
               </p>
-              <p className="text-base font-bold text-brand-black">
+              <p className="text-sm font-bold text-brand-black leading-snug">
                 {activeFeature.stats[0].value}
               </p>
             </div>
@@ -155,12 +155,12 @@ export default function WeddingIntelligence() {
             {/* Callout 2 */}
             <div
               key={`stat2-${active}`}
-              className="animate-fade-in absolute right-0 bottom-2 md:right-2 md:bottom-8 text-right max-w-[8.5rem]"
+              className="animate-fade-in absolute right-0 bottom-2 md:right-2 md:bottom-8 text-right max-w-[9.5rem]"
             >
               <p className="text-[10px] uppercase tracking-wide text-brand-black/50 font-semibold leading-tight">
                 {activeFeature.stats[1].label}
               </p>
-              <p className="text-base font-bold text-brand-black">
+              <p className="text-sm font-bold text-brand-black leading-snug">
                 {activeFeature.stats[1].value}
               </p>
             </div>
