@@ -133,7 +133,6 @@ const FALLBACK_DESCRIPTION =
 // These stay real, bookable categories (vendor applications, /book, admin) —
 // they're just left out of this specific showcase page per request.
 const HIDDEN_FROM_SERVICES_PAGE = [
-  "priest",
   "live-streaming",
   "invitation",
   "entertainment",
