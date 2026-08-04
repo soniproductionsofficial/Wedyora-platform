@@ -28,7 +28,7 @@ export default async function BookPage({
       {/* Page header */}
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-14 text-center">
-          <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold/15 text-brand-gold">
+          <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold-bright/15 text-brand-gold-bright">
             <CalendarCheck className="h-5 w-5" />
           </span>
           <h1 className="font-heading text-3xl font-bold mb-2">
@@ -127,7 +127,7 @@ export default async function BookPage({
 
             <button
               type="submit"
-              className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+              className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
             >
               Submit Booking Request
             </button>

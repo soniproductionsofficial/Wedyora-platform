@@ -61,7 +61,7 @@ export default async function SignupPage({
     <div className="min-h-[calc(100vh-64px)] bg-brand-cream flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-orange">
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-black">
             <Camera className="h-6 w-6 text-white" strokeWidth={2} />
           </span>
         </div>
@@ -110,7 +110,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Verify &amp; Continue
               </button>
@@ -134,7 +134,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Send Code
               </button>
@@ -162,7 +162,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Continue
               </button>
@@ -189,7 +189,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Continue
               </button>
@@ -208,7 +208,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Continue
               </button>
@@ -235,7 +235,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Continue
               </button>
@@ -262,7 +262,7 @@ export default async function SignupPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Continue
               </button>
@@ -281,7 +281,7 @@ export default async function SignupPage({
               </p>
               <Link
                 href="/"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors text-center"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors text-center"
               >
                 Go to Home
               </Link>

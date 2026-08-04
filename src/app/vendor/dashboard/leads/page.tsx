@@ -100,7 +100,7 @@ export default async function VendorLeadsPage({
                   <input type="hidden" name="booking_id" value={lead.id} />
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark transition-colors"
+                    className="px-5 py-2 rounded-full bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark transition-colors"
                   >
                     Accept
                   </button>

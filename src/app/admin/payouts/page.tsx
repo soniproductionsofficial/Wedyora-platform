@@ -68,7 +68,7 @@ export default async function AdminPayoutsPage() {
                   <input type="hidden" name="milestone_id" value={m.id} />
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-full bg-brand-orange text-white text-xs font-semibold hover:bg-brand-orange-dark"
+                    className="px-4 py-1.5 rounded-full bg-brand-button text-brand-black text-xs font-semibold hover:bg-brand-button-dark"
                   >
                     Release
                   </button>
@@ -134,7 +134,7 @@ export default async function AdminPayoutsPage() {
                     <input type="hidden" name="status" value="paid" />
                     <button
                       type="submit"
-                      className="px-3 py-1.5 rounded-full bg-brand-orange text-white text-xs font-semibold hover:bg-brand-orange-dark"
+                      className="px-3 py-1.5 rounded-full bg-brand-button text-brand-black text-xs font-semibold hover:bg-brand-button-dark"
                     >
                       Mark Paid
                     </button>

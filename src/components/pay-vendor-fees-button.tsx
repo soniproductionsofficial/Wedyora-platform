@@ -77,7 +77,7 @@ export default function PayVendorFeesButton({
       <button
         onClick={handlePay}
         disabled={loading}
-        className="w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark disabled:opacity-60 transition-colors"
+        className="w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark disabled:opacity-60 transition-colors"
       >
         {loading ? "Opening..." : `Pay ₹${amount.toLocaleString("en-IN")} & Continue`}
       </button>

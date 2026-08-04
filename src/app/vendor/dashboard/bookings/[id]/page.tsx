@@ -158,7 +158,7 @@ export default async function VendorBookingDetailPage({
                     className={`text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
                       done
                         ? "border border-brand-line text-brand-gray hover:bg-brand-cream"
-                        : "bg-brand-orange text-white hover:bg-brand-orange-dark"
+                        : "bg-brand-button text-brand-black hover:bg-brand-button-dark"
                     }`}
                   >
                     {done ? "Undo" : "Mark Done"}
@@ -191,7 +191,7 @@ export default async function VendorBookingDetailPage({
                     className={`text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
                       done
                         ? "border border-brand-line text-brand-gray hover:bg-brand-cream"
-                        : "bg-brand-orange text-white hover:bg-brand-orange-dark"
+                        : "bg-brand-button text-brand-black hover:bg-brand-button-dark"
                     }`}
                   >
                     {done ? "Undo" : "Mark Done"}
@@ -238,7 +238,7 @@ export default async function VendorBookingDetailPage({
           />
           <button
             type="submit"
-            className="self-start rounded-full bg-brand-orange text-white font-semibold px-5 py-2 text-sm hover:bg-brand-orange-dark"
+            className="self-start rounded-full bg-brand-button text-brand-black font-semibold px-5 py-2 text-sm hover:bg-brand-button-dark"
           >
             Save Notes
           </button>
@@ -278,7 +278,7 @@ export default async function VendorBookingDetailPage({
           </div>
           <button
             type="submit"
-            className="rounded-full bg-brand-orange text-white font-semibold px-5 py-2 text-sm hover:bg-brand-orange-dark"
+            className="rounded-full bg-brand-button text-brand-black font-semibold px-5 py-2 text-sm hover:bg-brand-button-dark"
           >
             Upload
           </button>

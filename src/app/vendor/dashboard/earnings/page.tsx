@@ -60,7 +60,7 @@ export default async function VendorEarningsPage() {
             <div key={m.key} className="flex flex-col items-center gap-2 flex-1">
               <div className="w-full h-28 flex items-end bg-brand-cream rounded-lg overflow-hidden">
                 <div
-                  className="w-full bg-brand-orange rounded-t-lg transition-all"
+                  className="w-full bg-brand-button rounded-t-lg transition-all"
                   style={{ height: `${Math.max((m.total / maxBar) * 100, m.total > 0 ? 4 : 0)}%` }}
                 />
               </div>

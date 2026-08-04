@@ -359,7 +359,7 @@ export default async function VendorApplyPage({
               </label>
               <button
                 type="submit"
-                className="w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors"
+                className="w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
               >
                 Upload &amp; Finish
               </button>
@@ -380,7 +380,7 @@ export default async function VendorApplyPage({
               </p>
               <Link
                 href="/"
-                className="mt-2 w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors text-center"
+                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors text-center"
               >
                 Go to Home
               </Link>

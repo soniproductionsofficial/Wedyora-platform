@@ -45,7 +45,7 @@ export default async function SiteHeader() {
         <div className="hidden md:flex flex-1 justify-center">
           <Link
             href="/photography-in-minutes"
-            className="text-sm font-bold text-brand-gold bg-brand-gold/10 border border-brand-gold/30 rounded-full px-4 py-1.5 hover:bg-brand-gold/20 transition-colors whitespace-nowrap"
+            className="text-sm font-bold text-brand-gold-bright bg-brand-gold-bright/10 border border-brand-gold-bright/30 rounded-full px-4 py-1.5 hover:bg-brand-gold-bright/20 transition-colors whitespace-nowrap"
           >
             Photography in Minutes
           </Link>
@@ -56,7 +56,7 @@ export default async function SiteHeader() {
           {role === "admin" && (
             <Link
               href="/admin"
-              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold transition-colors"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold-bright transition-colors"
             >
               Admin
             </Link>
@@ -64,7 +64,7 @@ export default async function SiteHeader() {
           {role === "vendor" && (
             <Link
               href="/vendor/dashboard"
-              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold transition-colors"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold-bright transition-colors"
             >
               Vendor Dashboard
             </Link>
@@ -81,7 +81,7 @@ export default async function SiteHeader() {
             <>
               <Link
                 href="/signup"
-                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors whitespace-nowrap"
+                className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-button text-brand-black hover:bg-brand-button-dark transition-colors whitespace-nowrap"
               >
                 Customer Sign Up
               </Link>

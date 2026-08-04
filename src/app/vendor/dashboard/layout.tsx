@@ -56,7 +56,7 @@ export default async function VendorDashboardLayout({
     <div className="min-h-[calc(100vh-64px)] bg-brand-cream">
       <div className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 pt-8 pb-4">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-1">
+          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-1">
             Wedyora
           </p>
           <h1 className="font-heading text-2xl font-bold mb-6">Vendor Dashboard</h1>

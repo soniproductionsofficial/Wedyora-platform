@@ -233,7 +233,7 @@ export default async function AdminBookingDetailPage({
           </div>
           <button
             type="submit"
-            className="rounded-full bg-brand-orange text-white font-semibold px-5 py-2 text-sm hover:bg-brand-orange-dark"
+            className="rounded-full bg-brand-button text-brand-black font-semibold px-5 py-2 text-sm hover:bg-brand-button-dark"
           >
             Log Incident
           </button>

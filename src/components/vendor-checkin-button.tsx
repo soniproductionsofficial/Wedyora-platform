@@ -59,7 +59,7 @@ export default function VendorCheckinButton({
         type="button"
         onClick={handleCheckIn}
         disabled={isPending}
-        className="flex items-center justify-center gap-2 rounded-full bg-brand-orange text-white font-semibold px-5 py-2.5 text-sm hover:bg-brand-orange-dark transition-colors disabled:opacity-60"
+        className="flex items-center justify-center gap-2 rounded-full bg-brand-button text-brand-black font-semibold px-5 py-2.5 text-sm hover:bg-brand-button-dark transition-colors disabled:opacity-60"
       >
         <MapPin className="h-4 w-4" />
         {isPending ? "Checking in…" : "Check In at Venue"}

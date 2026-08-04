@@ -15,6 +15,14 @@
      against a white page). */
   --brand-orange: #995c00;
   --brand-orange-dark: #754600;
+  /* Solid CTA buttons get the logo's true vivid gold as their fill (with
+     dark-purple text on top for contrast) rather than the muted amber
+     above — amber reads well as small text/links on a white page, but
+     looked like a dull brown next to the purple brand color on filled
+     buttons and badges. --brand-orange itself is kept for that
+     text-on-white role (links, required-field marks, focus rings). */
+  --brand-button: #f4c400;
+  --brand-button-dark: #d9ad00;
   --brand-black: #24006c;
   --brand-charcoal: #170048;
   --brand-gold: #9e7e00;
@@ -33,6 +41,8 @@
   --color-foreground: var(--foreground);
   --color-brand-orange: var(--brand-orange);
   --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-brand-button: var(--brand-button);
+  --color-brand-button-dark: var(--brand-button-dark);
   --color-brand-black: var(--brand-black);
   --color-brand-charcoal: var(--brand-charcoal);
   --color-brand-gold: var(--brand-gold);

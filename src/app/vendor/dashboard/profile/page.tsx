@@ -186,7 +186,7 @@ export default async function VendorProfilePage({
           </label>
           <button
             type="submit"
-            className="self-start px-5 py-2.5 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark transition-colors"
+            className="self-start px-5 py-2.5 rounded-full bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark transition-colors"
           >
             Save Changes
           </button>
@@ -290,7 +290,7 @@ export default async function VendorProfilePage({
           </label>
           <button
             type="submit"
-            className="px-4 py-2 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark"
+            className="px-4 py-2 rounded-full bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark"
           >
             Add Package
           </button>

@@ -67,7 +67,7 @@ export default async function VendorsPage({
           />
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark transition-colors"
+            className="px-6 py-3 rounded-xl bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark transition-colors"
           >
             Filter
           </button>

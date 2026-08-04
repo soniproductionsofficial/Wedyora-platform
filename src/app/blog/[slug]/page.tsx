@@ -19,7 +19,7 @@ export default async function BlogPostPage({
           <Link href="/blog" className="text-xs text-white/60 hover:text-white">
             &larr; Back to Blog
           </Link>
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mt-6 mb-3">
+          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mt-6 mb-3">
             {new Date(post.publishedAt).toLocaleDateString("en-IN", {
               year: "numeric",
               month: "long",

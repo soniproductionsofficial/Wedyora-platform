@@ -241,7 +241,7 @@ function Bar({ label, value, max }: { label: string; value: number; max: number 
     <div className="flex flex-col items-center gap-2 flex-1">
       <div className="w-full h-24 flex items-end bg-brand-cream rounded-lg overflow-hidden">
         <div
-          className="w-full bg-brand-orange rounded-t-lg transition-all"
+          className="w-full bg-brand-button rounded-t-lg transition-all"
           style={{ height: `${heightPct}%` }}
         />
       </div>

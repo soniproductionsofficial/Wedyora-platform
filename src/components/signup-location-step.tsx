@@ -59,7 +59,7 @@ export default function SignupLocationStep() {
         type="button"
         onClick={handleAllow}
         disabled={isPending}
-        className="w-full rounded-full bg-brand-orange text-white font-semibold py-3 hover:bg-brand-orange-dark transition-colors disabled:opacity-60"
+        className="w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors disabled:opacity-60"
       >
         {isPending ? "Please wait…" : "Allow Location Access"}
       </button>

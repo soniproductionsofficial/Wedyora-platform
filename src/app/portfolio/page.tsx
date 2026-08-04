@@ -22,7 +22,7 @@ export default async function PortfolioPage() {
     <div>
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             Portfolio
           </p>
           <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">

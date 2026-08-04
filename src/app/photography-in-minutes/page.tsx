@@ -10,9 +10,9 @@ export default function PhotographyInMinutesPage() {
     <div className="bg-brand-black text-white min-h-[60vh] flex items-center">
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <span className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/10">
-          <Clock className="h-6 w-6 text-brand-gold" />
+          <Clock className="h-6 w-6 text-brand-gold-bright" />
         </span>
-        <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+        <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
           Photography in Minutes
         </p>
         <h1 className="font-heading text-3xl font-bold mb-6">Coming Soon</h1>
@@ -23,7 +23,7 @@ export default function PhotographyInMinutesPage() {
         </p>
         <Link
           href="/"
-          className="px-6 py-3 rounded-full bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
+          className="px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
         >
           Back to Wedyora
         </Link>

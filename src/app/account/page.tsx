@@ -248,7 +248,7 @@ export default async function AccountPage({
                                 className={`text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
                                   done
                                     ? "border border-brand-line text-brand-gray hover:bg-brand-cream"
-                                    : "bg-brand-orange text-white hover:bg-brand-orange-dark"
+                                    : "bg-brand-button text-brand-black hover:bg-brand-button-dark"
                                 }`}
                               >
                                 {done ? "Undo" : "Mark Done"}
@@ -305,7 +305,7 @@ export default async function AccountPage({
                         />
                         <button
                           type="submit"
-                          className="flex items-center gap-1 px-4 py-1.5 rounded-full bg-brand-orange text-white text-xs font-semibold hover:bg-brand-orange-dark whitespace-nowrap"
+                          className="flex items-center gap-1 px-4 py-1.5 rounded-full bg-brand-button text-brand-black text-xs font-semibold hover:bg-brand-button-dark whitespace-nowrap"
                         >
                           <Star className="h-3 w-3" /> Submit
                         </button>

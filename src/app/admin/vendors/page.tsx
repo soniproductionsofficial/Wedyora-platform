@@ -75,7 +75,7 @@ export default async function AdminVendorsPage({
             href={`/admin/vendors?status=${t}`}
             className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
               activeStatus === t
-                ? "bg-brand-orange text-white border-brand-orange"
+                ? "bg-brand-button text-brand-black border-brand-button"
                 : "border-brand-line text-brand-gray hover:border-brand-orange hover:text-brand-orange"
             }`}
           >
@@ -275,7 +275,7 @@ export default async function AdminVendorsPage({
                     <input type="hidden" name="decision" value="rejected" />
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark"
+                      className="px-4 py-2 rounded-full bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark"
                     >
                       Reject
                     </button>

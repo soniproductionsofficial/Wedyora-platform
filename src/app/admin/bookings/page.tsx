@@ -391,7 +391,7 @@ function MatchScorePanel({
               <span className="font-medium">
                 {businessName}
                 {i === 0 && (
-                  <span className="ml-2 px-2 py-0.5 rounded-full bg-brand-orange text-white text-[10px] font-semibold">
+                  <span className="ml-2 px-2 py-0.5 rounded-full bg-brand-button text-brand-black text-[10px] font-semibold">
                     Best Match
                   </span>
                 )}

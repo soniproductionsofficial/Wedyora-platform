@@ -122,7 +122,7 @@ export default async function AdminPackagesPage({
             </label>
             <button
               type="submit"
-              className="px-4 py-2 rounded-full bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange-dark"
+              className="px-4 py-2 rounded-full bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark"
             >
               Add Package
             </button>

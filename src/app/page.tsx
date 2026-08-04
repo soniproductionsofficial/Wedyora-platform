@@ -75,7 +75,7 @@ export default async function Home() {
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <p className="text-brand-gold uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+            <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
               India&rsquo;s Managed Wedding Services Platform
             </p>
             <h1 className="font-heading text-4xl md:text-5xl font-bold leading-tight mb-6">
@@ -113,7 +113,7 @@ export default async function Home() {
             />
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
             >
               <Search className="h-4 w-4" />
               Search
@@ -130,7 +130,7 @@ export default async function Home() {
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex flex-col items-center gap-2">
                 <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20">
-                  <Icon className="h-5 w-5 text-brand-gold" />
+                  <Icon className="h-5 w-5 text-brand-gold-bright" />
                 </span>
                 <p className="text-xs text-white/70 font-medium">{label}</p>
               </div>
@@ -235,7 +235,7 @@ export default async function Home() {
           <div className="grid md:grid-cols-5 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={step.title} className="text-center">
-                <span className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-orange text-white text-sm font-semibold">
+                <span className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-brand-black text-sm font-semibold">
                   {i + 1}
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">
@@ -289,7 +289,7 @@ export default async function Home() {
           </p>
           <Link
             href="/vendor/apply"
-            className="px-6 py-3 rounded-full bg-brand-orange text-white font-semibold hover:bg-brand-orange-dark transition-colors"
+            className="px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
           >
             Apply as a Vendor
           </Link>

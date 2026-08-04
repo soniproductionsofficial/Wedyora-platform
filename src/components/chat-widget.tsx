@@ -93,7 +93,7 @@ export default function ChatWidget() {
                 className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   m.from === "bot"
                     ? "self-start bg-brand-cream text-brand-black"
-                    : "self-end bg-brand-orange text-white"
+                    : "self-end bg-brand-button text-brand-black"
                 }`}
               >
                 {m.text}
@@ -111,7 +111,7 @@ export default function ChatWidget() {
             <button
               type="submit"
               aria-label="Send"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange text-white hover:bg-brand-orange-dark transition-colors"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-button text-brand-black hover:bg-brand-button-dark transition-colors"
             >
               <Send className="h-4 w-4" />
             </button>
@@ -123,7 +123,7 @@ export default function ChatWidget() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close chat" : "Open chat"}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-orange text-white shadow-lg hover:bg-brand-orange-dark transition-colors"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-button text-brand-black shadow-lg hover:bg-brand-button-dark transition-colors"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
       </button>
