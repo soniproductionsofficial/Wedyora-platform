@@ -41,10 +41,10 @@ export default async function PortfolioPage() {
             <p className="text-brand-gray text-sm text-center">
               Our vendors are still uploading their portfolios — check back
               soon, or{" "}
-              <Link href="/vendors" className="text-brand-orange font-medium">
-                browse verified vendors
+              <Link href="/book" className="text-brand-orange font-medium">
+                start planning your wedding
               </Link>{" "}
-              directly.
+              to get matched with one.
             </p>
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">

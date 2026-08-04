@@ -4,8 +4,6 @@ import {
   CreditCard,
   Headset,
   CalendarCheck,
-  MapPin,
-  Search,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
@@ -59,15 +57,10 @@ const WHY_WEDYORA = [
 export default async function Home() {
   const supabase = await createClient();
 
-  const [{ data: categories }, { data: vendors }] = await Promise.all([
-    supabase.from("service_categories").select("id, name, slug").order("name"),
-    supabase
-      .from("vendor_profiles")
-      .select("id, business_name, city, experience_years, service_categories(name)")
-      .eq("status", "approved")
-      .order("created_at", { ascending: false })
-      .limit(6),
-  ]);
+  const { data: categories } = await supabase
+    .from("service_categories")
+    .select("id, name, slug")
+    .order("name");
 
   return (
     <div>
@@ -88,37 +81,15 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Search bar */}
-          <form
-            action="/vendors"
-            method="get"
-            className="bg-white rounded-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto mb-12"
-          >
-            <select
-              name="category"
-              defaultValue=""
-              className="flex-1 rounded-xl px-4 py-3 text-sm text-brand-black bg-brand-cream md:bg-transparent focus:outline-none"
+          {/* Primary CTA */}
+          <div className="flex justify-center mb-12">
+            <Link
+              href="/book"
+              className="px-8 py-4 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
             >
-              <option value="">Any Service</option>
-              {categories?.map((c) => (
-                <option key={c.id} value={c.slug}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            <input
-              name="city"
-              placeholder="City"
-              className="flex-1 rounded-xl px-4 py-3 text-sm text-brand-black bg-brand-cream md:bg-transparent focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
-            >
-              <Search className="h-4 w-4" />
-              Search
-            </button>
-          </form>
+              Start Planning Your Wedding
+            </Link>
+          </div>
 
           {/* Trust row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto text-center">
@@ -152,7 +123,7 @@ export default async function Home() {
                 return (
                   <Link
                     key={c.id}
-                    href={`/vendors?category=${c.slug}`}
+                    href="/book"
                     className="flex flex-col items-center gap-2 w-24 group"
                   >
                     <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream border border-brand-line group-hover:border-brand-orange group-hover:text-brand-orange transition-colors">
@@ -166,65 +137,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-      {/* Top verified vendors */}
-      <section className="bg-brand-cream">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="font-heading text-2xl font-semibold">
-              Verified Vendors
-            </h2>
-            <Link
-              href="/vendors"
-              className="text-sm font-semibold text-brand-orange hover:text-brand-orange-dark"
-            >
-              View All &rarr;
-            </Link>
-          </div>
-
-          {!vendors || vendors.length === 0 ? (
-            <p className="text-brand-gray text-sm">
-              We&rsquo;re reviewing our first vendor applications now — check
-              back soon, or{" "}
-              <Link href="/vendor/apply" className="text-brand-orange font-medium">
-                apply to become one of our first verified vendors
-              </Link>
-              .
-            </p>
-          ) : (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {vendors.map((v) => (
-                <div
-                  key={v.id}
-                  className="rounded-2xl bg-white border border-brand-line overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  <div
-                    className="h-40 bg-brand-charcoal bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url(https://picsum.photos/seed/${v.id}/480/320)`,
-                    }}
-                  />
-                  <div className="p-5">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-gold mb-1">
-                      {v.service_categories?.name}
-                    </p>
-                    <h3 className="font-heading font-semibold mb-1">
-                      {v.business_name}
-                    </h3>
-                    <p className="text-brand-gray text-sm flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {v.city}
-                      {v.experience_years
-                        ? ` · ${v.experience_years} yrs experience`
-                        : ""}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* How Wedyora works */}
       <section className="bg-white border-t border-brand-line">

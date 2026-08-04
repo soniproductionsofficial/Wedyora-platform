@@ -23,11 +23,6 @@ export default function SiteFooter() {
           <p className="text-white font-medium mb-3">For Couples</p>
           <ul className="flex flex-col gap-2">
             <li>
-              <Link href="/vendors" className="hover:text-brand-gold-bright transition-colors">
-                Browse Vendors
-              </Link>
-            </li>
-            <li>
               <Link href="/book" className="hover:text-brand-gold-bright transition-colors">
                 Plan Your Wedding
               </Link>

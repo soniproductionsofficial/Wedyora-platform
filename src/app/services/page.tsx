@@ -39,7 +39,7 @@ export default async function ServicesPage() {
                 return (
                   <Link
                     key={c.id}
-                    href={`/vendors?category=${c.slug}`}
+                    href="/book"
                     className="flex items-center gap-4 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-orange hover:shadow-md transition-all"
                   >
                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream">
@@ -47,7 +47,7 @@ export default async function ServicesPage() {
                     </span>
                     <div>
                       <p className="font-heading font-semibold">{c.name}</p>
-                      <p className="text-xs text-brand-gray">View verified vendors &rarr;</p>
+                      <p className="text-xs text-brand-gray">Request this service &rarr;</p>
                     </div>
                   </Link>
                 );
