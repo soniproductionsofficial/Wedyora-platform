@@ -28,16 +28,13 @@ export default async function BookPage({
       {/* Page header */}
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-14 text-center">
-          <span className="animate-float hover-wiggle mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold-bright/15 text-brand-gold-bright">
+          <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold-bright/15 text-brand-gold-bright">
             <CalendarCheck className="h-5 w-5" />
           </span>
-          <h1 className="animate-fade-in-up font-heading text-3xl font-bold mb-2">
+          <h1 className="font-heading text-3xl font-bold mb-2">
             Plan Your Wedding
           </h1>
-          <p
-            className="animate-fade-in-up text-white/70 text-sm max-w-xl mx-auto"
-            style={{ animationDelay: "120ms" }}
-          >
+          <p className="text-white/70 text-sm max-w-xl mx-auto">
             Tell us what you need — Wedyora will match you with a verified
             vendor and confirm the details before anything is charged.
           </p>
@@ -45,7 +42,7 @@ export default async function BookPage({
       </section>
 
       <div className="mx-auto max-w-xl px-6 py-12 -mt-10">
-        <div className="animate-scale-in bg-white border border-brand-line rounded-2xl shadow-sm p-6 md:p-8">
+        <div className="bg-white border border-brand-line rounded-2xl shadow-sm p-6 md:p-8">
           {error && (
             <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
               {error}

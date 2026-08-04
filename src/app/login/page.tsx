@@ -20,12 +20,12 @@ export default async function LoginPage({
     <div className="min-h-[calc(100vh-64px)] bg-brand-cream flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
-          <span className="animate-float hover-wiggle flex h-12 w-12 items-center justify-center rounded-xl bg-brand-black">
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-black">
             <Camera className="h-6 w-6 text-white" strokeWidth={2} />
           </span>
         </div>
 
-        <div className="animate-scale-in bg-white border border-brand-line rounded-2xl shadow-sm p-6 md:p-8">
+        <div className="bg-white border border-brand-line rounded-2xl shadow-sm p-6 md:p-8">
           <h1 className="font-heading text-2xl font-semibold mb-2 text-center">
             Log in
           </h1>

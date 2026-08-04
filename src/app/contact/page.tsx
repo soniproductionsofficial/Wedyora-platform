@@ -1,6 +1,5 @@
 import { Mail, Phone } from "lucide-react";
 import { submitContactMessageAction } from "@/lib/actions/contact";
-import Reveal from "@/components/reveal";
 
 export default async function ContactPage({
   searchParams,
@@ -13,19 +12,13 @@ export default async function ContactPage({
     <div>
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             Contact Us
           </p>
-          <h1
-            className="animate-fade-in-up font-heading text-3xl md:text-4xl font-bold mb-6"
-            style={{ animationDelay: "120ms" }}
-          >
+          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
             We&rsquo;re Here to Help
           </h1>
-          <p
-            className="animate-fade-in-up text-white/70 max-w-2xl mx-auto"
-            style={{ animationDelay: "240ms" }}
-          >
+          <p className="text-white/70 max-w-2xl mx-auto">
             Questions about a booking, a vendor application, or anything
             else — send us a message and our team will get back to you.
           </p>
@@ -34,7 +27,7 @@ export default async function ContactPage({
 
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-6 py-16 grid md:grid-cols-2 gap-10">
-          <Reveal>
+          <div>
             <h2 className="font-heading text-xl font-semibold mb-4">Send a Message</h2>
 
             {success && (
@@ -94,9 +87,9 @@ export default async function ContactPage({
                 Send Message
               </button>
             </form>
-          </Reveal>
+          </div>
 
-          <Reveal delay={120}>
+          <div>
             <h2 className="font-heading text-xl font-semibold mb-4">Other Ways to Reach Us</h2>
             <div className="flex flex-col gap-4 text-sm">
               <div className="flex items-center gap-3">
@@ -121,7 +114,7 @@ export default async function ContactPage({
                 <em>(Placeholder contact details above — swap in your real support email and phone number.)</em>
               </p>
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
     </div>

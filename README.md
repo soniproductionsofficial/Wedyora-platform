@@ -19,20 +19,6 @@ true vivid gold, reserved for large accents on dark backgrounds since it's
 too light to read as small text on white) — change the palette there and
 every `bg-brand-*`/`text-brand-*` class site-wide picks it up automatically.
 
-**Animations:** the marketing pages (home, about, services, portfolio,
-blog, FAQ, contact, vendors, book, vendor apply, signup, login) use a
-small shared animation system — all defined in `src/app/globals.css`
-(look for the "Animation system" comment) plus one client component,
-`src/components/reveal.tsx`. `<Reveal>` wraps a block of content and
-fades/slides it in the first time it scrolls into view (via
-IntersectionObserver); pass `delay={i * 80}` in a `.map()` to stagger a
-row of cards. Utility classes like `.hover-lift`, `.hover-zoom`,
-`.hover-wiggle`, `.animate-float`, `.animate-pulse-glow`, and
-`.animate-fade-in-up` add hover/entrance motion elsewhere. Everything
-respects `prefers-reduced-motion`. Solid buttons and cards get a
-lift/scale/glow on hover automatically, site-wide, since that's wired to
-the shared `bg-brand-button` class rather than to individual pages.
-
 ## Status: Phase 1 (MVP) — core loop built, not yet tested against a real database
 
 What works right now (verified via `npm run build` + route smoke tests in

@@ -1,7 +1,6 @@
 import { MapPin } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
-import Reveal from "@/components/reveal";
 
 export default async function VendorsPage({
   searchParams,
@@ -33,13 +32,10 @@ export default async function VendorsPage({
       {/* Page header */}
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-14">
-          <h1 className="animate-fade-in-up font-heading text-3xl font-bold mb-2">
+          <h1 className="font-heading text-3xl font-bold mb-2">
             Browse Verified Vendors
           </h1>
-          <p
-            className="animate-fade-in-up text-white/70 text-sm max-w-xl"
-            style={{ animationDelay: "120ms" }}
-          >
+          <p className="text-white/70 text-sm max-w-xl">
             Every vendor listed here has been reviewed and approved by the
             Wedyora team — search by service and city to find your match.
           </p>
@@ -85,13 +81,12 @@ export default async function VendorsPage({
           </p>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
-            {vendors.map((v, i) => {
+            {vendors.map((v) => {
               const Icon = getCategoryIcon(v.service_categories?.slug ?? "");
               return (
-                <Reveal
+                <div
                   key={v.id}
-                  delay={i * 70}
-                  className="hover-lift hover-zoom rounded-2xl border border-brand-line bg-white overflow-hidden"
+                  className="rounded-2xl border border-brand-line bg-white overflow-hidden hover:shadow-md transition-shadow"
                 >
                   <div
                     className="h-36 bg-brand-charcoal bg-cover bg-center relative"
@@ -99,7 +94,7 @@ export default async function VendorsPage({
                       backgroundImage: `url(https://picsum.photos/seed/${v.id}/480/320)`,
                     }}
                   >
-                    <span className="hover-wiggle absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-brand-orange">
+                    <span className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-brand-orange">
                       <Icon className="h-4 w-4" />
                     </span>
                   </div>
@@ -123,7 +118,7 @@ export default async function VendorsPage({
                       </p>
                     )}
                   </div>
-                </Reveal>
+                </div>
               );
             })}
           </div>

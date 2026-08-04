@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
-import Reveal from "@/components/reveal";
-import WeddingIntelligence from "@/components/wedding-intelligence";
 
 const HOW_IT_WORKS = [
   {
@@ -74,31 +72,17 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-brand-black text-white overflow-hidden">
-        <div className="hero-blob-field" aria-hidden="true">
-          <span className="hero-blob hero-blob-1" />
-          <span className="hero-blob hero-blob-2" />
-          <span className="hero-blob hero-blob-3" />
-        </div>
-        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <section className="bg-brand-black text-white">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <p
-              className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4"
-              style={{ animationDelay: "0ms" }}
-            >
+            <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
               India&rsquo;s Managed Wedding Services Platform
             </p>
-            <h1
-              className="animate-fade-in-up font-heading text-4xl md:text-5xl font-bold leading-tight mb-6"
-              style={{ animationDelay: "120ms" }}
-            >
+            <h1 className="font-heading text-4xl md:text-5xl font-bold leading-tight mb-6">
               Find. Book.{" "}
-              <span className="animate-shimmer">Celebrate.</span>
+              <span className="text-brand-gold-bright">Celebrate.</span>
             </h1>
-            <p
-              className="animate-fade-in-up text-white/70 mb-10"
-              style={{ animationDelay: "240ms" }}
-            >
+            <p className="text-white/70 mb-10">
               Photography, decor, catering and more — every vendor on Wedyora
               is verified by our team, so you can book with confidence.
             </p>
@@ -108,8 +92,7 @@ export default async function Home() {
           <form
             action="/vendors"
             method="get"
-            className="animate-scale-in bg-white rounded-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto mb-12"
-            style={{ animationDelay: "360ms" }}
+            className="bg-white rounded-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto mb-12"
           >
             <select
               name="category"
@@ -144,16 +127,9 @@ export default async function Home() {
               { icon: CalendarCheck, label: "Easy Booking" },
               { icon: CreditCard, label: "Secure Payments" },
               { icon: Headset, label: "Real Support" },
-            ].map(({ icon: Icon, label }, i) => (
-              <div
-                key={label}
-                className="animate-fade-in-up flex flex-col items-center gap-2"
-                style={{ animationDelay: `${420 + i * 100}ms` }}
-              >
-                <span
-                  className="hover-wiggle animate-float flex h-11 w-11 items-center justify-center rounded-full border border-white/20"
-                  style={{ animationDelay: `${i * 250}ms` }}
-                >
+            ].map(({ icon: Icon, label }) => (
+              <div key={label} className="flex flex-col items-center gap-2">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20">
                   <Icon className="h-5 w-5 text-brand-gold-bright" />
                 </span>
                 <p className="text-xs text-white/70 font-medium">{label}</p>
@@ -163,52 +139,27 @@ export default async function Home() {
         </div>
       </section>
 
-      <WeddingIntelligence />
-
       {/* Category strip */}
       {categories && categories.length > 0 && (
-        <section className="relative overflow-hidden bg-brand-cream border-b border-brand-line">
-          <div className="hero-blob-field opacity-60" aria-hidden="true">
-            <span className="hero-blob hero-blob-1" style={{ opacity: 0.18 }} />
-            <span className="hero-blob hero-blob-2" style={{ opacity: 0.16 }} />
-          </div>
-          <div className="relative z-10 mx-auto max-w-6xl px-6 py-16 md:py-20">
-            <div className="text-center max-w-xl mx-auto mb-12">
-              <p className="animate-fade-in-up text-brand-orange uppercase tracking-[0.2em] text-xs font-semibold mb-3">
-                Everything Your Wedding Needs
-              </p>
-              <h2
-                className="animate-fade-in-up font-heading text-2xl md:text-3xl font-bold"
-                style={{ animationDelay: "100ms" }}
-              >
-                Popular Services
-              </h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5">
-              {categories.map((c, i) => {
+        <section className="bg-white border-b border-brand-line">
+          <div className="mx-auto max-w-6xl px-6 py-12">
+            <h2 className="font-heading text-lg font-semibold mb-6 text-center">
+              Popular Services
+            </h2>
+            <div className="flex flex-wrap justify-center gap-4">
+              {categories.map((c) => {
                 const Icon = getCategoryIcon(c.slug);
                 return (
-                  <Reveal key={c.id} delay={i * 60}>
-                    <Link
-                      href={`/vendors?category=${c.slug}`}
-                      className="hover-lift group relative flex flex-col items-center gap-3 rounded-2xl bg-white/80 backdrop-blur-sm border border-brand-line px-4 py-6 text-center transition-colors duration-300 hover:border-brand-button hover:bg-white shadow-sm"
-                    >
-                      <span
-                        className="animate-float flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, var(--brand-button), var(--brand-black))",
-                          animationDelay: `${i * 180}ms`,
-                          animationDuration: `${3.4 + (i % 3) * 0.5}s`,
-                        }}
-                      >
-                        <Icon className="h-6 w-6" />
-                      </span>
-                      <p className="text-xs font-semibold text-center leading-tight">
-                        {c.name}
-                      </p>
-                    </Link>
-                  </Reveal>
+                  <Link
+                    key={c.id}
+                    href={`/vendors?category=${c.slug}`}
+                    className="flex flex-col items-center gap-2 w-24 group"
+                  >
+                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream border border-brand-line group-hover:border-brand-orange group-hover:text-brand-orange transition-colors">
+                      <Icon className="h-6 w-6" />
+                    </span>
+                    <p className="text-xs font-medium text-center">{c.name}</p>
+                  </Link>
                 );
               })}
             </div>
@@ -242,11 +193,10 @@ export default async function Home() {
             </p>
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {vendors.map((v, i) => (
-                <Reveal
+              {vendors.map((v) => (
+                <div
                   key={v.id}
-                  delay={i * 80}
-                  className="hover-lift hover-zoom rounded-2xl bg-white border border-brand-line overflow-hidden"
+                  className="rounded-2xl bg-white border border-brand-line overflow-hidden hover:shadow-md transition-shadow"
                 >
                   <div
                     className="h-40 bg-brand-charcoal bg-cover bg-center"
@@ -269,7 +219,7 @@ export default async function Home() {
                         : ""}
                     </p>
                   </div>
-                </Reveal>
+                </div>
               ))}
             </div>
           )}
@@ -284,8 +234,8 @@ export default async function Home() {
           </h2>
           <div className="grid md:grid-cols-5 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
-              <Reveal key={step.title} delay={i * 100} className="text-center">
-                <span className="animate-pulse-glow mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-brand-black text-sm font-semibold">
+              <div key={step.title} className="text-center">
+                <span className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-brand-black text-sm font-semibold">
                   {i + 1}
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">
@@ -294,7 +244,7 @@ export default async function Home() {
                 <p className="text-brand-gray text-xs leading-relaxed">
                   {step.body}
                 </p>
-              </Reveal>
+              </div>
             ))}
           </div>
         </div>
@@ -307,13 +257,12 @@ export default async function Home() {
             Why Couples Choose Wedyora
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {WHY_WEDYORA.map(({ icon: Icon, title, body }, i) => (
-              <Reveal
+            {WHY_WEDYORA.map(({ icon: Icon, title, body }) => (
+              <div
                 key={title}
-                delay={i * 90}
-                className="hover-lift group rounded-2xl bg-white border border-brand-line p-6"
+                className="rounded-2xl bg-white border border-brand-line p-6"
               >
-                <span className="hover-wiggle flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange mb-4 transition-transform group-hover:scale-110">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange mb-4">
                   <Icon className="h-5 w-5" />
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">
@@ -322,15 +271,15 @@ export default async function Home() {
                 <p className="text-brand-gray text-xs leading-relaxed">
                   {body}
                 </p>
-              </Reveal>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Vendor CTA */}
-      <section className="bg-brand-black text-white overflow-hidden">
-        <Reveal className="mx-auto max-w-6xl px-6 py-16 text-center">
+      <section className="bg-brand-black text-white">
+        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
           <h2 className="font-heading text-2xl font-semibold mb-4">
             Are you a wedding vendor?
           </h2>
@@ -340,11 +289,11 @@ export default async function Home() {
           </p>
           <Link
             href="/vendor/apply"
-            className="animate-pulse-glow inline-block px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
+            className="px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
           >
             Apply as a Vendor
           </Link>
-        </Reveal>
+        </div>
       </section>
     </div>
   );

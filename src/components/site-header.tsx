@@ -23,7 +23,7 @@ export default async function SiteHeader() {
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between gap-4">
         {/* Left: logo + Become a Partner */}
         <div className="flex items-center gap-4 shrink-0">
-          <Link href="/" className="flex items-center transition-transform duration-300 hover:scale-105">
+          <Link href="/" className="flex items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/wedyora-logo.png"
@@ -34,7 +34,7 @@ export default async function SiteHeader() {
           {!user && (
             <Link
               href="/vendor/apply"
-              className="hidden md:inline-block text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+              className="hidden md:inline-block text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black transition-colors whitespace-nowrap"
             >
               Become a Partner
             </Link>
@@ -45,7 +45,7 @@ export default async function SiteHeader() {
         <div className="hidden md:flex flex-1 justify-center">
           <Link
             href="/photography-in-minutes"
-            className="animate-pulse-glow text-sm font-bold text-brand-gold-bright bg-brand-gold-bright/10 border border-brand-gold-bright/30 rounded-full px-4 py-1.5 hover:bg-brand-gold-bright/20 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+            className="text-sm font-bold text-brand-gold-bright bg-brand-gold-bright/10 border border-brand-gold-bright/30 rounded-full px-4 py-1.5 hover:bg-brand-gold-bright/20 transition-colors whitespace-nowrap"
           >
             Photography in Minutes
           </Link>
@@ -56,7 +56,7 @@ export default async function SiteHeader() {
           {role === "admin" && (
             <Link
               href="/admin"
-              className="link-underline hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold-bright transition-colors"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold-bright transition-colors"
             >
               Admin
             </Link>
@@ -64,7 +64,7 @@ export default async function SiteHeader() {
           {role === "vendor" && (
             <Link
               href="/vendor/dashboard"
-              className="link-underline hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold-bright transition-colors"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold-bright transition-colors"
             >
               Vendor Dashboard
             </Link>
@@ -73,7 +73,7 @@ export default async function SiteHeader() {
           {user ? (
             <Link
               href="/account"
-              className="text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black hover:scale-105 active:scale-95 transition-all"
+              className="text-sm font-medium px-4 py-2 rounded-full border border-white/30 text-white hover:bg-white hover:text-brand-black transition-colors"
             >
               My Account
             </Link>
@@ -87,7 +87,7 @@ export default async function SiteHeader() {
               </Link>
               <Link
                 href="/login"
-                className="link-underline text-sm font-medium px-4 py-2 text-white/80 hover:text-white transition-colors"
+                className="text-sm font-medium px-4 py-2 text-white/80 hover:text-white transition-colors"
               >
                 Log In
               </Link>
