@@ -47,9 +47,17 @@ export default async function ServicesPage() {
                   <Reveal key={c.id} delay={i * 60}>
                     <Link
                       href={`/vendors?category=${c.slug}`}
-                      className="hover-lift group flex items-center gap-4 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-orange transition-all"
+                      className="hover-lift group flex items-center gap-4 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-button transition-all"
                     >
-                      <span className="hover-wiggle flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream transition-transform group-hover:scale-110">
+                      <span
+                        className="animate-float flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, var(--brand-button), var(--brand-black))",
+                          animationDelay: `${i * 180}ms`,
+                          animationDuration: `${3.4 + (i % 3) * 0.5}s`,
+                        }}
+                      >
                         <Icon className="h-6 w-6" />
                       </span>
                       <div>

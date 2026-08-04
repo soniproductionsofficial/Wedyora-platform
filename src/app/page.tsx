@@ -164,24 +164,46 @@ export default async function Home() {
 
       {/* Category strip */}
       {categories && categories.length > 0 && (
-        <section className="bg-white border-b border-brand-line">
-          <div className="mx-auto max-w-6xl px-6 py-12">
-            <h2 className="font-heading text-lg font-semibold mb-6 text-center">
-              Popular Services
-            </h2>
-            <div className="flex flex-wrap justify-center gap-4">
+        <section className="relative overflow-hidden bg-brand-cream border-b border-brand-line">
+          <div className="hero-blob-field opacity-60" aria-hidden="true">
+            <span className="hero-blob hero-blob-1" style={{ opacity: 0.18 }} />
+            <span className="hero-blob hero-blob-2" style={{ opacity: 0.16 }} />
+          </div>
+          <div className="relative z-10 mx-auto max-w-6xl px-6 py-16 md:py-20">
+            <div className="text-center max-w-xl mx-auto mb-12">
+              <p className="animate-fade-in-up text-brand-orange uppercase tracking-[0.2em] text-xs font-semibold mb-3">
+                Everything Your Wedding Needs
+              </p>
+              <h2
+                className="animate-fade-in-up font-heading text-2xl md:text-3xl font-bold"
+                style={{ animationDelay: "100ms" }}
+              >
+                Popular Services
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5">
               {categories.map((c, i) => {
                 const Icon = getCategoryIcon(c.slug);
                 return (
-                  <Reveal key={c.id} delay={i * 60} className="w-24">
+                  <Reveal key={c.id} delay={i * 60}>
                     <Link
                       href={`/vendors?category=${c.slug}`}
-                      className="flex flex-col items-center gap-2 w-24 group"
+                      className="hover-lift group relative flex flex-col items-center gap-3 rounded-2xl bg-white/80 backdrop-blur-sm border border-brand-line px-4 py-6 text-center transition-colors duration-300 hover:border-brand-button hover:bg-white shadow-sm"
                     >
-                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream border border-brand-line transition-all duration-300 group-hover:border-brand-orange group-hover:text-brand-orange group-hover:-translate-y-1 group-hover:shadow-lg">
+                      <span
+                        className="animate-float flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, var(--brand-button), var(--brand-black))",
+                          animationDelay: `${i * 180}ms`,
+                          animationDuration: `${3.4 + (i % 3) * 0.5}s`,
+                        }}
+                      >
                         <Icon className="h-6 w-6" />
                       </span>
-                      <p className="text-xs font-medium text-center">{c.name}</p>
+                      <p className="text-xs font-semibold text-center leading-tight">
+                        {c.name}
+                      </p>
                     </Link>
                   </Reveal>
                 );
