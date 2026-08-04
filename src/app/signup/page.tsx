@@ -80,7 +80,7 @@ export default async function SignupPage({
             {phase === "phone" && "Sign up as a customer to start planning your wedding."}
             {phase === "otp" && `Enter the code we texted to ${phone}.`}
             {phase === "profile" && "A little about you."}
-            {phase === "location" && "Help us find vendors near you."}
+            {phase === "location" && "Help us match you with vendors in your area."}
             {phase === "language" && "What language do you prefer?"}
             {phase === "date" && "When's the big day? (You can update this later.)"}
             {phase === "venue" && "Where's it happening? (You can update this later.)"}

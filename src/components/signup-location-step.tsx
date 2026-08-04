@@ -46,8 +46,8 @@ export default function SignupLocationStep() {
           <MapPin className="h-6 w-6" />
         </span>
         <p className="text-sm text-brand-gray">
-          Allow Wedyora to access your location so we can show vendors near
-          you first.
+          Allow Wedyora to access your location so we can match you with
+          verified vendors in your area.
         </p>
         {status === "denied" && (
           <p className="text-xs text-brand-orange-dark">
