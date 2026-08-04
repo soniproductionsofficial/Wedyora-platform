@@ -130,12 +130,27 @@ const SERVICE_CONTENT: Record<
 const FALLBACK_DESCRIPTION =
   "Tell us your date, city, and budget, and we'll match you with a verified vendor for this service, at a price confirmed with you before anything is charged.";
 
+// These stay real, bookable categories (vendor applications, /book, admin) —
+// they're just left out of this specific showcase page per request.
+const HIDDEN_FROM_SERVICES_PAGE = [
+  "priest",
+  "live-streaming",
+  "invitation",
+  "entertainment",
+  "lighting",
+  "flower-arrangement",
+];
+
 export default async function ServicesPage() {
   const supabase = await createClient();
-  const { data: categories } = await supabase
+  const { data: allCategories } = await supabase
     .from("service_categories")
     .select("id, name, slug")
     .order("name");
+
+  const categories = allCategories?.filter(
+    (c) => !HIDDEN_FROM_SERVICES_PAGE.includes(c.slug)
+  );
 
   const orderedCategories = categories
     ? [...categories].sort((a, b) => {
