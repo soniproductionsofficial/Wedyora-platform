@@ -10,6 +10,15 @@ Contact Us, and the legal pages) now live directly in this app under
 `src/app/`, alongside the booking/vendor/admin functionality — there's no
 separate static marketing site.
 
+**Brand:** purple + gold, matching the current logo (`public/wedyora-logo.png`,
+`public/wedyora-logo-full.png` with the tagline, `src/app/favicon.ico` for
+the browser tab icon). All of it flows from a handful of CSS variables in
+`src/app/globals.css` (`--brand-black` is the purple, `--brand-orange` and
+`--brand-gold` are the two gold tones, `--brand-gold-bright` is the logo's
+true vivid gold, reserved for large accents on dark backgrounds since it's
+too light to read as small text on white) — change the palette there and
+every `bg-brand-*`/`text-brand-*` class site-wide picks it up automatically.
+
 ## Status: Phase 1 (MVP) — core loop built, not yet tested against a real database
 
 What works right now (verified via `npm run build` + route smoke tests in

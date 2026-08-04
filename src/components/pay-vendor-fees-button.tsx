@@ -41,7 +41,7 @@ export default function PayVendorFeesButton({
         name: "Wedyora",
         description: "Vendor registration fee + security deposit",
         prefill: { name: vendorName ?? "", contact: vendorPhone ?? "" },
-        theme: { color: "#e31e27" },
+        theme: { color: "#24006c" },
         handler: async (response: {
           razorpay_order_id: string;
           razorpay_payment_id: string;

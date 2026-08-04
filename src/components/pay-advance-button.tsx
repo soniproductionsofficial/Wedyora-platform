@@ -45,7 +45,7 @@ export default function PayAdvanceButton({
         name: "Wedyora",
         description: "Wedding service advance payment",
         prefill: { name: customerName ?? "", contact: customerPhone ?? "" },
-        theme: { color: "#e31e27" },
+        theme: { color: "#24006c" },
         handler: async (response: {
           razorpay_order_id: string;
           razorpay_payment_id: string;

@@ -24,14 +24,12 @@ export default async function SiteHeader() {
         {/* Left: logo + Become a Partner */}
         <div className="flex items-center gap-4 shrink-0">
           <Link href="/" className="flex items-center">
-            <span className="flex items-center rounded-lg bg-brand-cream px-3 py-1.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/wedyora-logo.png"
-                alt="Wedyora"
-                className="h-7 w-auto"
-              />
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/wedyora-logo.png"
+              alt="Wedyora"
+              className="h-8 w-auto"
+            />
           </Link>
           {!user && (
             <Link
@@ -47,7 +45,7 @@ export default async function SiteHeader() {
         <div className="hidden md:flex flex-1 justify-center">
           <Link
             href="/photography-in-minutes"
-            className="text-sm font-bold text-brand-orange bg-brand-orange/10 border border-brand-orange/30 rounded-full px-4 py-1.5 hover:bg-brand-orange/20 transition-colors whitespace-nowrap"
+            className="text-sm font-bold text-brand-gold bg-brand-gold/10 border border-brand-gold/30 rounded-full px-4 py-1.5 hover:bg-brand-gold/20 transition-colors whitespace-nowrap"
           >
             Photography in Minutes
           </Link>
@@ -58,7 +56,7 @@ export default async function SiteHeader() {
           {role === "admin" && (
             <Link
               href="/admin"
-              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-orange transition-colors"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold transition-colors"
             >
               Admin
             </Link>
@@ -66,7 +64,7 @@ export default async function SiteHeader() {
           {role === "vendor" && (
             <Link
               href="/vendor/dashboard"
-              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-orange transition-colors"
+              className="hidden md:inline-block text-sm font-medium text-white/80 hover:text-brand-gold transition-colors"
             >
               Vendor Dashboard
             </Link>

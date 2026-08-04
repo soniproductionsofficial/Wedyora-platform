@@ -80,7 +80,7 @@ export default async function Home() {
             </p>
             <h1 className="font-heading text-4xl md:text-5xl font-bold leading-tight mb-6">
               Find. Book.{" "}
-              <span className="text-brand-orange">Celebrate.</span>
+              <span className="text-brand-gold-bright">Celebrate.</span>
             </h1>
             <p className="text-white/70 mb-10">
               Photography, decor, catering and more — every vendor on Wedyora
@@ -130,7 +130,7 @@ export default async function Home() {
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex flex-col items-center gap-2">
                 <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20">
-                  <Icon className="h-5 w-5 text-brand-orange" />
+                  <Icon className="h-5 w-5 text-brand-gold" />
                 </span>
                 <p className="text-xs text-white/70 font-medium">{label}</p>
               </div>

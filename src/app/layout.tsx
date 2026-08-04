@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: "Wedyora — For Every Moment, Forever",
   description:
     "Wedyora is India's managed wedding-services platform: book verified photographers, decorators, caterers and more, all in one place.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
