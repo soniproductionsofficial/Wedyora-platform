@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ShieldCheck, Heart, Users } from "lucide-react";
+import Reveal from "@/components/reveal";
 
 // Starter copy — replace with your own founding story, team details, and
 // milestones whenever you're ready. Structure and headings are built to
@@ -9,13 +10,19 @@ export default function AboutPage() {
     <div>
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             About Wedyora
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+          <h1
+            className="animate-fade-in-up font-heading text-3xl md:text-4xl font-bold mb-6"
+            style={{ animationDelay: "120ms" }}
+          >
             For Every Moment, Forever
           </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+          <p
+            className="animate-fade-in-up text-white/70 max-w-2xl mx-auto"
+            style={{ animationDelay: "240ms" }}
+          >
             Wedyora is India&rsquo;s managed wedding-services platform — we
             connect couples with verified photographers, decorators,
             caterers and more, and stay involved from the first booking to
@@ -66,14 +73,18 @@ export default function AboutPage() {
                 title: "One Team, One Number",
                 body: "You're never left coordinating with a stranger — Wedyora stays your single point of contact.",
               },
-            ].map(({ icon: Icon, title, body }) => (
-              <div key={title} className="rounded-2xl bg-white border border-brand-line p-6 text-center">
-                <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange">
+            ].map(({ icon: Icon, title, body }, i) => (
+              <Reveal
+                key={title}
+                delay={i * 100}
+                className="hover-lift group rounded-2xl bg-white border border-brand-line p-6 text-center"
+              >
+                <span className="hover-wiggle mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange transition-transform group-hover:scale-110">
                   <Icon className="h-5 w-5" />
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">{title}</h3>
                 <p className="text-brand-gray text-xs leading-relaxed">{body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>

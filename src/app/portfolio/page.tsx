@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import Reveal from "@/components/reveal";
 
 export default async function PortfolioPage() {
   const supabase = await createClient();
@@ -22,13 +23,19 @@ export default async function PortfolioPage() {
     <div>
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             Portfolio
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+          <h1
+            className="animate-fade-in-up font-heading text-3xl md:text-4xl font-bold mb-6"
+            style={{ animationDelay: "120ms" }}
+          >
             Real Work From Our Verified Vendors
           </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+          <p
+            className="animate-fade-in-up text-white/70 max-w-2xl mx-auto"
+            style={{ animationDelay: "240ms" }}
+          >
             A look at the photography, decor, and coverage our vendors have
             delivered for real weddings.
           </p>
@@ -49,9 +56,10 @@ export default async function PortfolioPage() {
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               {photos.map((p, i) => (
-                <div
+                <Reveal
                   key={`${p.url}-${i}`}
-                  className="rounded-2xl bg-white border border-brand-line overflow-hidden hover:shadow-md transition-shadow"
+                  delay={(i % 6) * 70}
+                  className="hover-lift hover-zoom rounded-2xl bg-white border border-brand-line overflow-hidden"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- vendor-uploaded portfolio images from Supabase Storage, not a local/known-size asset next/image can optimize confidently */}
                   <img
@@ -66,7 +74,7 @@ export default async function PortfolioPage() {
                     <p className="font-heading font-semibold text-sm">{p.vendorName}</p>
                     <p className="text-brand-gray text-xs">{p.city}</p>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           )}

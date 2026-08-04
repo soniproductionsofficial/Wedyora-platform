@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import Reveal from "@/components/reveal";
 
 const HOW_IT_WORKS = [
   {
@@ -75,14 +76,23 @@ export default async function Home() {
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+            <p
+              className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4"
+              style={{ animationDelay: "0ms" }}
+            >
               India&rsquo;s Managed Wedding Services Platform
             </p>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold leading-tight mb-6">
+            <h1
+              className="animate-fade-in-up font-heading text-4xl md:text-5xl font-bold leading-tight mb-6"
+              style={{ animationDelay: "120ms" }}
+            >
               Find. Book.{" "}
-              <span className="text-brand-gold-bright">Celebrate.</span>
+              <span className="animate-shimmer">Celebrate.</span>
             </h1>
-            <p className="text-white/70 mb-10">
+            <p
+              className="animate-fade-in-up text-white/70 mb-10"
+              style={{ animationDelay: "240ms" }}
+            >
               Photography, decor, catering and more — every vendor on Wedyora
               is verified by our team, so you can book with confidence.
             </p>
@@ -92,7 +102,8 @@ export default async function Home() {
           <form
             action="/vendors"
             method="get"
-            className="bg-white rounded-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto mb-12"
+            className="animate-scale-in bg-white rounded-2xl p-3 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto mb-12"
+            style={{ animationDelay: "360ms" }}
           >
             <select
               name="category"
@@ -127,9 +138,16 @@ export default async function Home() {
               { icon: CalendarCheck, label: "Easy Booking" },
               { icon: CreditCard, label: "Secure Payments" },
               { icon: Headset, label: "Real Support" },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex flex-col items-center gap-2">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20">
+            ].map(({ icon: Icon, label }, i) => (
+              <div
+                key={label}
+                className="animate-fade-in-up flex flex-col items-center gap-2"
+                style={{ animationDelay: `${420 + i * 100}ms` }}
+              >
+                <span
+                  className="hover-wiggle animate-float flex h-11 w-11 items-center justify-center rounded-full border border-white/20"
+                  style={{ animationDelay: `${i * 250}ms` }}
+                >
                   <Icon className="h-5 w-5 text-brand-gold-bright" />
                 </span>
                 <p className="text-xs text-white/70 font-medium">{label}</p>
@@ -147,19 +165,20 @@ export default async function Home() {
               Popular Services
             </h2>
             <div className="flex flex-wrap justify-center gap-4">
-              {categories.map((c) => {
+              {categories.map((c, i) => {
                 const Icon = getCategoryIcon(c.slug);
                 return (
-                  <Link
-                    key={c.id}
-                    href={`/vendors?category=${c.slug}`}
-                    className="flex flex-col items-center gap-2 w-24 group"
-                  >
-                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream border border-brand-line group-hover:border-brand-orange group-hover:text-brand-orange transition-colors">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <p className="text-xs font-medium text-center">{c.name}</p>
-                  </Link>
+                  <Reveal key={c.id} delay={i * 60} className="w-24">
+                    <Link
+                      href={`/vendors?category=${c.slug}`}
+                      className="flex flex-col items-center gap-2 w-24 group"
+                    >
+                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream border border-brand-line transition-all duration-300 group-hover:border-brand-orange group-hover:text-brand-orange group-hover:-translate-y-1 group-hover:shadow-lg">
+                        <Icon className="h-6 w-6" />
+                      </span>
+                      <p className="text-xs font-medium text-center">{c.name}</p>
+                    </Link>
+                  </Reveal>
                 );
               })}
             </div>
@@ -193,10 +212,11 @@ export default async function Home() {
             </p>
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {vendors.map((v) => (
-                <div
+              {vendors.map((v, i) => (
+                <Reveal
                   key={v.id}
-                  className="rounded-2xl bg-white border border-brand-line overflow-hidden hover:shadow-md transition-shadow"
+                  delay={i * 80}
+                  className="hover-lift hover-zoom rounded-2xl bg-white border border-brand-line overflow-hidden"
                 >
                   <div
                     className="h-40 bg-brand-charcoal bg-cover bg-center"
@@ -219,7 +239,7 @@ export default async function Home() {
                         : ""}
                     </p>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           )}
@@ -234,8 +254,8 @@ export default async function Home() {
           </h2>
           <div className="grid md:grid-cols-5 gap-6">
             {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.title} className="text-center">
-                <span className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-brand-black text-sm font-semibold">
+              <Reveal key={step.title} delay={i * 100} className="text-center">
+                <span className="animate-pulse-glow mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-brand-black text-sm font-semibold">
                   {i + 1}
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">
@@ -244,7 +264,7 @@ export default async function Home() {
                 <p className="text-brand-gray text-xs leading-relaxed">
                   {step.body}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -257,12 +277,13 @@ export default async function Home() {
             Why Couples Choose Wedyora
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {WHY_WEDYORA.map(({ icon: Icon, title, body }) => (
-              <div
+            {WHY_WEDYORA.map(({ icon: Icon, title, body }, i) => (
+              <Reveal
                 key={title}
-                className="rounded-2xl bg-white border border-brand-line p-6"
+                delay={i * 90}
+                className="hover-lift group rounded-2xl bg-white border border-brand-line p-6"
               >
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange mb-4">
+                <span className="hover-wiggle flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange mb-4 transition-transform group-hover:scale-110">
                   <Icon className="h-5 w-5" />
                 </span>
                 <h3 className="font-heading text-sm font-semibold mb-2">
@@ -271,15 +292,15 @@ export default async function Home() {
                 <p className="text-brand-gray text-xs leading-relaxed">
                   {body}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* Vendor CTA */}
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
+      <section className="bg-brand-black text-white overflow-hidden">
+        <Reveal className="mx-auto max-w-6xl px-6 py-16 text-center">
           <h2 className="font-heading text-2xl font-semibold mb-4">
             Are you a wedding vendor?
           </h2>
@@ -289,11 +310,11 @@ export default async function Home() {
           </p>
           <Link
             href="/vendor/apply"
-            className="px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
+            className="animate-pulse-glow inline-block px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
           >
             Apply as a Vendor
           </Link>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

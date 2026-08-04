@@ -5,7 +5,7 @@ export default function SiteFooter() {
     <footer className="border-t border-white/10 bg-brand-black text-white/60 mt-16">
       <div className="mx-auto max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-3 text-sm">
         <div>
-          <Link href="/" className="inline-flex items-center mb-3">
+          <Link href="/" className="inline-flex items-center mb-3 transition-transform duration-300 hover:scale-105">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/wedyora-logo.png"
@@ -23,17 +23,17 @@ export default function SiteFooter() {
           <p className="text-white font-medium mb-3">For Couples</p>
           <ul className="flex flex-col gap-2">
             <li>
-              <Link href="/vendors" className="hover:text-brand-gold-bright transition-colors">
+              <Link href="/vendors" className="link-underline hover:text-brand-gold-bright transition-colors">
                 Browse Vendors
               </Link>
             </li>
             <li>
-              <Link href="/book" className="hover:text-brand-gold-bright transition-colors">
+              <Link href="/book" className="link-underline hover:text-brand-gold-bright transition-colors">
                 Plan Your Wedding
               </Link>
             </li>
             <li>
-              <Link href="/signup" className="hover:text-brand-gold-bright transition-colors">
+              <Link href="/signup" className="link-underline hover:text-brand-gold-bright transition-colors">
                 Create an Account
               </Link>
             </li>
@@ -44,12 +44,12 @@ export default function SiteFooter() {
           <p className="text-white font-medium mb-3">For Vendors</p>
           <ul className="flex flex-col gap-2">
             <li>
-              <Link href="/vendor/apply" className="hover:text-brand-gold-bright transition-colors">
+              <Link href="/vendor/apply" className="link-underline hover:text-brand-gold-bright transition-colors">
                 Become a Partner
               </Link>
             </li>
             <li>
-              <Link href="/login" className="hover:text-brand-gold-bright transition-colors">
+              <Link href="/login" className="link-underline hover:text-brand-gold-bright transition-colors">
                 Vendor Log In
               </Link>
             </li>
@@ -60,31 +60,31 @@ export default function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-6">
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs justify-center">
-            <Link href="/about" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/about" className="link-underline hover:text-brand-gold-bright transition-colors">
               About Us
             </Link>
-            <Link href="/services" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/services" className="link-underline hover:text-brand-gold-bright transition-colors">
               Services
             </Link>
-            <Link href="/portfolio" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/portfolio" className="link-underline hover:text-brand-gold-bright transition-colors">
               Portfolio
             </Link>
-            <Link href="/blog" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/blog" className="link-underline hover:text-brand-gold-bright transition-colors">
               Blog
             </Link>
-            <Link href="/faq" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/faq" className="link-underline hover:text-brand-gold-bright transition-colors">
               FAQ
             </Link>
-            <Link href="/contact" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/contact" className="link-underline hover:text-brand-gold-bright transition-colors">
               Contact Us
             </Link>
-            <Link href="/privacy-policy" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/privacy-policy" className="link-underline hover:text-brand-gold-bright transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms-and-conditions" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/terms-and-conditions" className="link-underline hover:text-brand-gold-bright transition-colors">
               Terms and Conditions
             </Link>
-            <Link href="/refund-policy" className="hover:text-brand-gold-bright transition-colors">
+            <Link href="/refund-policy" className="link-underline hover:text-brand-gold-bright transition-colors">
               Refund Policy
             </Link>
           </div>

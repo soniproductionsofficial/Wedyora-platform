@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import Reveal from "@/components/reveal";
 
 export default async function ServicesPage() {
   const supabase = await createClient();
@@ -13,13 +14,19 @@ export default async function ServicesPage() {
     <div>
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="animate-fade-in-up text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             What We Offer
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+          <h1
+            className="animate-fade-in-up font-heading text-3xl md:text-4xl font-bold mb-6"
+            style={{ animationDelay: "120ms" }}
+          >
             Every Wedding Service, One Verified Platform
           </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+          <p
+            className="animate-fade-in-up text-white/70 max-w-2xl mx-auto"
+            style={{ animationDelay: "240ms" }}
+          >
             Browse by service, tell us your date and city, and we&rsquo;ll
             match you with a verified vendor who fits your budget.
           </p>
@@ -34,22 +41,23 @@ export default async function ServicesPage() {
             </p>
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {categories.map((c) => {
+              {categories.map((c, i) => {
                 const Icon = getCategoryIcon(c.slug);
                 return (
-                  <Link
-                    key={c.id}
-                    href={`/vendors?category=${c.slug}`}
-                    className="flex items-center gap-4 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-orange hover:shadow-md transition-all"
-                  >
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <div>
-                      <p className="font-heading font-semibold">{c.name}</p>
-                      <p className="text-xs text-brand-gray">View verified vendors &rarr;</p>
-                    </div>
-                  </Link>
+                  <Reveal key={c.id} delay={i * 60}>
+                    <Link
+                      href={`/vendors?category=${c.slug}`}
+                      className="hover-lift group flex items-center gap-4 rounded-2xl border border-brand-line bg-white p-5 hover:border-brand-orange transition-all"
+                    >
+                      <span className="hover-wiggle flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream transition-transform group-hover:scale-110">
+                        <Icon className="h-6 w-6" />
+                      </span>
+                      <div>
+                        <p className="font-heading font-semibold">{c.name}</p>
+                        <p className="text-xs text-brand-gray">View verified vendors &rarr;</p>
+                      </div>
+                    </Link>
+                  </Reveal>
                 );
               })}
             </div>
