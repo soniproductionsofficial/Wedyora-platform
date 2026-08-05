@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbf8f3;
+  --foreground: #151515;
+  --surface: #ffffff;
+  --surface-elevated: #fbf8f3;
+  --muted: #6b6b6b;
+  --line: #ececec;
+  --glass: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.18);
+
+  --brand-orange: #e2711d;
+  --brand-orange-dark: #b85a13;
+  --brand-black: #100e0c;
+  --brand-charcoal: #221d19;
+  --brand-gold: #d9a441;
+  --brand-cream: #fbf8f3;
+  --brand-gray: #6b6b6b;
+  --brand-line: #ececec;
+}
+
+html[data-theme="dark"] {
+  --background: #100e0c;
+  --foreground: #f5f0e8;
+  --surface: #1a1612;
+  --surface-elevated: #221d19;
+  --muted: #a39a8f;
+  --line: rgba(255, 255, 255, 0.1);
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(217, 164, 65, 0.22);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-brand-black: var(--brand-black);
+  --color-brand-charcoal: var(--brand-charcoal);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-line: var(--brand-line);
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Native smooth-scroll fights GSAP ScrollTrigger scrub — leave off. */
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brand-gold) 40%, transparent);
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.luxury-gradient {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(226, 113, 29, 0.18), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 20%, rgba(217, 164, 65, 0.14), transparent 50%),
+    linear-gradient(160deg, #100e0c 0%, #1c1712 45%, #100e0c 100%);
+}
+
+/* Pin panels stack; GSAP controls visibility */
+.pin-panel {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fw-petal,
+  .fw-sparkle,
+  .fw-ring {
+    display: none !important;
+  }
+}
