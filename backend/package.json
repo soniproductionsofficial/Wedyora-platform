@@ -6,7 +6,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && mkdir -p dist/docs && cp src/docs/API.md dist/docs/API.md",
     "start": "node dist/server.js",
     "lint": "tsc -p tsconfig.json --noEmit"
   },
