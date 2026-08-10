@@ -12,22 +12,27 @@ const HOW_IT_WORKS = [
   {
     title: "You place your request",
     body: "Tell us the service, date, city, and budget for your event.",
+    icon: "📋",
   },
   {
     title: "Wedyora reviews it",
     body: "Our team checks the details and finds a verified vendor who fits.",
+    icon: "🔍",
   },
   {
     title: "A vendor is assigned",
     body: "We confirm pricing with you before anything is charged.",
+    icon: "👥",
   },
   {
     title: "You pay a secure deposit",
     body: "Held through Razorpay, India's trusted payment system.",
+    icon: "💳",
   },
   {
     title: "Your vendor delivers",
     body: "On the day, and beyond — Wedyora stays the single point of contact.",
+    icon: "✨",
   },
 ];
 
@@ -62,13 +67,78 @@ export default async function Home() {
     .select("id, name, slug")
     .order("name");
 
-  // Priest Services is still a bookable category (booking form, vendor
-  // applications, admin) — it's just left out of the homepage's
-  // "Popular Services" showcase strip specifically.
   const categories = allCategories?.filter((c) => c.slug !== "priest");
 
   return (
     <div>
+      <style jsx global>{`
+        @keyframes popIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.3) translateY(20px);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .how-works-card {
+          animation: popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          opacity: 0;
+        }
+
+        .step-item-animated {
+          animation: slideInLeft 0.6s ease-out forwards;
+          opacity: 0;
+        }
+
+        .step-item-animated:nth-child(odd) {
+          animation: slideInLeft 0.6s ease-out forwards;
+        }
+
+        .step-item-animated:nth-child(even) {
+          animation: slideInRight 0.6s ease-out forwards;
+        }
+
+        .step-item-animated:nth-child(1) { animation-delay: 0.1s; }
+        .step-item-animated:nth-child(2) { animation-delay: 0.2s; }
+        .step-item-animated:nth-child(3) { animation-delay: 0.3s; }
+        .step-item-animated:nth-child(4) { animation-delay: 0.4s; }
+        .step-item-animated:nth-child(5) { animation-delay: 0.5s; }
+
+        .step-badge {
+          animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          font-size: 32px;
+          animation-delay: 0.3s;
+        }
+      `}</style>
+
       {/* Hero */}
       <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
@@ -143,26 +213,65 @@ export default async function Home() {
         </section>
       )}
 
-      {/* How Wedyora works */}
-      <section className="bg-white border-t border-brand-line">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-heading text-2xl font-semibold text-center mb-12">
-            How Wedyora Works
-          </h2>
-          <div className="grid md:grid-cols-5 gap-6">
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.title} className="text-center">
-                <span className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-brand-black text-sm font-semibold">
-                  {i + 1}
-                </span>
-                <h3 className="font-heading text-sm font-semibold mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-brand-gray text-xs leading-relaxed">
-                  {step.body}
-                </p>
+      {/* How Wedyora Works - ANIMATED CARD */}
+      <section className="bg-gradient-to-b from-white via-brand-cream to-white border-t border-brand-line py-20 md:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
+              How Wedyora Works
+            </h2>
+            <p className="text-brand-gray text-lg max-w-2xl mx-auto">
+              A seamless process from your first step to your perfect celebration
+            </p>
+          </div>
+
+          {/* Animated Card Container */}
+          <div className="how-works-card rounded-3xl bg-white border border-brand-line shadow-2xl p-8 md:p-12 overflow-hidden">
+            {/* Card Background Effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-gold-bright/5 via-transparent to-brand-orange/5"></div>
+
+            <div className="relative z-10">
+              <div className="grid md:grid-cols-5 gap-6 md:gap-4">
+                {HOW_IT_WORKS.map((step, i) => (
+                  <div
+                    key={step.title}
+                    className="step-item-animated text-center"
+                  >
+                    {/* Step Emoji */}
+                    <div className="mb-6 text-5xl step-badge">
+                      {step.icon}
+                    </div>
+
+                    {/* Step Number */}
+                    <div className="mb-4">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-gold-bright to-brand-orange text-brand-black font-bold">
+                        {i + 1}
+                      </span>
+                    </div>
+
+                    {/* Step Title */}
+                    <h3 className="font-heading text-sm font-bold mb-2 text-brand-black">
+                      {step.title}
+                    </h3>
+
+                    {/* Step Description */}
+                    <p className="text-brand-gray text-xs leading-relaxed">
+                      {step.body}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-12">
+            <Link
+              href="/book"
+              className="inline-block px-8 py-4 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-all hover:scale-105"
+            >
+              Start Your Wedding Planning →
+            </Link>
           </div>
         </div>
       </section>
@@ -177,7 +286,7 @@ export default async function Home() {
             {WHY_WEDYORA.map(({ icon: Icon, title, body }) => (
               <div
                 key={title}
-                className="rounded-2xl bg-white border border-brand-line p-6"
+                className="rounded-2xl bg-white border border-brand-line p-6 hover:shadow-lg transition-shadow"
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-black/10 text-brand-black mb-4">
                   <Icon className="h-5 w-5" />
