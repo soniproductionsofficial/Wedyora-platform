@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "platform:api": "npm --prefix backend run dev",
+    "platform:web": "npm --prefix frontend run dev",
+    "platform:seed": "npm --prefix backend run seed",
+    "platform:build": "npm --prefix backend run build && npm --prefix frontend run build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
