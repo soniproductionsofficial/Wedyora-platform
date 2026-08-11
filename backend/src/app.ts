@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import { clientOrigins } from "./config/env";
+import { clientOrigins, env } from "./config/env";
 import { authenticate, authorize, errorHandler } from "./middleware/auth";
 import authRoutes from "./routes/auth.routes";
 import vendorRoutes from "./routes/vendor.routes";
@@ -21,18 +21,44 @@ import { join } from "path";
 import { EVENT_TYPES, SERVICE_TYPES } from "./utils/validators";
 import { mockPayments } from "./services/stripe";
 
+function isAllowedOrigin(origin: string | undefined): boolean {
+  if (!origin) return true;
+  if (clientOrigins.includes("*") || clientOrigins.includes(origin)) return true;
+
+  // Demo tunnels (Cloudflare quick tunnels, localtunnel)
+  try {
+    const host = new URL(origin).hostname;
+    if (
+      host.endsWith(".trycloudflare.com") ||
+      host.endsWith(".loca.lt") ||
+      host.endsWith(".ngrok-free.app") ||
+      host.endsWith(".ngrok.io")
+    ) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+
+  // In development, also allow any localhost / 127.0.0.1 port
+  if (env.NODE_ENV !== "production") {
+    return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  }
+
+  return false;
+}
+
 export function createApp(): Express {
   const app = express();
 
-  app.use(helmet());
+  app.use(helmet({
+    // Allow the Vite/React app to be framed/opened via public demo tunnels
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }));
   app.use(
     cors({
       origin: (origin, cb) => {
-        if (
-          !origin ||
-          clientOrigins.includes(origin) ||
-          clientOrigins.includes("*")
-        ) {
+        if (isAllowedOrigin(origin)) {
           cb(null, true);
         } else {
           cb(new AppError(`Origin ${origin} not allowed by CORS`, 403));
