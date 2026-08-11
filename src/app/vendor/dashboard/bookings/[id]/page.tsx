@@ -16,6 +16,7 @@ import {
 } from "@/lib/actions/wedding-day-ops";
 import VendorCheckinButton from "@/components/vendor-checkin-button";
 import PrintCallSheetButton from "@/components/print-call-sheet-button";
+import { toggleVendorTaskAction } from "@/lib/actions/vendor-dashboard";
 
 export default async function VendorBookingDetailPage({
   params,
@@ -44,15 +45,22 @@ export default async function VendorBookingDetailPage({
 
   if (!booking) notFound();
 
-  const [{ data: ops }, { data: addOns }, { data: deliverables }] = await Promise.all([
-    supabase.from("wedding_day_ops").select("*").eq("booking_id", id).maybeSingle(),
-    supabase.from("booking_add_ons").select("add_ons(name)").eq("booking_id", id),
-    supabase
-      .from("wedding_day_deliverables")
-      .select("*")
-      .eq("booking_id", id)
-      .order("created_at", { ascending: false }),
-  ]);
+  const [{ data: ops }, { data: addOns }, { data: deliverables }, { data: tasks }] =
+    await Promise.all([
+      supabase.from("wedding_day_ops").select("*").eq("booking_id", id).maybeSingle(),
+      supabase.from("booking_add_ons").select("add_ons(name)").eq("booking_id", id),
+      supabase
+        .from("wedding_day_deliverables")
+        .select("*")
+        .eq("booking_id", id)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("vendor_tasks")
+        .select("id, title, sort_order, completed_at")
+        .eq("booking_id", id)
+        .eq("vendor_id", user.id)
+        .order("sort_order", { ascending: true }),
+    ]);
 
   const vendorDone = ops?.vendor_checklist_done ?? [];
   const checkoutDone = ops?.checkout_checklist_done ?? [];
@@ -68,6 +76,45 @@ export default async function VendorBookingDetailPage({
         <p className="print:hidden rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
           {error}
         </p>
+      )}
+
+      {(tasks ?? []).length > 0 && (
+        <section className="print:hidden rounded-2xl border border-brand-line bg-white p-6">
+          <h2 className="font-heading text-lg font-semibold mb-2">Assigned tasks</h2>
+          <p className="text-xs text-brand-gray mb-4">
+            Tasks Wedyora assigned when matching you to this booking.
+          </p>
+          <ul className="flex flex-col gap-2">
+            {(tasks ?? []).map((task) => (
+              <li
+                key={task.id}
+                className="flex items-center justify-between gap-3 rounded-xl border border-brand-line px-4 py-3"
+              >
+                <span
+                  className={`text-sm ${
+                    task.completed_at ? "line-through text-brand-gray" : "text-brand-black"
+                  }`}
+                >
+                  {task.title}
+                </span>
+                <form action={toggleVendorTaskAction}>
+                  <input type="hidden" name="task_id" value={task.id} />
+                  <input
+                    type="hidden"
+                    name="completed"
+                    value={task.completed_at ? "false" : "true"}
+                  />
+                  <button
+                    type="submit"
+                    className="text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-line hover:border-brand-orange transition-colors"
+                  >
+                    {task.completed_at ? "Undo" : "Done"}
+                  </button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {/* Call Sheet: auto-generated from booking data, nothing stored separately. */}

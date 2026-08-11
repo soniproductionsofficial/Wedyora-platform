@@ -60,8 +60,27 @@ export async function acceptLeadAction(formData: FormData) {
     );
   }
 
+  const { data: full } = await supabase
+    .from("bookings")
+    .select("customer_id, event_date, city, service_categories(name), vendor_profiles(business_name)")
+    .eq("id", bookingId)
+    .single();
+
+  if (full?.customer_id) {
+    const { createNotification } = await import("@/lib/notifications");
+    await createNotification({
+      userId: full.customer_id,
+      kind: "lead",
+      title: "Your vendor accepted the booking",
+      body: `${full.vendor_profiles?.business_name ?? "Your vendor"} accepted your ${full.service_categories?.name ?? "event"} request. You can pay the advance from My Account.`,
+      link: "/account",
+      bookingId,
+    });
+  }
+
   revalidatePath("/vendor/dashboard/leads");
   revalidatePath("/vendor/dashboard");
+  revalidatePath("/account");
 }
 
 export async function rejectLeadAction(formData: FormData) {
@@ -84,6 +103,7 @@ export async function rejectLeadAction(formData: FormData) {
       vendor_id: null,
       package_id: null,
       agreed_price: null,
+      agreed_vendor_payout: null,
       advance_amount: null,
       assigned_by: null,
       assigned_at: null,
@@ -95,6 +115,12 @@ export async function rejectLeadAction(formData: FormData) {
   if (error) {
     redirect("/vendor/dashboard/leads?error=" + encodeURIComponent(error.message));
   }
+
+  // Clear snapshotted add-ons and tasks from this rejected assignment.
+  const admin = createAdminClient();
+  await admin.from("booking_add_ons").delete().eq("booking_id", bookingId);
+  await admin.from("vendor_tasks").delete().eq("booking_id", bookingId);
+  await admin.from("payout_milestones").delete().eq("booking_id", bookingId);
 
   revalidatePath("/vendor/dashboard/leads");
   revalidatePath("/vendor/dashboard");
@@ -219,4 +245,62 @@ export async function updateVendorProfileAction(formData: FormData) {
 
   revalidatePath("/vendor/dashboard/profile");
   revalidatePath("/vendor/dashboard");
+}
+
+export async function toggleVendorTaskAction(formData: FormData) {
+  const taskId = String(formData.get("task_id") ?? "");
+  const completed = String(formData.get("completed") ?? "") === "true";
+  if (!taskId) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await supabase
+    .from("vendor_tasks")
+    .update({ completed_at: completed ? new Date().toISOString() : null })
+    .eq("id", taskId)
+    .eq("vendor_id", user.id);
+
+  revalidatePath("/vendor/dashboard/bookings");
+  revalidatePath("/vendor/dashboard");
+}
+
+export async function markNotificationReadAction(formData: FormData) {
+  const notificationId = String(formData.get("notification_id") ?? "");
+  if (!notificationId) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await supabase
+    .from("notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("id", notificationId)
+    .eq("user_id", user.id);
+
+  revalidatePath("/vendor/dashboard/notifications");
+  revalidatePath("/account");
+}
+
+export async function markAllNotificationsReadAction() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await supabase
+    .from("notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("user_id", user.id)
+    .is("read_at", null);
+
+  revalidatePath("/vendor/dashboard/notifications");
+  revalidatePath("/account");
 }

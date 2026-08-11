@@ -345,11 +345,25 @@ async function BookingAssignCard({
             </div>
           )}
 
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            Extra vendor tasks (optional, one per line)
+            <textarea
+              name="vendor_tasks"
+              rows={3}
+              placeholder="Bring backup lighting&#10;Confirm mehendi schedule with family"
+              className="rounded-lg border border-brand-line px-3 py-2 text-sm"
+            />
+            <span className="text-[11px] text-brand-gray font-normal">
+              Default prep / check-in / deliverable tasks are always assigned.
+              The vendor is notified as soon as you click Assign.
+            </span>
+          </label>
+
           <button
             type="submit"
             className="self-start px-4 py-2 rounded-full bg-brand-black text-white text-sm font-semibold hover:bg-brand-charcoal"
           >
-            Assign
+            Assign &amp; notify vendor
           </button>
         </form>
       )}

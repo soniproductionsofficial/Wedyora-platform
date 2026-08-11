@@ -29,7 +29,11 @@ the dev sandbox, but NOT yet against a real Supabase/Razorpay project):
 - Vendor application form, also phone + OTP (creates a login + a `pending`
   vendor profile)
 - Public vendor browsing page, filterable by category/city (only shows
-  `approved` vendors)
+  `approved` vendors) at `/vendors`
+- Homepage welcome popup, flip flash cards for How Wedyora Works, and
+  vendor plan/deposit popup
+- In-app notifications when a vendor is assigned a lead (and when they
+  are approved); vendor tasks assigned with each booking
 - Admin panel (`/admin`) — approve/reject vendor applications, and manually
   assign an approved vendor + set the agreed price / advance amount on a
   booking (a manual stand-in for the future AI matching engine)
@@ -143,6 +147,11 @@ order, the same way — paste into the SQL Editor and run.
   Policy) linking to `/vendor-terms` and `/vendor-cancellation-policy`,
   each rendering the full text from your Word documents; applying without
   ticking both is blocked.
+- `0010_notifications_and_vendor_tasks.sql` — in-app `notifications` for
+  vendors/customers (lead assigned, application approved, vendor accepted)
+  plus `vendor_tasks` rows created when admin assigns a booking. Vendors
+  see a Notifications inbox and can complete assigned tasks on the booking
+  detail page. Public vendor browse lives at `/vendors`.
 
 ## Deployment
 
