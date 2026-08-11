@@ -7,6 +7,9 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import WelcomePopup from "@/components/welcome-popup";
+import HowItWorksFlashCards from "@/components/how-it-works-flash-cards";
+import VendorCtaSection from "@/components/vendor-cta-section";
 
 const HOW_IT_WORKS = [
   {
@@ -71,116 +74,46 @@ export default async function Home() {
 
   return (
     <div>
-      <style jsx global>{`
-        @keyframes popIn {
-          0% {
-            opacity: 0;
-            transform: scale(0.3) translateY(20px);
-          }
-          50% {
-            transform: scale(1.05);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
+      <WelcomePopup />
 
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
+      {/* Hero — full-bleed brand composition */}
+      <section className="relative min-h-[88vh] flex items-center overflow-hidden bg-brand-black text-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/services/decoration.jpg"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-35 scale-105 animate-hero- ken"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 via-brand-black/75 to-brand-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(244,196,0,0.12),transparent_60%)]" />
 
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .how-works-card {
-          animation: popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-          opacity: 0;
-        }
-
-        .step-item-animated {
-          animation: slideInLeft 0.6s ease-out forwards;
-          opacity: 0;
-        }
-
-        .step-item-animated:nth-child(odd) {
-          animation: slideInLeft 0.6s ease-out forwards;
-        }
-
-        .step-item-animated:nth-child(even) {
-          animation: slideInRight 0.6s ease-out forwards;
-        }
-
-        .step-item-animated:nth-child(1) { animation-delay: 0.1s; }
-        .step-item-animated:nth-child(2) { animation-delay: 0.2s; }
-        .step-item-animated:nth-child(3) { animation-delay: 0.3s; }
-        .step-item-animated:nth-child(4) { animation-delay: 0.4s; }
-        .step-item-animated:nth-child(5) { animation-delay: 0.5s; }
-
-        .step-badge {
-          animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-          font-size: 32px;
-          animation-delay: 0.3s;
-        }
-      `}</style>
-
-      {/* Hero */}
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
-              India&rsquo;s Managed Wedding Services Platform
+        <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28 w-full">
+          <div className="max-w-2xl animate-fade-up">
+            <p className="font-heading text-brand-gold-bright text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Wedyora
             </p>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold leading-tight mb-6">
-              Find. Book.{" "}
-              <span className="text-brand-gold-bright">Celebrate.</span>
+            <h1 className="font-heading text-3xl md:text-5xl font-bold leading-tight mb-5">
+              For every moment,{" "}
+              <span className="text-brand-gold-bright">forever.</span>
             </h1>
-            <p className="text-white/70 mb-10">
-              Photography, decor, catering and more — every vendor on Wedyora
-              is verified by our team, so you can book with confidence.
+            <p className="text-white/75 text-base md:text-lg mb-10 max-w-xl">
+              Customers book events. We assign verified vendors and their tasks.
+              Partners get notified the moment a booking lands.
             </p>
-          </div>
-
-          {/* Primary CTA */}
-          <div className="flex justify-center mb-12">
-            <Link
-              href="/book"
-              className="px-8 py-4 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
-            >
-              Start Planning Your Wedding
-            </Link>
-          </div>
-
-          {/* Trust row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto text-center">
-            {[
-              { icon: ShieldCheck, label: "Verified Vendors" },
-              { icon: CalendarCheck, label: "Easy Booking" },
-              { icon: CreditCard, label: "Secure Payments" },
-              { icon: Headset, label: "Real Support" },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex flex-col items-center gap-2">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20">
-                  <Icon className="h-5 w-5 text-brand-gold-bright" />
-                </span>
-                <p className="text-xs text-white/70 font-medium">{label}</p>
-              </div>
-            ))}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/book"
+                className="px-8 py-4 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-all hover:scale-[1.02]"
+              >
+                Book your event
+              </Link>
+              <Link
+                href="/vendors"
+                className="px-8 py-4 rounded-full border border-white/35 text-white font-medium hover:bg-white/10 transition-colors"
+              >
+                Browse vendors
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -213,64 +146,24 @@ export default async function Home() {
         </section>
       )}
 
-      {/* How Wedyora Works - ANIMATED CARD */}
-      <section className="bg-gradient-to-b from-white via-brand-cream to-white border-t border-brand-line py-20 md:py-32">
+      {/* How Wedyora Works — flash cards */}
+      <section className="bg-gradient-to-b from-white via-brand-cream to-white border-t border-brand-line py-20 md:py-28">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
               How Wedyora Works
             </h2>
             <p className="text-brand-gray text-lg max-w-2xl mx-auto">
-              A seamless process from your first step to your perfect celebration
+              Flip each card — from request to celebration in five steps.
             </p>
           </div>
-
-          {/* Animated Card Container */}
-          <div className="how-works-card rounded-3xl bg-white border border-brand-line shadow-2xl p-8 md:p-12 overflow-hidden">
-            {/* Card Background Effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-gold-bright/5 via-transparent to-brand-orange/5"></div>
-
-            <div className="relative z-10">
-              <div className="grid md:grid-cols-5 gap-6 md:gap-4">
-                {HOW_IT_WORKS.map((step, i) => (
-                  <div
-                    key={step.title}
-                    className="step-item-animated text-center"
-                  >
-                    {/* Step Emoji */}
-                    <div className="mb-6 text-5xl step-badge">
-                      {step.icon}
-                    </div>
-
-                    {/* Step Number */}
-                    <div className="mb-4">
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-gold-bright to-brand-orange text-brand-black font-bold">
-                        {i + 1}
-                      </span>
-                    </div>
-
-                    {/* Step Title */}
-                    <h3 className="font-heading text-sm font-bold mb-2 text-brand-black">
-                      {step.title}
-                    </h3>
-
-                    {/* Step Description */}
-                    <p className="text-brand-gray text-xs leading-relaxed">
-                      {step.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Button */}
+          <HowItWorksFlashCards steps={HOW_IT_WORKS} />
           <div className="text-center mt-12">
             <Link
               href="/book"
               className="inline-block px-8 py-4 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-all hover:scale-105"
             >
-              Start Your Wedding Planning →
+              Start planning →
             </Link>
           </div>
         </div>
@@ -282,45 +175,25 @@ export default async function Home() {
           <h2 className="font-heading text-2xl font-semibold text-center mb-12">
             Why Couples Choose Wedyora
           </h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {WHY_WEDYORA.map(({ icon: Icon, title, body }) => (
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+            {WHY_WEDYORA.map(({ icon: Icon, title, body }, i) => (
               <div
                 key={title}
-                className="rounded-2xl bg-white border border-brand-line p-6 hover:shadow-lg transition-shadow"
+                className="animate-fade-up"
+                style={{ animationDelay: `${0.1 * i}s` }}
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-black/10 text-brand-black mb-4">
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="font-heading text-sm font-semibold mb-2">
-                  {title}
-                </h3>
-                <p className="text-brand-gray text-xs leading-relaxed">
-                  {body}
-                </p>
+                <h3 className="font-heading text-sm font-semibold mb-2">{title}</h3>
+                <p className="text-brand-gray text-xs leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Vendor CTA */}
-      <section className="bg-brand-black text-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
-          <h2 className="font-heading text-2xl font-semibold mb-4">
-            Are you a wedding vendor?
-          </h2>
-          <p className="text-white/70 mb-8 max-w-xl mx-auto">
-            Join Wedyora&rsquo;s verified vendor network and get matched with
-            couples planning their wedding in your city.
-          </p>
-          <Link
-            href="/vendor/apply"
-            className="px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
-          >
-            Apply as a Vendor
-          </Link>
-        </div>
-      </section>
+      <VendorCtaSection />
     </div>
   );
 }

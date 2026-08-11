@@ -37,6 +37,21 @@ export async function reviewVendorAction(formData: FormData) {
     })
     .eq("id", vendorId);
 
+  const { createNotification } = await import("@/lib/notifications");
+  await createNotification({
+    userId: vendorId,
+    kind: "approval",
+    title:
+      decision === "approved"
+        ? "You're approved on Wedyora"
+        : "Application update from Wedyora",
+    body:
+      decision === "approved"
+        ? "Your vendor application was approved. New customer leads will appear in your dashboard."
+        : "Your vendor application was not approved. Contact support if you have questions.",
+    link: decision === "approved" ? "/vendor/dashboard" : "/vendor/dashboard/support",
+  });
+
   revalidatePath("/admin/vendors");
 }
 
@@ -242,7 +257,53 @@ export async function assignVendorToBookingAction(formData: FormData) {
     );
   }
 
+  // Vendor tasks: default checklist + any custom lines the admin typed.
+  const { DEFAULT_VENDOR_TASKS, createNotification } = await import(
+    "@/lib/notifications"
+  );
+  const customTasks = String(formData.get("vendor_tasks") ?? "")
+    .split("\n")
+    .map((t) => t.trim())
+    .filter(Boolean);
+  const taskTitles = [...DEFAULT_VENDOR_TASKS, ...customTasks];
+  const admin = createAdminClient();
+  await admin.from("vendor_tasks").delete().eq("booking_id", bookingId);
+  await admin.from("vendor_tasks").insert(
+    taskTitles.map((title, i) => ({
+      booking_id: bookingId,
+      vendor_id: pkg.vendor_id,
+      title,
+      sort_order: i,
+    }))
+  );
+
+  const { data: bookingDetails } = await supabase
+    .from("bookings")
+    .select(
+      "event_date, city, service_categories(name), profiles!bookings_customer_id_fkey(full_name)"
+    )
+    .eq("id", bookingId)
+    .single();
+
+  const categoryName = bookingDetails?.service_categories?.name ?? "an event";
+  const customerName = bookingDetails?.profiles?.full_name ?? "a customer";
+  const eventDate = bookingDetails?.event_date
+    ? new Date(bookingDetails.event_date).toLocaleDateString("en-IN")
+    : "the event date";
+  const city = bookingDetails?.city ?? "their city";
+
+  await createNotification({
+    userId: pkg.vendor_id,
+    kind: "lead",
+    title: "New lead assigned to you",
+    body: `${customerName} needs ${categoryName} in ${city} on ${eventDate}. Review the lead and accept or reject it.`,
+    link: "/vendor/dashboard/leads",
+    bookingId,
+  });
+
   revalidatePath("/admin/bookings");
+  revalidatePath("/vendor/dashboard/leads");
+  revalidatePath("/vendor/dashboard/notifications");
 }
 
 // --- Booking completion + performance bonus (Vendor Incentive Program) ---

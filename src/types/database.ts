@@ -57,6 +57,7 @@ export type WeddingDayDeliverableCategory =
   | "audio_files"
   | "backup_files";
 export type ContactMessageStatus = "new" | "read" | "resolved";
+export type NotificationKindDb = "info" | "lead" | "payment" | "approval" | "task";
 
 export interface Database {
   public: {
@@ -526,6 +527,74 @@ export interface Database {
         };
         Update: Partial<Database["public"]["Tables"]["contact_messages"]["Row"]>;
         Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          title: string;
+          body: string;
+          link: string | null;
+          kind: NotificationKindDb;
+          booking_id: string | null;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["notifications"]["Row"]> & {
+          user_id: string;
+          title: string;
+          body: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["notifications"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      vendor_tasks: {
+        Row: {
+          id: string;
+          booking_id: string;
+          vendor_id: string;
+          title: string;
+          sort_order: number;
+          completed_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["vendor_tasks"]["Row"]> & {
+          booking_id: string;
+          vendor_id: string;
+          title: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["vendor_tasks"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "vendor_tasks_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "vendor_tasks_vendor_id_fkey";
+            columns: ["vendor_id"];
+            isOneToOne: false;
+            referencedRelation: "vendor_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: Record<string, never>;

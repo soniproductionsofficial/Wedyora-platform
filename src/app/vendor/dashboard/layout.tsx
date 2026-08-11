@@ -10,6 +10,7 @@ import {
   Star,
   User,
   LifeBuoy,
+  Bell,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -40,8 +41,15 @@ export default async function VendorDashboardLayout({
     redirect("/");
   }
 
+  const { count: unreadCount } = await supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .is("read_at", null);
+
   const NAV = [
     { href: "/vendor/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/vendor/dashboard/notifications", label: "Notifications", icon: Bell, badge: unreadCount ?? 0 },
     { href: "/vendor/dashboard/leads", label: "Leads", icon: Inbox },
     { href: "/vendor/dashboard/bookings", label: "Bookings", icon: CalendarCheck },
     { href: "/vendor/dashboard/calendar", label: "Calendar", icon: Calendar },
@@ -61,7 +69,7 @@ export default async function VendorDashboardLayout({
           </p>
           <h1 className="font-heading text-2xl font-bold mb-6">Vendor Dashboard</h1>
           <nav className="flex flex-wrap gap-2 text-sm font-medium">
-            {NAV.map(({ href, label, icon: Icon }) => (
+            {NAV.map(({ href, label, icon: Icon, badge }) => (
               <Link
                 key={href}
                 href={href}
@@ -69,6 +77,11 @@ export default async function VendorDashboardLayout({
               >
                 <Icon className="h-4 w-4" />
                 {label}
+                {typeof badge === "number" && badge > 0 && (
+                  <span className="ml-1 min-w-5 h-5 px-1.5 rounded-full bg-brand-button text-brand-black text-[10px] font-bold flex items-center justify-center">
+                    {badge}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
