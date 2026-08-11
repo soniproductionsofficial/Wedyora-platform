@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --brand-black: #24006c;
+  --brand-charcoal: #170048;
+  --brand-gold: #9e7e00;
+  --brand-gold-bright: #f4c400;
+  --brand-button: #f4c400;
+  --brand-cream: #f7f5fb;
+  --brand-gray: #6b6b6b;
+  --brand-line: #ececec;
+  --brand-orange: #995c00;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-heading: "Fraunces", Georgia, serif;
+}
+
+@theme inline {
+  --color-brand-black: var(--brand-black);
+  --color-brand-charcoal: var(--brand-charcoal);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-bright: var(--brand-gold-bright);
+  --color-brand-button: var(--brand-button);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-line: var(--brand-line);
+  --color-brand-orange: var(--brand-orange);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--brand-cream);
+  color: #151515;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+}
+
+.perspective {
+  perspective: 1200px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}

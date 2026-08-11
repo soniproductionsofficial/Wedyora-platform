@@ -1,5 +1,23 @@
 # Wedyora Platform
 
+The Wedyora booking platform connects customers with wedding vendors.
+
+## Two codebases in this repo
+
+1. **Next.js + Supabase + Razorpay app** (root `src/`) — phone-OTP production path documented below.
+2. **React + Express marketplace stack** (`frontend/` + `backend/`) — email/JWT + Socket.io + Framer Motion UI matching the full marketplace brief. See **[PLATFORM.md](./PLATFORM.md)** to run it.
+
+```bash
+# Marketplace stack (recommended for the React/Express brief)
+cd backend && cp .env.example .env && npm install && npm run dev
+cd frontend && cp .env.example .env && npm install && npm run dev
+# Demo: customer@wedyora.test / vendor@wedyora.test · Password123!
+```
+
+---
+
+## Next.js app (legacy/production path)
+
 The Wedyora booking platform: customers book wedding vendors, vendors apply
 and get verified, and (in later phases) an AI matching engine assigns
 vendors to bookings automatically. Built with Next.js (App Router) +
