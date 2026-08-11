@@ -1,5 +1,10 @@
 # Wedyora Platform
 
+> **Full React + Express + MongoDB + JWT + Stripe stack:** see [`PLATFORM.md`](./PLATFORM.md), [`frontend/`](./frontend/), and [`backend/`](./backend/).  
+> Demo: `cd backend && npm run dev` then `cd frontend && npm run dev` → http://localhost:5173
+
+---
+
 The Wedyora booking platform: customers book wedding vendors, vendors apply
 and get verified, and (in later phases) an AI matching engine assigns
 vendors to bookings automatically. Built with Next.js (App Router) +
