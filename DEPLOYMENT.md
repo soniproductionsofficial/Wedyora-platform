@@ -1,44 +1,34 @@
-# Live deployment map
+# Wedyora live deployment (free tier)
 
-## Live now
+## Architecture
 
-| Surface | URL |
-|---------|-----|
-| **Marketplace app** | https://wedyora-platform.vercel.app/marketplace/ |
-| **API (Supabase Edge)** | https://ykwprmuqecenbqinxpep.supabase.co/functions/v1/marketplace-api |
-| **Health check** | https://ykwprmuqecenbqinxpep.supabase.co/functions/v1/marketplace-api/health |
-| **Legacy Next.js app** | https://wedyora-platform.vercel.app/ |
+| Layer | Host | Notes |
+|-------|------|--------|
+| Frontend | **Vercel** (Vite SPA) | Free |
+| Backend | **Supabase Edge Function** `marketplace-api` | Free — replaces Express/Railway/Render |
+| Database | **Supabase Postgres** (`marketplace_*`) | Free |
 
-Demo logins: `customer@wedyora.test` / `vendor@wedyora.test` · `Password123!`
+Local Express under `backend/` remains for offline smoke tests only. Production traffic uses the Edge Function.
 
-Env on Edge/API path: `DEMO_MODE=false` (persists via Supabase `marketplace_*` tables).
+## Live URLs
 
-## Fully automated path (no dashboard clicks)
+See `DEPLOYMENT_URLS.json` (updated on each deploy).
 
-1. Push to `main` → existing Vercel Git integration deploys Next.js (includes `public/marketplace/`).
-2. GitHub Actions (`.github/workflows/deploy-marketplace.yml`) runs smoke tests + builds on every `main` push.
-3. When these secrets exist (cloud agent env **or** GitHub Actions), `node scripts/deploy-live.mjs` also creates:
-   - Render web service `wedyora-api` (`DEMO_MODE=false`, Supabase, Razorpay test placeholders, JWT)
-   - Vercel project `wedyora-marketplace` with `NEXT_PUBLIC_API_URL` / `VITE_API_URL` → Render URL
+Demo: `customer@wedyora.test` / `vendor@wedyora.test` · `Password123!`
 
-### Secrets to paste once
-
-| Name | Used by |
-|------|---------|
-| `VERCEL_TOKEN` | Create/update Vercel marketplace project |
-| `VERCEL_ORG_ID` | Optional team scope |
-| `RENDER_API_KEY` | Create/update Render `wedyora-api` |
-| `SUPABASE_URL` | Backend |
-| `SUPABASE_SERVICE_ROLE_KEY` / `SUPABASE_KEY` | Backend |
-| `JWT_SECRET` | Backend (auto-generated if omitted) |
-| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Optional; defaults to test placeholders + `MOCK_PAYMENTS=true` |
-
-Also set the same keys on GitHub → Settings → Secrets → Actions for CI deploy.
-
-## Local / script
+## Redeploy
 
 ```bash
-# With tokens:
-export VERCEL_TOKEN=... RENDER_API_KEY=... SUPABASE_SERVICE_ROLE_KEY=...
-node scripts/deploy-live.mjs
+# Edge API
+# via Supabase MCP deploy_edge_function OR:
+# npx supabase functions deploy marketplace-api --project-ref ykwprmuqecenbqinxpep --no-verify-jwt
+
+# Frontend
+cd frontend
+export VERCEL_TOKEN=...
+export VITE_API_URL=https://ykwprmuqecenbqinxpep.supabase.co/functions/v1/marketplace-api
+export VITE_SUPABASE_ANON_KEY=...
+export VITE_BASE_PATH=/
+npm ci && npm run build
+npx vercel deploy --prebuilt --prod --yes --token "$VERCEL_TOKEN"
 ```

@@ -1,6 +1,3 @@
 {
-  "buildCommand": "cd frontend && npm ci && VITE_BASE_PATH=/ VITE_API_URL=$NEXT_PUBLIC_API_URL npm run build",
-  "outputDirectory": "frontend/dist",
-  "framework": null,
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

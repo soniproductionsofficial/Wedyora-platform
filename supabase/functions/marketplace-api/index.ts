@@ -152,7 +152,7 @@ Deno.serve(async (req) => {
 
     if (req.method === "GET" && path === "/docs") {
       return json({
-        auth: ["/auth/register", "/auth/login", "/auth/me"],
+        auth: ["/auth/register", "/auth/login", "/auth/refresh", "/auth/me"],
         vendors: ["/vendors", "/vendors/plans", "/vendors/:id"],
       });
     }
@@ -240,6 +240,31 @@ Deno.serve(async (req) => {
         customer,
         ...tokens,
       });
+    }
+
+    if (req.method === "POST" && path === "/auth/refresh") {
+      const body = await req.json().catch(() => ({}));
+      const token = String(body.refreshToken ?? "");
+      if (!token) return json({ error: "Invalid refresh token" }, 401);
+      try {
+        const payload = jwt.verify(token, JWT_SECRET) as {
+          sub: string;
+          email: string;
+          role: string;
+          typ?: string;
+        };
+        if (payload.typ && payload.typ !== "refresh") {
+          return json({ error: "Invalid refresh token" }, 401);
+        }
+        const accessToken = jwt.sign(
+          { sub: payload.sub, email: payload.email, role: payload.role },
+          JWT_SECRET,
+          { expiresIn: "7d" },
+        );
+        return json({ accessToken });
+      } catch {
+        return json({ error: "Invalid refresh token" }, 401);
+      }
     }
 
     if (req.method === "GET" && path === "/auth/me") {

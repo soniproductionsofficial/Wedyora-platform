@@ -1,10 +1,9 @@
 {
   "apiEdge": "https://ykwprmuqecenbqinxpep.supabase.co/functions/v1/marketplace-api",
   "backend": "https://ykwprmuqecenbqinxpep.supabase.co/functions/v1/marketplace-api",
-  "frontend": "https://wedyora-platform.vercel.app/marketplace/",
-  "marketplacePath": "https://wedyora-platform.vercel.app/marketplace/",
+  "frontend": "https://wedyora-platform.vercel.app/marketplace",
+  "marketplacePath": "https://wedyora-platform.vercel.app/marketplace",
   "legacyNext": "https://wedyora-platform.vercel.app/",
-  "renderBackend": null,
   "dedicatedVercelFrontend": null,
-  "note": "Render + dedicated Vercel project require VERCEL_TOKEN and RENDER_API_KEY. Existing Vercel Git connection auto-deploys main."
+  "note": "Backend is Supabase Edge Function marketplace-api (no Railway/Render). Dedicated Vercel SPA project pending a valid VERCEL_TOKEN; marketplace already live under /marketplace on existing Vercel project."
 }
