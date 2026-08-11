@@ -1,0 +1,83 @@
+name: Deploy Wedyora Marketplace
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-marketplace-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Public anon key (safe to embed). Override via repo secret when rotated.
+  DEFAULT_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrd3BybXVxZWNlbmJxaW54cGVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzcyMjcsImV4cCI6MjEwMDcxMzIyN30.D7PG76FStKvMdXsFsBnyXEAYcYZi6XvB643awzzNHvs
+  EDGE_API_URL: https://ykwprmuqecenbqinxpep.supabase.co/functions/v1/marketplace-api
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+            package-lock.json
+      - name: Backend smoke tests
+        working-directory: backend
+        run: |
+          npm ci
+          npm run smoke
+      - name: Frontend build
+        working-directory: frontend
+        env:
+          VITE_API_URL: ${{ env.EDGE_API_URL }}
+          VITE_BASE_PATH: /
+        run: |
+          export VITE_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            export VITE_SUPABASE_ANON_KEY="$DEFAULT_SUPABASE_ANON_KEY"
+          fi
+          npm ci
+          npm run build
+      - name: Next.js typecheck/build (includes /marketplace embed)
+        run: |
+          npm ci
+          npm run build
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Zero-click Vercel + Render deploy (when tokens present)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
+          RAZORPAY_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] && [ -z "$RENDER_API_KEY" ]; then
+            echo "No VERCEL_TOKEN / RENDER_API_KEY — skipping dedicated project create."
+            echo "Marketplace ships via existing Vercel Git deploy at /marketplace/"
+            echo "API live at: $EDGE_API_URL"
+            exit 0
+          fi
+          node scripts/deploy-live.mjs

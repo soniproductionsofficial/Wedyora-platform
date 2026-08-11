@@ -39,9 +39,10 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, "") || undefined;
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <div className="min-h-screen flex flex-col">
           <SiteHeader />
           <main className="flex-1">

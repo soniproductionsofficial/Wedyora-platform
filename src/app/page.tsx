@@ -71,7 +71,7 @@ export default async function Home() {
 
   return (
     <div>
-      <style jsx global>{`
+      <style>{`
         @keyframes popIn {
           0% {
             opacity: 0;

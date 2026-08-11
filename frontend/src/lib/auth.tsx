@@ -90,10 +90,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSocket(null);
       return;
     }
-    const s = connectSocket(token);
-    return () => {
-      s.disconnect();
-    };
+    // Socket.io only works against the Express backend, not Supabase Edge.
+    if ((import.meta.env.VITE_API_URL || "").includes("/functions/v1/")) {
+      return;
+    }
+    try {
+      const s = connectSocket(token);
+      s.on("connect_error", () => {
+        /* REST notifications still work */
+      });
+      return () => {
+        s.disconnect();
+      };
+    } catch {
+      return;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, connectSocket]);
 
