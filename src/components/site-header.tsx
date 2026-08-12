@@ -23,14 +23,7 @@ export default async function SiteHeader() {
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between gap-4">
         {/* Left: logo + Become a Partner */}
         <div className="flex items-center gap-4 shrink-0">
-          <Link href="/" className="flex items-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/wedyora-logo.png"
-              alt="Wedyora"
-              className="h-8 w-auto"
-            />
-          </Link>
+
           {!user && (
             <Link
               href="/vendor/apply"
