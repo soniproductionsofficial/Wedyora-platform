@@ -36,7 +36,7 @@ const SERVICES = [
     title: "Music",
     slug: "music",
     description:
-      "Live bands, DJs, and classical sets that read the room — from ceremony stillness to reception fire.",
+      "Live bands, DJs, and classical sets that read the room — from ceremony stillness to reception energy.",
     image: "/images/services/music.jpg",
     accent: "from-wedding-gold/90 to-wedding-coral/90",
   },
@@ -95,7 +95,7 @@ const WHY_WEDYORA = [
 
 export default function Home() {
   return (
-    <div className="wedding-home font-[family-name:var(--font-wedding-sans)]">
+    <div className="wedding-home font-wedding-sans">
       <style>{`
         @keyframes heroFadeUp {
           from {
@@ -213,11 +213,11 @@ export default function Home() {
             className="hero-media object-cover object-[center_30%]"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-br from-wedding-red/85 via-wedding-coral/70 to-wedding-purple/80"
+            className="absolute inset-0 bg-gradient-to-br from-wedding-red/75 via-wedding-coral/55 to-wedding-purple/70"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-wedding-deep/90 via-transparent to-wedding-deep/35"
+            className="absolute inset-0 bg-gradient-to-t from-wedding-deep/85 via-transparent to-wedding-deep/25"
             aria-hidden
           />
         </div>
@@ -240,10 +240,10 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-6 pb-16 pt-24 md:min-h-[92vh] md:justify-center md:pb-24 md:pt-20">
           <div className="hero-copy max-w-3xl">
-            <p className="font-[family-name:var(--font-wedding-display)] text-4xl font-semibold tracking-[0.04em] text-wedding-gold-bright drop-shadow-md md:text-6xl lg:text-7xl">
+            <p className="font-wedding-display text-4xl font-semibold tracking-[0.04em] text-wedding-gold-bright drop-shadow-md md:text-6xl lg:text-7xl">
               Wedyora
             </p>
-            <h1 className="mt-4 font-[family-name:var(--font-wedding-display)] text-3xl font-semibold leading-[1.15] text-white drop-shadow-lg md:text-5xl lg:text-[3.35rem]">
+            <h1 className="mt-4 font-wedding-display text-3xl font-semibold leading-[1.15] text-white drop-shadow-lg md:text-5xl lg:text-[3.35rem]">
               Perfect Planners for Your Special Wedding Day
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/90 md:text-lg">
@@ -287,7 +287,7 @@ export default function Home() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-wedding-red">
               Our Services
             </p>
-            <h2 className="font-[family-name:var(--font-wedding-display)] text-3xl font-semibold text-wedding-deep md:text-5xl">
+            <h2 className="font-wedding-display text-3xl font-semibold text-wedding-deep md:text-5xl">
               Everything for a joyful celebration
             </h2>
             <p className="mt-4 text-brand-gray md:text-lg">
@@ -315,7 +315,7 @@ export default function Home() {
                     className={`absolute inset-0 bg-gradient-to-t ${service.accent} opacity-70 transition-opacity duration-500 group-hover:opacity-55`}
                   />
                   <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                    <h3 className="font-[family-name:var(--font-wedding-display)] text-2xl font-semibold tracking-wide">
+                    <h3 className="font-wedding-display text-2xl font-semibold tracking-wide">
                       {service.title}
                     </h3>
                   </div>
@@ -344,7 +344,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-14 text-center">
-            <h2 className="font-[family-name:var(--font-wedding-display)] text-3xl font-semibold text-wedding-deep md:text-4xl">
+            <h2 className="font-wedding-display text-3xl font-semibold text-wedding-deep md:text-4xl">
               How Wedyora Works
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-brand-gray md:text-lg">
@@ -361,7 +361,7 @@ export default function Home() {
                 <span className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-wedding-gold to-wedding-coral text-sm font-bold text-wedding-deep">
                   {i + 1}
                 </span>
-                <h3 className="mt-3 font-[family-name:var(--font-wedding-display)] text-lg font-semibold text-wedding-deep">
+                <h3 className="mt-3 font-wedding-display text-lg font-semibold text-wedding-deep">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-xs leading-relaxed text-brand-gray md:text-sm">
@@ -385,7 +385,7 @@ export default function Home() {
       {/* Why Wedyora */}
       <section className="border-t border-wedding-gold/20 bg-gradient-to-b from-[#faf6ff] to-[#fff8f5] py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="mb-12 text-center font-[family-name:var(--font-wedding-display)] text-3xl font-semibold text-wedding-deep md:text-4xl">
+          <h2 className="mb-12 text-center font-wedding-display text-3xl font-semibold text-wedding-deep md:text-4xl">
             Why Couples Choose Wedyora
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
@@ -397,7 +397,7 @@ export default function Home() {
                 <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-wedding-purple/10 text-wedding-purple">
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="mb-2 font-[family-name:var(--font-wedding-display)] text-lg font-semibold text-wedding-deep">
+                <h3 className="mb-2 font-wedding-display text-lg font-semibold text-wedding-deep">
                   {title}
                 </h3>
                 <p className="text-xs leading-relaxed text-brand-gray md:text-sm">
@@ -412,7 +412,7 @@ export default function Home() {
       {/* Vendor CTA */}
       <section className="bg-gradient-to-r from-wedding-deep via-wedding-purple to-wedding-red text-white">
         <div className="mx-auto max-w-6xl px-6 py-16 text-center">
-          <h2 className="font-[family-name:var(--font-wedding-display)] text-3xl font-semibold md:text-4xl">
+          <h2 className="font-wedding-display text-3xl font-semibold md:text-4xl">
             Are you a wedding vendor?
           </h2>
           <p className="mx-auto mb-8 mt-4 max-w-xl text-white/80">

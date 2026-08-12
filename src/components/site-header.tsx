@@ -99,9 +99,10 @@ export default async function SiteHeader() {
             <>
               <Link
                 href="/signup"
-                className="whitespace-nowrap rounded-full bg-wedding-gold px-4 py-2 text-sm font-semibold text-wedding-deep transition-colors duration-300 hover:bg-wedding-gold-bright"
+                className="whitespace-nowrap rounded-full bg-wedding-gold px-3 py-2 text-sm font-semibold text-wedding-deep transition-colors duration-300 hover:bg-wedding-gold-bright sm:px-4"
               >
-                Customer Sign Up
+                <span className="sm:hidden">Sign Up</span>
+                <span className="hidden sm:inline">Customer Sign Up</span>
               </Link>
               <Link
                 href="/login"
