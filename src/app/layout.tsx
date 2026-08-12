@@ -33,7 +33,7 @@ export default function RootLayout({
             font stylesheet from the App Router's root layout <head> is the
             documented pattern here and applies to every page. */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

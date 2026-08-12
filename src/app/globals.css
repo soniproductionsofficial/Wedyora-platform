@@ -34,6 +34,15 @@
   --brand-cream: #f7f5fb;
   --brand-gray: #6b6b6b;
   --brand-line: #ececec;
+
+  /* Festive Indian wedding palette (home page) */
+  --wedding-red: #c4192a;
+  --wedding-coral: #e85a4f;
+  --wedding-gold: #d4af37;
+  --wedding-gold-bright: #f0d060;
+  --wedding-green: #1a7a5c;
+  --wedding-purple: #4a1c6b;
+  --wedding-deep: #2a0f3d;
 }
 
 @theme inline {
@@ -50,8 +59,17 @@
   --color-brand-cream: var(--brand-cream);
   --color-brand-gray: var(--brand-gray);
   --color-brand-line: var(--brand-line);
+  --color-wedding-red: var(--wedding-red);
+  --color-wedding-coral: var(--wedding-coral);
+  --color-wedding-gold: var(--wedding-gold);
+  --color-wedding-gold-bright: var(--wedding-gold-bright);
+  --color-wedding-green: var(--wedding-green);
+  --color-wedding-purple: var(--wedding-purple);
+  --color-wedding-deep: var(--wedding-deep);
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
   --font-heading: "Poppins", var(--font-sans);
+  --font-wedding-display: "Cormorant Garamond", Georgia, serif;
+  --font-wedding-sans: "Outfit", "Segoe UI", sans-serif;
 }
 
 body {
