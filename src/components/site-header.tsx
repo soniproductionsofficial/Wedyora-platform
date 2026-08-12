@@ -19,7 +19,7 @@ export default async function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-blue-300/20 bg-gradient-to-r from-blue-950 via-blue-700 to-sky-500 text-white backdrop-blur-md">
+    <header className="bg-brand-chrome sticky top-0 z-40 border-b border-white/15 text-white backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
         {/* Left: logo + Become a Partner */}
         <div className="flex shrink-0 items-center gap-4">
@@ -28,7 +28,7 @@ export default async function SiteHeader() {
             <img
               src="/wedyora-logo.png"
               alt="Wedyora"
-              className="h-8 w-auto"
+              className="h-9 w-auto md:h-10"
             />
           </Link>
           {!user && (

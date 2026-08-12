@@ -402,7 +402,7 @@ export default function Home() {
       </section>
 
       {/* Vendor CTA */}
-      <section className="bg-gradient-to-r from-wedding-deep via-wedding-purple to-wedding-red text-white">
+      <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-6xl px-6 py-16 text-center">
           <h2 className="font-wedding-display text-3xl font-semibold md:text-4xl">
             Are you a wedding vendor?
