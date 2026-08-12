@@ -212,14 +212,6 @@ export default function Home() {
             sizes="100vw"
             className="hero-media object-cover object-[center_40%]"
           />
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-wedding-red/75 via-wedding-coral/55 to-wedding-purple/70"
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-wedding-deep/85 via-transparent to-wedding-deep/25"
-            aria-hidden
-          />
         </div>
 
         {/* Soft petal motion */}
@@ -240,13 +232,13 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-6 pb-16 pt-24 md:min-h-[92vh] md:justify-center md:pb-24 md:pt-20">
           <div className="hero-copy max-w-3xl">
-            <p className="font-wedding-display text-4xl font-semibold tracking-[0.04em] text-wedding-gold-bright drop-shadow-md md:text-6xl lg:text-7xl">
+            <p className="font-wedding-display text-4xl font-semibold tracking-[0.04em] text-wedding-gold-bright [text-shadow:0_2px_24px_rgba(0,0,0,0.55)] md:text-6xl lg:text-7xl">
               Wedyora
             </p>
-            <h1 className="mt-4 font-wedding-display text-3xl font-semibold leading-[1.15] text-white drop-shadow-lg md:text-5xl lg:text-[3.35rem]">
+            <h1 className="mt-4 font-wedding-display text-3xl font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] md:text-5xl lg:text-[3.35rem]">
               Perfect Planners for Your Special Wedding Day
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/90 md:text-lg">
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] md:text-lg">
               Verified vendors for decoration, photography, catering, and music
               — coordinated end to end so your celebration feels effortless.
             </p>
