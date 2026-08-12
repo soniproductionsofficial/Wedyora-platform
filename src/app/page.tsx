@@ -206,11 +206,11 @@ export default function Home() {
         <div className="absolute inset-0">
           <Image
             src="/images/hero/wedding-couple.png"
-            alt="Indian wedding couple celebrating under a floral mandap at twilight"
+            alt="Indian wedding couple celebrating with guests amid flower petals and lights"
             fill
             priority
             sizes="100vw"
-            className="hero-media object-cover object-[center_30%]"
+            className="hero-media object-cover object-center"
           />
           <div
             className="absolute inset-0 bg-gradient-to-br from-wedding-red/75 via-wedding-coral/55 to-wedding-purple/70"
