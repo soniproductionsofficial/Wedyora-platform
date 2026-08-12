@@ -205,12 +205,12 @@ export default function Home() {
       <section className="relative isolate min-h-[88vh] overflow-hidden text-white md:min-h-[92vh]">
         <div className="absolute inset-0">
           <Image
-            src="/images/hero/wedding-couple.png"
+            src="/images/hero/wedding-celebration.png"
             alt="Indian wedding couple celebrating with guests amid flower petals and lights"
             fill
             priority
             sizes="100vw"
-            className="hero-media object-cover object-center"
+            className="hero-media object-cover object-[center_40%]"
           />
           <div
             className="absolute inset-0 bg-gradient-to-br from-wedding-red/75 via-wedding-coral/55 to-wedding-purple/70"
