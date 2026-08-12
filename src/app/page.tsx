@@ -206,7 +206,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <Image
             src="/images/hero/wedding-celebration.png"
-            alt="Indian wedding couple celebrating with guests amid flower petals and lights"
+            alt="Indian wedding couple in white celebrating as guests throw yellow flower petals"
             fill
             priority
             sizes="100vw"
