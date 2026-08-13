@@ -202,7 +202,7 @@ export default function Home() {
       `}</style>
 
       {/* Full-bleed hero */}
-      <section className="relative isolate min-h-[88vh] overflow-hidden text-white md:min-h-[92vh]">
+      <section className="relative isolate min-h-[min(88vh,820px)] overflow-hidden text-white md:min-h-[92vh]">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/wedding-celebration.png"
@@ -230,26 +230,26 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-6 pb-16 pt-24 md:min-h-[92vh] md:justify-center md:pb-24 md:pt-20">
+        <div className="relative z-10 mx-auto flex min-h-[min(88vh,820px)] max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-16 sm:pt-24 md:min-h-[92vh] md:justify-center md:pb-24 md:pt-20">
           <div className="hero-copy max-w-3xl">
-            <h1 className="font-wedding-display text-3xl font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] md:text-5xl lg:text-[3.35rem]">
+            <h1 className="font-wedding-display text-[1.85rem] font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] sm:text-3xl md:text-5xl lg:text-[3.35rem]">
               Perfect Planners for Your Special Occasions
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] md:text-lg">
+            <p className="mt-4 max-w-xl text-[0.95rem] leading-relaxed text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] sm:mt-5 sm:text-base md:text-lg">
               Weddings, engagements, birthdays, and more — verified vendors for
               decoration, photography, catering, and music, coordinated end to
               end so every celebration feels effortless.
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-7 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Link
                 href="/book"
-                className="cta-shimmer inline-flex items-center rounded-full bg-gradient-to-r from-wedding-gold via-wedding-gold-bright to-wedding-gold px-8 py-3.5 text-sm font-semibold text-wedding-deep shadow-[0_10px_40px_rgba(212,175,55,0.35)] transition-transform duration-300 hover:scale-[1.03] md:text-base"
+                className="cta-shimmer inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-wedding-gold via-wedding-gold-bright to-wedding-gold px-6 py-3.5 text-sm font-semibold text-wedding-deep shadow-[0_10px_40px_rgba(212,175,55,0.35)] transition-transform duration-300 hover:scale-[1.03] sm:w-auto sm:px-8 md:text-base"
               >
                 Start Planning Your Occasion
               </Link>
               <Link
                 href="#services"
-                className="inline-flex items-center rounded-full border border-white/40 bg-white/10 px-6 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:border-wedding-gold-bright hover:bg-white/20 md:text-base"
+                className="inline-flex w-full items-center justify-center rounded-full border border-white/40 bg-white/10 px-6 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:border-wedding-gold-bright hover:bg-white/20 sm:w-auto md:text-base"
               >
                 Explore Services
               </Link>

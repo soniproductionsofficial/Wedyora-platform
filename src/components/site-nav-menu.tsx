@@ -17,7 +17,14 @@ const NAV_LINKS = [
   { href: "/faq", label: "FAQ" },
 ];
 
-export default function SiteNavMenu() {
+type NavLink = { href: string; label: string };
+
+type SiteNavMenuProps = {
+  /** Links shown only in the mobile menu (auth/partner shortcuts). */
+  mobileLinks?: NavLink[];
+};
+
+export default function SiteNavMenu({ mobileLinks = [] }: SiteNavMenuProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -39,26 +46,41 @@ export default function SiteNavMenu() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative shrink-0">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/20 hover:border-white/40"
+        aria-label={open ? "Close menu" : "Open menu"}
+        className="flex items-center gap-2 rounded-full border border-white/20 px-2.5 py-2 text-sm font-medium text-white/80 transition-colors hover:border-white/40 hover:text-white md:px-3"
       >
-        {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-        More
+        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        <span className="hidden md:inline">More</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white text-brand-black border border-brand-line shadow-lg py-2 z-50">
+        <div className="absolute right-0 top-full z-50 mt-2 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-brand-line bg-white py-2 text-brand-black shadow-lg">
+          {mobileLinks.length > 0 && (
+            <div className="mb-1 border-b border-brand-line pb-1 md:hidden">
+              {mobileLinks.map((link) => (
+                <Link
+                  key={`${link.href}-${link.label}`}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="block px-5 py-2.5 text-sm font-semibold text-brand-black transition-colors hover:bg-brand-cream hover:text-brand-orange"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="block px-5 py-2.5 text-sm font-medium hover:bg-brand-cream hover:text-brand-orange transition-colors"
+              className="block px-5 py-2.5 text-sm font-medium transition-colors hover:bg-brand-cream hover:text-brand-orange"
             >
               {link.label}
             </Link>
