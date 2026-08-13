@@ -85,6 +85,14 @@ export default async function VendorApplyPage({
           <h1 className="font-heading text-2xl font-semibold mb-2 text-center">
             {phase === "done" ? "Application Submitted" : "Apply as a Wedyora Vendor"}
           </h1>
+          {phase === "form" && (
+            <p className="mb-4 text-center text-sm text-brand-gray">
+              Already a partner?{" "}
+              <Link href="/vendor/login" className="font-medium text-brand-orange">
+                Log in with your phone
+              </Link>
+            </p>
+          )}
           <p className="text-brand-gray text-sm mb-8 text-center">
             {phase === "form" &&
               "Join our verified vendor network. Our team reviews every application before you start receiving bookings."}
@@ -379,9 +387,12 @@ export default async function VendorApplyPage({
                 team reviews and approves it.
               </p>
               <Link
-                href="/"
-                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors text-center"
+                href="/vendor/login"
+                className="mt-2 w-full rounded-full bg-brand-button text-center py-3 font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
               >
+                Vendor Log In
+              </Link>
+              <Link href="/" className="text-center text-xs text-brand-gray">
                 Go to Home
               </Link>
             </div>

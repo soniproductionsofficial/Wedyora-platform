@@ -1,53 +1,56 @@
 import Link from "next/link";
-import { Camera } from "lucide-react";
-import { requestLoginOtpAction, verifyLoginOtpAction } from "@/lib/actions/auth";
+import { Store } from "lucide-react";
+import {
+  requestVendorLoginOtpAction,
+  verifyVendorLoginOtpAction,
+} from "@/lib/actions/vendor";
 
-export default async function LoginPage({
+export default async function VendorLoginPage({
   searchParams,
 }: {
   searchParams: Promise<{
     error?: string;
     message?: string;
-    redirectTo?: string;
     phase?: string;
     phone?: string;
   }>;
 }) {
-  const { error, message, redirectTo, phase, phone } = await searchParams;
+  const { error, message, phase, phone } = await searchParams;
   const otpPhase = phase === "otp" && !!phone;
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-brand-cream flex items-center justify-center px-6 py-16">
+    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-brand-cream px-6 py-16">
       <div className="w-full max-w-md">
-        <div className="flex justify-center mb-6">
+        <div className="mb-6 flex justify-center">
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-black">
-            <Camera className="h-6 w-6 text-white" strokeWidth={2} />
+            <Store className="h-6 w-6 text-white" strokeWidth={2} />
           </span>
         </div>
 
-        <div className="bg-white border border-brand-line rounded-2xl shadow-sm p-6 md:p-8">
-          <h1 className="font-heading text-2xl font-semibold mb-2 text-center">
-            Log in
+        <div className="rounded-2xl border border-brand-line bg-white p-6 shadow-sm md:p-8">
+          <h1 className="mb-2 text-center font-heading text-2xl font-semibold">
+            Vendor Log In
           </h1>
-          <p className="text-brand-gray text-sm mb-8 text-center">
-            {otpPhase ? `Enter the code we texted to ${phone}.` : "Welcome back to Wedyora."}
+          <p className="mb-8 text-center text-sm text-brand-gray">
+            {otpPhase
+              ? `Enter the code we texted to ${phone}.`
+              : "Sign in with your registered phone number."}
           </p>
 
           {message && (
-            <p className="mb-6 rounded-lg bg-green-50 text-green-700 text-sm px-4 py-3">
+            <p className="mb-6 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
               {message}
             </p>
           )}
           {error && (
-            <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
+            <p className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-brand-orange-dark">
               {error}
             </p>
           )}
 
           {otpPhase ? (
-            <form action={verifyLoginOtpAction} className="flex flex-col gap-4">
+            <form action={verifyVendorLoginOtpAction} className="flex flex-col gap-4">
               <input type="hidden" name="phone" value={phone} />
-              <input type="hidden" name="redirectTo" value={redirectTo ?? "/account"} />
               <label className="flex flex-col gap-1.5 text-sm font-medium">
                 6-digit code
                 <input
@@ -61,17 +64,16 @@ export default async function LoginPage({
               </label>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button py-3 font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
               >
-                Verify &amp; Log In
+                Verify &amp; Open Dashboard
               </button>
-              <Link href="/login" className="text-xs text-brand-gray text-center">
+              <Link href="/vendor/login" className="text-center text-xs text-brand-gray">
                 Wrong number? Start over
               </Link>
             </form>
           ) : (
-            <form action={requestLoginOtpAction} className="flex flex-col gap-4">
-              <input type="hidden" name="redirectTo" value={redirectTo ?? "/account"} />
+            <form action={requestVendorLoginOtpAction} className="flex flex-col gap-4">
               <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Phone number
                 <input
@@ -82,9 +84,13 @@ export default async function LoginPage({
                   className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
                 />
               </label>
+              <p className="text-xs text-brand-gray">
+                We&rsquo;ll text a one-time code to this number. India (+91) is
+                assumed if you enter 10 digits.
+              </p>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
+                className="mt-2 w-full rounded-full bg-brand-button py-3 font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
               >
                 Send Code
               </button>
@@ -92,15 +98,15 @@ export default async function LoginPage({
           )}
 
           <p className="mt-6 text-center text-sm text-brand-gray">
-            Don&rsquo;t have an account?{" "}
-            <Link href="/signup" className="font-medium text-brand-orange">
-              Sign up
+            New partner?{" "}
+            <Link href="/vendor/apply" className="font-medium text-brand-orange">
+              Apply here
             </Link>
           </p>
           <p className="mt-2 text-center text-sm text-brand-gray">
-            Vendor partner?{" "}
-            <Link href="/vendor/login" className="font-medium text-brand-orange">
-              Vendor phone log in
+            Looking for a customer account?{" "}
+            <Link href="/login" className="font-medium text-brand-orange">
+              Customer log in
             </Link>
           </p>
         </div>

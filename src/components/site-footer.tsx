@@ -44,7 +44,10 @@ export default function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/login" className="hover:text-brand-gold-bright transition-colors">
+              <Link
+                href="/vendor/login"
+                className="hover:text-brand-gold-bright transition-colors"
+              >
                 Vendor Log In
               </Link>
             </li>

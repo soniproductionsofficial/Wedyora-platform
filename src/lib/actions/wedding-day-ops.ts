@@ -150,7 +150,7 @@ export async function uploadDeliverableAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/vendor/login");
 
   const safeName = (file as File).name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
   const path = `${bookingId}/${category}/${Date.now()}-${safeName}`;

@@ -248,9 +248,17 @@ export async function verifyLoginOtpAction(formData: FormData) {
   if (userRes.user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("full_name")
+      .select("full_name, role")
       .eq("id", userRes.user.id)
       .single();
+
+    // Role-aware landing so vendors/admins don't get stuck on /account.
+    if (profile?.role === "vendor") {
+      redirect("/vendor/dashboard");
+    }
+    if (profile?.role === "admin") {
+      redirect("/admin");
+    }
 
     if (!profile?.full_name) {
       redirect(`/complete-profile?redirectTo=${encodeURIComponent(redirectTo)}`);
