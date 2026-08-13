@@ -41,26 +41,8 @@ export default async function SiteHeader() {
           )}
         </div>
 
-        {/* Center: primary page links + Photography in Minutes */}
-        <div className="hidden flex-1 items-center justify-center gap-6 md:flex">
-          <Link
-            href="/#services"
-            className="text-sm font-medium text-white/85 transition-colors duration-300 hover:text-wedding-gold-bright"
-          >
-            Services
-          </Link>
-          <Link
-            href="/#how-it-works"
-            className="text-sm font-medium text-white/85 transition-colors duration-300 hover:text-wedding-gold-bright"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm font-medium text-white/85 transition-colors duration-300 hover:text-wedding-gold-bright"
-          >
-            About
-          </Link>
+        {/* Center: Photography in Minutes */}
+        <div className="hidden flex-1 items-center justify-center md:flex">
           <Link
             href="/photography-in-minutes"
             className="whitespace-nowrap rounded-full border border-wedding-gold-bright/40 bg-wedding-gold-bright/10 px-4 py-1.5 text-sm font-bold text-wedding-gold-bright transition-colors duration-300 hover:bg-wedding-gold-bright/20"
