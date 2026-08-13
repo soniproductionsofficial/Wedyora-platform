@@ -35,7 +35,7 @@ export default async function SiteHeader() {
       ];
 
   return (
-    <header className="sticky top-0 z-40 overflow-x-clip border-b border-white/15 bg-brand-chrome text-white backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-white/15 bg-brand-chrome text-white backdrop-blur-md">
       <div className="mx-auto flex min-w-0 max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-6 sm:py-4">
         {/* Left: logo + Become a Partner */}
         <div className="flex min-w-0 shrink items-center gap-3 md:gap-4">

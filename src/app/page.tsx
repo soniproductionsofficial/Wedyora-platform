@@ -202,7 +202,7 @@ export default function Home() {
       `}</style>
 
       {/* Full-bleed hero */}
-      <section className="relative isolate min-h-[min(88vh,820px)] overflow-hidden text-white md:min-h-[92vh]">
+      <section className="relative z-0 min-h-[min(88vh,820px)] overflow-hidden text-white md:min-h-[92vh]">
         <div className="absolute inset-0">
           <Image
             src="/images/hero/wedding-celebration.png"
