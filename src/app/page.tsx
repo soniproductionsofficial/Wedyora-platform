@@ -350,7 +350,7 @@ export default function Home() {
                 <div className="mb-4 text-4xl" aria-hidden>
                   {step.icon}
                 </div>
-                <span className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-wedding-gold to-wedding-coral text-sm font-bold text-wedding-deep">
+                <span className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-button text-sm font-bold text-brand-magenta">
                   {i + 1}
                 </span>
                 <h3 className="mt-3 font-wedding-display text-lg font-semibold text-brand-magenta">
