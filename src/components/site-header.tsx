@@ -18,17 +18,33 @@ export default async function SiteHeader() {
     role = profile?.role ?? null;
   }
 
+  const mobileLinks = user
+    ? [
+        { href: "/account", label: "My Account" },
+        ...(role === "vendor"
+          ? [{ href: "/vendor/dashboard", label: "Vendor Dashboard" }]
+          : []),
+        ...(role === "admin" ? [{ href: "/admin", label: "Admin" }] : []),
+        { href: "/photography-in-minutes", label: "Photography in Minutes" },
+      ]
+    : [
+        { href: "/signup", label: "Customer Sign Up" },
+        { href: "/login", label: "Log In" },
+        { href: "/photography-in-minutes", label: "Photography in Minutes" },
+        { href: "/vendor/apply", label: "Become a Partner" },
+      ];
+
   return (
-    <header className="bg-brand-chrome sticky top-0 z-40 border-b border-white/15 text-white backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+    <header className="sticky top-0 z-40 overflow-x-clip border-b border-white/15 bg-brand-chrome text-white backdrop-blur-md">
+      <div className="mx-auto flex min-w-0 max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-6 sm:py-4">
         {/* Left: logo + Become a Partner */}
-        <div className="flex shrink-0 items-center gap-4">
-          <Link href="/" className="flex items-center">
+        <div className="flex min-w-0 shrink items-center gap-3 md:gap-4">
+          <Link href="/" className="flex min-w-0 items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/wedyora-logo.png"
               alt="Wedyora"
-              className="h-9 w-auto md:h-10"
+              className="h-8 w-auto max-w-[9.5rem] object-contain object-left sm:h-9 sm:max-w-none md:h-10"
             />
           </Link>
           {!user && (
@@ -51,8 +67,8 @@ export default async function SiteHeader() {
           </Link>
         </div>
 
-        {/* Right: account links */}
-        <div className="flex shrink-0 items-center gap-3">
+        {/* Right: account links (desktop) + compact mobile menu */}
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {role === "admin" && (
             <Link
               href="/admin"
@@ -73,18 +89,17 @@ export default async function SiteHeader() {
           {user ? (
             <Link
               href="/account"
-              className="rounded-full border border-white/30 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-white hover:text-wedding-deep"
+              className="hidden rounded-full border border-white/30 px-4 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-white hover:text-wedding-deep md:inline-block"
             >
               My Account
             </Link>
           ) : (
-            <>
+            <div className="hidden items-center gap-3 md:flex">
               <Link
                 href="/signup"
-                className="whitespace-nowrap rounded-full bg-wedding-gold px-3 py-2 text-sm font-semibold text-wedding-deep transition-colors duration-300 hover:bg-wedding-gold-bright sm:px-4"
+                className="whitespace-nowrap rounded-full bg-wedding-gold px-4 py-2 text-sm font-semibold text-wedding-deep transition-colors duration-300 hover:bg-wedding-gold-bright"
               >
-                <span className="sm:hidden">Sign Up</span>
-                <span className="hidden sm:inline">Customer Sign Up</span>
+                Customer Sign Up
               </Link>
               <Link
                 href="/login"
@@ -92,10 +107,10 @@ export default async function SiteHeader() {
               >
                 Log In
               </Link>
-            </>
+            </div>
           )}
 
-          <SiteNavMenu />
+          <SiteNavMenu mobileLinks={mobileLinks} />
         </div>
       </div>
     </header>
