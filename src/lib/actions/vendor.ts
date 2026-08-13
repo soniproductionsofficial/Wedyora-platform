@@ -128,28 +128,39 @@ export async function verifyVendorOtpAction(formData: FormData) {
     })
     .eq("id", userId);
 
-  const { data: existingVendor } = await admin
-    .from("vendor_profiles")
-    .select("id, plan, agreed_to_vendor_terms_at, category_id, city, status")
-    .eq("id", userId)
-    .maybeSingle();
-
-  if (!existingVendor) {
-    const { error: vendorError } = await admin.from("vendor_profiles").insert({
+  // Create a draft vendor row if missing. Use upsert + ignoreDuplicates so a
+  // second OTP verify (or a race) never blows up on vendor_profiles_pkey.
+  const { error: upsertError } = await admin.from("vendor_profiles").upsert(
+    {
       id: userId,
       business_name: businessName || "My Business",
       status: "pending_payment",
+    },
+    { onConflict: "id", ignoreDuplicates: true },
+  );
+
+  if (
+    upsertError &&
+    upsertError.code !== "23505" &&
+    !upsertError.message.toLowerCase().includes("duplicate key")
+  ) {
+    const params = new URLSearchParams({
+      phase: "otp",
+      phone,
+      business_name: businessName,
+      error: upsertError.message,
     });
-    if (vendorError) {
-      const params = new URLSearchParams({
-        phase: "otp",
-        phone,
-        business_name: businessName,
-        error: vendorError.message,
-      });
-      redirect(`/vendor/apply?${params.toString()}`);
-    }
-  } else if (businessName) {
+    redirect(`/vendor/apply?${params.toString()}`);
+  }
+
+  // Refresh business name only while the application is still a draft.
+  const { data: existingVendor } = await admin
+    .from("vendor_profiles")
+    .select("id, agreed_to_vendor_terms_at")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (existingVendor && !existingVendor.agreed_to_vendor_terms_at && businessName) {
     await admin
       .from("vendor_profiles")
       .update({ business_name: businessName })
@@ -233,15 +244,10 @@ export async function submitVendorDetailsAction(formData: FormData) {
     status: "pending_payment" as const,
   };
 
-  const { data: existing } = await admin
-    .from("vendor_profiles")
-    .select("id")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const { error: vendorError } = existing
-    ? await admin.from("vendor_profiles").update(vendorPayload).eq("id", user.id)
-    : await admin.from("vendor_profiles").insert({ id: user.id, ...vendorPayload });
+  const { error: vendorError } = await admin.from("vendor_profiles").upsert(
+    { id: user.id, ...vendorPayload },
+    { onConflict: "id" },
+  );
 
   if (vendorError) {
     redirect(
