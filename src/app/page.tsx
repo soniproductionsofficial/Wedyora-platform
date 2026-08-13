@@ -366,7 +366,7 @@ export default function Home() {
           <div className="mt-12 text-center">
             <Link
               href="/book"
-              className="inline-block rounded-full bg-gradient-to-r from-wedding-red to-wedding-coral px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="inline-block rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
             >
               Start Your Wedding Planning →
             </Link>
