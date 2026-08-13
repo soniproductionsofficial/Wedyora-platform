@@ -7,7 +7,7 @@ import { ShieldCheck, Heart, Users } from "lucide-react";
 export default function AboutPage() {
   return (
     <div>
-      <section className="bg-brand-button text-brand-black">
+      <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
           <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             About Wedyora
@@ -16,10 +16,10 @@ export default function AboutPage() {
             For Every Moment, Forever
           </h1>
           <p className="text-white/70 max-w-2xl mx-auto">
-            Wedyora is India&rsquo;s managed wedding-services platform — we
-            connect couples with verified photographers, decorators,
-            caterers and more, and stay involved from the first booking to
-            the final delivered album.
+            Wedyora is India&rsquo;s managed occasion-planning platform —
+            perfect planners for your special occasions. We connect you with
+            verified photographers, decorators, caterers and more, and stay
+            involved from the first booking to the final delivered album.
           </p>
         </div>
       </section>
