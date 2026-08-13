@@ -377,7 +377,7 @@ export default function Home() {
       {/* Why Wedyora */}
       <section className="border-t border-wedding-gold/20 bg-gradient-to-b from-[#faf6ff] to-[#fff8f5] py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="mb-12 text-center font-wedding-display text-3xl font-semibold text-wedding-deep md:text-4xl">
+          <h2 className="mb-12 text-center font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
             Why Couples Choose Wedyora
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
@@ -386,10 +386,10 @@ export default function Home() {
                 key={title}
                 className="rounded-2xl border border-wedding-gold/20 bg-white p-6 transition-shadow duration-300 hover:shadow-lg"
               >
-                <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-wedding-purple/10 text-wedding-purple">
+                <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-magenta/10 text-brand-magenta">
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="mb-2 font-wedding-display text-lg font-semibold text-wedding-deep">
+                <h3 className="mb-2 font-wedding-display text-lg font-semibold text-brand-magenta">
                   {title}
                 </h3>
                 <p className="text-xs leading-relaxed text-brand-gray md:text-sm">
