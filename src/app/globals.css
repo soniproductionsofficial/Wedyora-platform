@@ -4,35 +4,36 @@
   --background: #ffffff;
   --foreground: #151515;
 
-  /* Wedyora brand palette — pink/magenta (#D81B60) + gold.
-     Variable roles are unchanged so existing bg-brand-black /
-     text-brand-gold / bg-brand-button classes pick up the new colors. */
+  /* Wedyora brand palette — purple + gold, matching the new logo (was
+     dark + orange; kept the same variable roles so every existing
+     bg-brand-orange / text-brand-gold / bg-brand-black usage across the
+     app just picked up the new colors automatically). Exact purple and
+     gold values were sampled directly from the logo file. The gold tones
+     were tuned so they read clearly as both text-on-white and
+     text-on-purple (the logo's own bright gold, #f4c400, is only used
+     inside the logo image itself — as UI text it's too light to read
+     against a white page). */
   --brand-orange: #995c00;
   --brand-orange-dark: #754600;
+  /* Solid CTA buttons get the logo's true vivid gold as their fill (with
+     dark-purple text on top for contrast) rather than the muted amber
+     above — amber reads well as small text/links on a white page, but
+     looked like a dull brown next to the purple brand color on filled
+     buttons and badges. --brand-orange itself is kept for that
+     text-on-white role (links, required-field marks, focus rings). */
   --brand-button: #f4c400;
   --brand-button-dark: #d9ad00;
-  /* Deep magenta chrome (was purple #24006c) — matches logo pink family */
-  --brand-black: #880e4f;
-  --brand-charcoal: #6a0a3d;
+  --brand-black: #24006c;
+  --brand-charcoal: #170048;
   --brand-gold: #9e7e00;
+  /* The logo's true, vivid gold — only readable at small sizes against
+     the purple brand-black (it's too light to use as text on white).
+     Reserved for large/bold accents inside dark sections, e.g. a
+     highlighted headline word, where there's contrast headroom to spare. */
   --brand-gold-bright: #f4c400;
-  --brand-cream: #fdf5f8;
+  --brand-cream: #f7f5fb;
   --brand-gray: #6b6b6b;
-  --brand-line: #f3e5eb;
-
-  /* Magenta gradient stops for header/footer chrome */
-  --brand-magenta-deep: #880e4f;
-  --brand-magenta: #d81b60;
-  --brand-magenta-bright: #f06292;
-
-  /* Festive Indian wedding palette (home page) */
-  --wedding-red: #c4192a;
-  --wedding-coral: #e85a4f;
-  --wedding-gold: #d4af37;
-  --wedding-gold-bright: #f0d060;
-  --wedding-green: #1a7a5c;
-  --wedding-purple: #ad1457;
-  --wedding-deep: #880e4f;
+  --brand-line: #ececec;
 }
 
 @theme inline {
@@ -49,20 +50,8 @@
   --color-brand-cream: var(--brand-cream);
   --color-brand-gray: var(--brand-gray);
   --color-brand-line: var(--brand-line);
-  --color-brand-magenta-deep: var(--brand-magenta-deep);
-  --color-brand-magenta: var(--brand-magenta);
-  --color-brand-magenta-bright: var(--brand-magenta-bright);
-  --color-wedding-red: var(--wedding-red);
-  --color-wedding-coral: var(--wedding-coral);
-  --color-wedding-gold: var(--wedding-gold);
-  --color-wedding-gold-bright: var(--wedding-gold-bright);
-  --color-wedding-green: var(--wedding-green);
-  --color-wedding-purple: var(--wedding-purple);
-  --color-wedding-deep: var(--wedding-deep);
   --font-sans: "Inter", Arial, Helvetica, sans-serif;
   --font-heading: "Poppins", var(--font-sans);
-  --font-wedding-display: "Cormorant Garamond", Georgia, serif;
-  --font-wedding-sans: "Outfit", "Segoe UI", sans-serif;
 }
 
 body {
@@ -76,14 +65,4 @@ h2,
 h3,
 h4 {
   font-family: var(--font-heading);
-}
-
-/* Shared pink/magenta chrome gradient (navbar, footer, dark CTAs) */
-.bg-brand-chrome {
-  background-image: linear-gradient(
-    to right,
-    var(--brand-magenta-deep),
-    var(--brand-magenta),
-    var(--brand-magenta-bright)
-  );
 }
