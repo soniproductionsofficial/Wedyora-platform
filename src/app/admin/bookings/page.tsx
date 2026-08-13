@@ -242,12 +242,16 @@ async function BookingAssignCard({
       const completedCount = vBookings.filter((b) => b.status === "completed").length;
       const cancelledCount = vBookings.filter((b) => b.status === "cancelled").length;
 
-      const score = scoreVendor(v, booking.city, {
-        averageRating,
-        nearbyBookingsCount,
-        completedCount,
-        cancelledCount,
-      });
+      const score = scoreVendor(
+        { ...v, city: v.city ?? "" },
+        booking.city,
+        {
+          averageRating,
+          nearbyBookingsCount,
+          completedCount,
+          cancelledCount,
+        },
+      );
       return { businessName: v.business_name, score };
     })
     .sort((a, b) => b.score.overall - a.score.overall);

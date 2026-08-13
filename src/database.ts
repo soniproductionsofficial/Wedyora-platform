@@ -107,8 +107,8 @@ export interface Database {
         Row: {
           id: string;
           business_name: string;
-          category_id: string;
-          city: string;
+          category_id: string | null;
+          city: string | null;
           bio: string | null;
           experience_years: number | null;
           portfolio_urls: string[];
@@ -138,8 +138,6 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["vendor_profiles"]["Row"]> & {
           id: string;
           business_name: string;
-          category_id: string;
-          city: string;
         };
         Update: Partial<Database["public"]["Tables"]["vendor_profiles"]["Row"]>;
         Relationships: [

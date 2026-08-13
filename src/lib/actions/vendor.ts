@@ -5,20 +5,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { normalizePhone } from "@/lib/phone";
 import { getVendorPlan } from "@/lib/vendor-plans";
 
-// The vendor application form is longer than the customer one (business
-// details, KYC, bank details, category, experience, bio) and none of it
-// should be re-typed after the phone is verified. Since these two actions
-// are plain server-action + redirect (no client-side state), the only way
-// to carry that data across the "enter details" -> "enter the texted code"
-// step is to round-trip it through the URL as hidden form fields on the
-// OTP page. None of it is a secret in the password sense (no password
-// exists anymore), so that's fine — though see the migration file for a
-// note on why PAN/Aadhaar are still protected at the database level.
-function otpRedirectParams(fields: Record<string, string>) {
-  return new URLSearchParams({ phase: "otp", ...fields }).toString();
-}
-
-const APPLICATION_FIELDS = [
+const DETAIL_FIELDS = [
   "full_name",
   "phone",
   "business_name",
@@ -40,46 +27,57 @@ const APPLICATION_FIELDS = [
   "agree_cancellation_policy",
 ] as const;
 
-function collectFields(formData: FormData): Record<string, string> {
+function collectDetailFields(formData: FormData): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const key of APPLICATION_FIELDS) {
+  for (const key of DETAIL_FIELDS) {
     out[key] = String(formData.get(key) ?? "").trim();
   }
   return out;
 }
 
+/** Resume incomplete vendors at the correct onboarding step. */
+export async function resolveVendorOnboardingPhase(userId: string): Promise<string> {
+  const admin = createAdminClient();
+  const { data: vendor } = await admin
+    .from("vendor_profiles")
+    .select("id, plan, status, category_id, city, agreed_to_vendor_terms_at")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (!vendor || !vendor.agreed_to_vendor_terms_at || !vendor.category_id || !vendor.city) {
+    return "details";
+  }
+  // Location is shown once immediately after details submit; on resume skip
+  // straight to plan selection if they haven't chosen one yet.
+  if (!vendor.plan) {
+    return "plan";
+  }
+  if (vendor.status === "pending_payment") {
+    return "fees";
+  }
+  return "done";
+}
+
+// --- Step 1: business name + phone → OTP ---
+
 export async function requestVendorOtpAction(formData: FormData) {
-  const fields = collectFields(formData);
+  const businessName = String(formData.get("business_name") ?? "").trim();
+  const phoneRaw = String(formData.get("phone") ?? "").trim();
 
-  if (
-    !fields.full_name ||
-    !fields.phone ||
-    !fields.business_name ||
-    !fields.category_id ||
-    !fields.city
-  ) {
+  if (!businessName || !phoneRaw) {
     redirect(
       "/vendor/apply?error=" +
-        encodeURIComponent("Please fill in all required fields.")
+        encodeURIComponent("Please enter your business name and phone number.")
     );
   }
 
-  if (fields.agree_vendor_terms !== "yes" || fields.agree_cancellation_policy !== "yes") {
-    redirect(
-      "/vendor/apply?error=" +
-        encodeURIComponent(
-          "Please tick both the Vendor Terms & Conditions and the Vendor Cancellation Policy to continue."
-        )
-    );
-  }
-
-  const phone = normalizePhone(fields.phone);
+  const phone = normalizePhone(phoneRaw);
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     phone,
     options: {
       shouldCreateUser: true,
-      data: { full_name: fields.full_name, role: "vendor" },
+      data: { role: "vendor", business_name: businessName },
     },
   });
 
@@ -87,13 +85,18 @@ export async function requestVendorOtpAction(formData: FormData) {
     redirect("/vendor/apply?error=" + encodeURIComponent(error.message));
   }
 
-  redirect(`/vendor/apply?${otpRedirectParams({ ...fields, phone })}`);
+  const params = new URLSearchParams({
+    phase: "otp",
+    phone,
+    business_name: businessName,
+  });
+  redirect(`/vendor/apply?${params.toString()}`);
 }
 
 export async function verifyVendorOtpAction(formData: FormData) {
   const token = String(formData.get("token") ?? "").trim();
-  const fields = collectFields(formData);
-  const phone = fields.phone;
+  const phone = String(formData.get("phone") ?? "").trim();
+  const businessName = String(formData.get("business_name") ?? "").trim();
 
   const supabase = await createClient();
   const { error: verifyError, data: verifyData } = await supabase.auth.verifyOtp({
@@ -103,41 +106,100 @@ export async function verifyVendorOtpAction(formData: FormData) {
   });
 
   if (verifyError || !verifyData.user) {
-    redirect(
-      `/vendor/apply?${otpRedirectParams({
-        ...fields,
-        error: verifyError?.message ?? "Could not verify that code.",
-      })}`
-    );
+    const params = new URLSearchParams({
+      phase: "otp",
+      phone,
+      business_name: businessName,
+      error: verifyError?.message ?? "Could not verify that code.",
+    });
+    redirect(`/vendor/apply?${params.toString()}`);
   }
 
   const userId = verifyData.user.id;
+  const admin = createAdminClient();
+
+  await admin
+    .from("profiles")
+    .update({
+      phone,
+      role: "vendor",
+      // Prefer a real person name later; keep business name as a temporary label.
+      full_name: businessName || null,
+    })
+    .eq("id", userId);
+
+  const { data: existingVendor } = await admin
+    .from("vendor_profiles")
+    .select("id, plan, agreed_to_vendor_terms_at, category_id, city, status")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (!existingVendor) {
+    const { error: vendorError } = await admin.from("vendor_profiles").insert({
+      id: userId,
+      business_name: businessName || "My Business",
+      status: "pending_payment",
+    });
+    if (vendorError) {
+      const params = new URLSearchParams({
+        phase: "otp",
+        phone,
+        business_name: businessName,
+        error: vendorError.message,
+      });
+      redirect(`/vendor/apply?${params.toString()}`);
+    }
+  } else if (businessName) {
+    await admin
+      .from("vendor_profiles")
+      .update({ business_name: businessName })
+      .eq("id", userId);
+  }
+
+  const phase = await resolveVendorOnboardingPhase(userId);
+  redirect(`/vendor/apply?phase=${phase}`);
+}
+
+// --- Step 2: full application details (after OTP login) ---
+
+export async function submitVendorDetailsAction(formData: FormData) {
+  const fields = collectDetailFields(formData);
+
+  if (
+    !fields.full_name ||
+    !fields.phone ||
+    !fields.business_name ||
+    !fields.category_id ||
+    !fields.city
+  ) {
+    redirect(
+      "/vendor/apply?phase=details&error=" +
+        encodeURIComponent("Please fill in all required fields.")
+    );
+  }
+
+  if (fields.agree_vendor_terms !== "yes" || fields.agree_cancellation_policy !== "yes") {
+    redirect(
+      "/vendor/apply?phase=details&error=" +
+        encodeURIComponent(
+          "Please tick both the Vendor Terms & Conditions and the Vendor Cancellation Policy to continue."
+        )
+    );
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/vendor/login");
+
+  const phone = normalizePhone(fields.phone);
   const experienceYears = Number(fields.experience_years) || null;
   const teamSize = Number(fields.team_size) || null;
   const serviceAreas = fields.service_areas
     ? fields.service_areas.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
-
-  // Re-checked here, not just on the first form — these two hidden fields
-  // round-trip through the URL like everything else in this flow (see the
-  // comment on otpRedirectParams above), so a tampered request could
-  // otherwise skip straight past the checkboxes to a verified OTP.
-  if (fields.agree_vendor_terms !== "yes" || fields.agree_cancellation_policy !== "yes") {
-    redirect(
-      `/vendor/apply?${otpRedirectParams({
-        ...fields,
-        error: "Please tick both the Vendor Terms & Conditions and the Vendor Cancellation Policy to continue.",
-      })}`
-    );
-  }
-
   const agreedAt = new Date().toISOString();
-
-  // Use the admin (service-role) client for these writes rather than the
-  // now-authenticated request-scoped client. This is the very first request
-  // for a brand-new phone number, and Supabase's own trigger that creates
-  // the `profiles` row runs asynchronously right around the same moment —
-  // writing through the admin client avoids racing that trigger.
   const admin = createAdminClient();
 
   await admin
@@ -148,10 +210,9 @@ export async function verifyVendorOtpAction(formData: FormData) {
       city: fields.city,
       role: "vendor",
     })
-    .eq("id", userId);
+    .eq("id", user.id);
 
   const vendorPayload = {
-    id: userId,
     business_name: fields.business_name,
     category_id: fields.category_id,
     city: fields.city,
@@ -169,44 +230,51 @@ export async function verifyVendorOtpAction(formData: FormData) {
     bank_ifsc: fields.bank_ifsc || null,
     agreed_to_vendor_terms_at: agreedAt,
     agreed_to_cancellation_policy_at: agreedAt,
-    // Plan + fee rows are created on the next step (phase=plan), right
-    // after OTP sign-in, so the registration plan can "pop up" then.
     status: "pending_payment" as const,
   };
 
-  const { data: existingVendor } = await admin
+  const { data: existing } = await admin
     .from("vendor_profiles")
-    .select("id, plan")
-    .eq("id", userId)
+    .select("id")
+    .eq("id", user.id)
     .maybeSingle();
 
-  if (existingVendor) {
-    const { error: vendorError } = await admin
-      .from("vendor_profiles")
-      .update(vendorPayload)
-      .eq("id", userId);
-    if (vendorError) {
-      redirect(
-        `/vendor/apply?${otpRedirectParams({ ...fields, error: vendorError.message })}`
-      );
-    }
-    if (existingVendor.plan) {
-      redirect("/vendor/apply?phase=fees");
-    }
-  } else {
-    const { error: vendorError } = await admin
-      .from("vendor_profiles")
-      .insert(vendorPayload);
-    if (vendorError) {
-      redirect(
-        `/vendor/apply?${otpRedirectParams({ ...fields, error: vendorError.message })}`
-      );
-    }
+  const { error: vendorError } = existing
+    ? await admin.from("vendor_profiles").update(vendorPayload).eq("id", user.id)
+    : await admin.from("vendor_profiles").insert({ id: user.id, ...vendorPayload });
+
+  if (vendorError) {
+    redirect(
+      "/vendor/apply?phase=details&error=" + encodeURIComponent(vendorError.message)
+    );
   }
 
-  // After OTP, show the registration plan picker before taking payment.
+  redirect("/vendor/apply?phase=location");
+}
+
+// --- Step 3: location permission ---
+
+export async function submitVendorLocationAction(
+  lat: number | null,
+  lng: number | null,
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/vendor/login");
+
+  if (lat != null && lng != null) {
+    await supabase
+      .from("profiles")
+      .update({ location_lat: lat, location_lng: lng })
+      .eq("id", user.id);
+  }
+
   redirect("/vendor/apply?phase=plan");
 }
+
+// --- Step 4: registration plan ---
 
 export async function selectVendorPlanAction(formData: FormData) {
   const planKey = String(formData.get("plan") ?? "").trim();
@@ -223,10 +291,7 @@ export async function selectVendorPlanAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/vendor/login");
-  }
+  if (!user) redirect("/vendor/login");
 
   const admin = createAdminClient();
   const { data: vendor } = await admin
@@ -237,7 +302,7 @@ export async function selectVendorPlanAction(formData: FormData) {
 
   if (!vendor) {
     redirect(
-      "/vendor/apply?error=" +
+      "/vendor/apply?phase=details&error=" +
         encodeURIComponent("Please complete your vendor application first.")
     );
   }
@@ -257,8 +322,6 @@ export async function selectVendorPlanAction(formData: FormData) {
     );
   }
 
-  // Replace any unfinished fee rows so switching plans doesn't leave
-  // stale amounts pending from a previous choice.
   await admin
     .from("vendor_payments")
     .delete()
@@ -288,7 +351,7 @@ export async function selectVendorPlanAction(formData: FormData) {
   redirect("/vendor/apply?phase=fees");
 }
 
-// --- Portfolio upload (Chapter 5, step 8) — optional, skippable ---
+// --- Portfolio (optional, kept for later dashboard use) ---
 
 export async function uploadPortfolioAction(formData: FormData) {
   const supabase = await createClient();
@@ -341,11 +404,7 @@ export async function uploadPortfolioAction(formData: FormData) {
   redirect("/vendor/apply?phase=done");
 }
 
-// --- Vendor phone login (existing partners) ---
-//
-// Separate from /login so we never auto-create a customer account for a
-// vendor number, and so non-vendors get a clear "apply first" message
-// instead of landing on the customer account page.
+// --- Vendor phone login (existing / in-progress partners) ---
 
 export async function requestVendorLoginOtpAction(formData: FormData) {
   const phoneRaw = String(formData.get("phone") ?? "").trim();
@@ -361,7 +420,6 @@ export async function requestVendorLoginOtpAction(formData: FormData) {
   const { error } = await supabase.auth.signInWithOtp({
     phone,
     options: {
-      // Existing vendor accounts only — new partners go through /vendor/apply.
       shouldCreateUser: false,
     },
   });
@@ -421,8 +479,6 @@ export async function verifyVendorLoginOtpAction(formData: FormData) {
     );
   }
 
-  // Keep role + phone in sync for older accounts created before role metadata
-  // was set consistently on every path.
   const admin = createAdminClient();
   await admin
     .from("profiles")
@@ -432,14 +488,9 @@ export async function verifyVendorLoginOtpAction(formData: FormData) {
     })
     .eq("id", userId);
 
-  // Returning vendors who never picked a plan (or still owe fees) continue
-  // the apply flow instead of landing on an empty dashboard.
-  if (!vendor?.plan) {
-    redirect("/vendor/apply?phase=plan");
+  const phase = await resolveVendorOnboardingPhase(userId);
+  if (phase === "done") {
+    redirect("/vendor/dashboard");
   }
-  if (vendor.status === "pending_payment") {
-    redirect("/vendor/apply?phase=fees");
-  }
-
-  redirect("/vendor/dashboard");
+  redirect(`/vendor/apply?phase=${phase}`);
 }

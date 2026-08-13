@@ -53,7 +53,7 @@ export default function PayVendorFeesButton({
             body: JSON.stringify(response),
           });
           if (verifyRes.ok) {
-            router.push("/vendor/apply?phase=portfolio");
+            router.push("/vendor/apply?phase=done");
           } else {
             const data = await verifyRes.json();
             setError(data.error ?? "Payment verification failed");
