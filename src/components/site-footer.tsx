@@ -89,7 +89,7 @@ export default function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-5 text-xs flex flex-col md:flex-row items-center justify-between gap-2">
           <p>&copy; {new Date().getFullYear()} Wedyora. All rights reserved.</p>
-          <p>Made for India&rsquo;s wedding vendors and the couples who book them.</p>
+          <p>Made for India&rsquo;s event vendors and the people who book them.</p>
         </div>
       </div>
     </footer>
