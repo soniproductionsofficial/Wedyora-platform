@@ -9,9 +9,9 @@ import SiteFooter from "@/components/site-footer";
 // reachable from wherever `next build` runs). A <link> tag loads them in
 // the visitor's browser instead — same fonts, no build-time dependency.
 export const metadata: Metadata = {
-  title: "Wedyora — For Every Moment, Forever",
+  title: "Wedyora — Perfect Planners for Your Special Occasions",
   description:
-    "Wedyora is India's managed wedding-services platform: book verified photographers, decorators, caterers and more, all in one place.",
+    "Wedyora is India's managed occasion-planning platform: book verified photographers, decorators, caterers and more for weddings, parties, and every special celebration.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",

@@ -16,10 +16,10 @@ export default function AboutPage() {
             For Every Moment, Forever
           </h1>
           <p className="text-white/70 max-w-2xl mx-auto">
-            Wedyora is India&rsquo;s managed wedding-services platform — we
-            connect couples with verified photographers, decorators,
-            caterers and more, and stay involved from the first booking to
-            the final delivered album.
+            Wedyora is India&rsquo;s managed occasion-planning platform —
+            perfect planners for your special occasions. We connect you with
+            verified photographers, decorators, caterers and more, and stay
+            involved from the first booking to the final delivered album.
           </p>
         </div>
       </section>

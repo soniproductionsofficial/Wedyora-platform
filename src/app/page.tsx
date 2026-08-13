@@ -236,18 +236,19 @@ export default function Home() {
               Wedyora
             </p>
             <h1 className="mt-4 font-wedding-display text-3xl font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] md:text-5xl lg:text-[3.35rem]">
-              Perfect Planners for Your Special Wedding Day
+              Perfect Planners for Your Special Occasions
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] md:text-lg">
-              Verified vendors for decoration, photography, catering, and music
-              — coordinated end to end so your celebration feels effortless.
+              Weddings, engagements, birthdays, and more — verified vendors for
+              decoration, photography, catering, and music, coordinated end to
+              end so every celebration feels effortless.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
                 href="/book"
                 className="cta-shimmer inline-flex items-center rounded-full bg-gradient-to-r from-wedding-gold via-wedding-gold-bright to-wedding-gold px-8 py-3.5 text-sm font-semibold text-wedding-deep shadow-[0_10px_40px_rgba(212,175,55,0.35)] transition-transform duration-300 hover:scale-[1.03] md:text-base"
               >
-                Start Planning Your Wedding
+                Start Planning Your Occasion
               </Link>
               <Link
                 href="#services"
@@ -283,8 +284,8 @@ export default function Home() {
               Everything for a joyful celebration
             </h2>
             <p className="mt-4 text-brand-gray md:text-lg">
-              Four pillars of an Indian wedding, each matched with a verified
-              specialist by the Wedyora team.
+              Four pillars of every special occasion, each matched with a
+              verified specialist by the Wedyora team.
             </p>
           </div>
 
@@ -368,7 +369,7 @@ export default function Home() {
               href="/book"
               className="inline-block rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
             >
-              Start Your Wedding Planning →
+              Start Planning Your Occasion →
             </Link>
           </div>
         </div>
@@ -378,7 +379,7 @@ export default function Home() {
       <section className="border-t border-wedding-gold/20 bg-gradient-to-b from-[#faf6ff] to-[#fff8f5] py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="mb-12 text-center font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-            Why Couples Choose Wedyora
+            Why People Choose Wedyora
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
             {WHY_WEDYORA.map(({ icon: Icon, title, body }) => (
@@ -405,11 +406,11 @@ export default function Home() {
       <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-6xl px-6 py-16 text-center">
           <h2 className="font-wedding-display text-3xl font-semibold md:text-4xl">
-            Are you a wedding vendor?
+            Are you an event vendor?
           </h2>
           <p className="mx-auto mb-8 mt-4 max-w-xl text-white/80">
             Join Wedyora&rsquo;s verified vendor network and get matched with
-            couples planning their wedding in your city.
+            clients planning special occasions in your city.
           </p>
           <Link
             href="/vendor/apply"

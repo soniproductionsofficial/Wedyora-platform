@@ -14,17 +14,17 @@ export default function SiteFooter() {
             />
           </Link>
           <p className="max-w-xs">
-            India&rsquo;s managed wedding-services platform — every vendor is
+            Perfect planners for your special occasions — every vendor is
             verified, every booking is handled start to finish.
           </p>
         </div>
 
         <div>
-          <p className="text-white font-medium mb-3">For Couples</p>
+          <p className="text-white font-medium mb-3">For Clients</p>
           <ul className="flex flex-col gap-2">
             <li>
               <Link href="/book" className="hover:text-brand-gold-bright transition-colors">
-                Plan Your Wedding
+                Plan Your Occasion
               </Link>
             </li>
             <li>
