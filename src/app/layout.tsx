@@ -14,11 +14,12 @@ export const metadata: Metadata = {
     "Wedyora is India's managed occasion-planning platform: book verified photographers, decorators, caterers and more for weddings, parties, and every special celebration.",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=black", sizes: "any" },
-      { url: "/icon-32.png?v=black", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png?v=black", sizes: "192x192", type: "image/png" },
+      { url: "/favicon.png?v=transparent", type: "image/png" },
+      { url: "/icon-32.png?v=transparent", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png?v=transparent", sizes: "192x192", type: "image/png" },
+      { url: "/favicon.ico?v=transparent", sizes: "any" },
     ],
-    apple: [{ url: "/apple-touch-icon.png?v=black", sizes: "180x180" }],
+    apple: [{ url: "/apple-touch-icon.png?v=transparent", sizes: "180x180" }],
   },
 };
 
