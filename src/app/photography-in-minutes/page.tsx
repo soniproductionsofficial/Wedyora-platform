@@ -7,7 +7,7 @@ import { Clock } from "lucide-react";
 // straight at its own external URL instead of this in-app page.
 export default function PhotographyInMinutesPage() {
   return (
-    <div className="bg-brand-black text-white min-h-[60vh] flex items-center">
+    <div className="bg-brand-chrome text-white min-h-[60vh] flex items-center">
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <span className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-white/10">
           <Clock className="h-6 w-6 text-brand-gold-bright" />
