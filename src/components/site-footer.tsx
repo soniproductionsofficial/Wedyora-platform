@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-brand-chrome mt-0 border-t border-white/15 text-white/60">
+    <footer className="border-t border-white/10 bg-brand-black text-white/60 mt-16">
       <div className="mx-auto max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-3 text-sm">
         <div>
           <Link href="/" className="inline-flex items-center mb-3">
@@ -14,17 +14,17 @@ export default function SiteFooter() {
             />
           </Link>
           <p className="max-w-xs">
-            Perfect planners for your special occasions — every vendor is
+            India&rsquo;s managed wedding-services platform — every vendor is
             verified, every booking is handled start to finish.
           </p>
         </div>
 
         <div>
-          <p className="text-white font-medium mb-3">For Clients</p>
+          <p className="text-white font-medium mb-3">For Couples</p>
           <ul className="flex flex-col gap-2">
             <li>
               <Link href="/book" className="hover:text-brand-gold-bright transition-colors">
-                Plan Your Occasion
+                Plan Your Wedding
               </Link>
             </li>
             <li>
@@ -89,7 +89,7 @@ export default function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-5 text-xs flex flex-col md:flex-row items-center justify-between gap-2">
           <p>&copy; {new Date().getFullYear()} Wedyora. All rights reserved.</p>
-          <p>Made for India&rsquo;s event vendors and the people who book them.</p>
+          <p>Made for India&rsquo;s wedding vendors and the couples who book them.</p>
         </div>
       </div>
     </footer>

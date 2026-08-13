@@ -26,7 +26,7 @@ export default async function BookPage({
   return (
     <div>
       {/* Page header */}
-      <section className="bg-brand-chrome text-white">
+      <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-6xl px-6 py-14 text-center">
           <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold-bright/15 text-brand-gold-bright">
             <CalendarCheck className="h-5 w-5" />

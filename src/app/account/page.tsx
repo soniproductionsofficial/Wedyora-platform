@@ -109,7 +109,7 @@ export default async function AccountPage({
 
   return (
     <div>
-      <section className="bg-brand-chrome text-white">
+      <section className="bg-brand-black text-white">
         <div className="mx-auto max-w-2xl px-6 py-14">
           <h1 className="font-heading text-3xl font-bold mb-1">
             {profile?.full_name ?? "Your account"}
