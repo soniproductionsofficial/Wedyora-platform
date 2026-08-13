@@ -22,7 +22,6 @@ export default async function SiteHeader() {
     <header className="bg-brand-chrome sticky top-0 z-40 border-b border-white/15 text-white backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
         {/* Left: logo + Become a Partner */}
-<<<<<<< HEAD
         <div className="flex shrink-0 items-center gap-4">
           <Link href="/" className="flex items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -32,10 +31,6 @@ export default async function SiteHeader() {
               className="h-9 w-auto md:h-10"
             />
           </Link>
-=======
-        <div className="flex items-center gap-4 shrink-0">
-
->>>>>>> origin/main
           {!user && (
             <Link
               href="/vendor/apply"
