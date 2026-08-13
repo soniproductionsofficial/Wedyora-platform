@@ -133,7 +133,7 @@ export default async function VendorProfilePage({
               City
               <input
                 name="city"
-                defaultValue={vendorProfile.city}
+                defaultValue={vendorProfile.city ?? ""}
                 required
                 className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal"
               />
