@@ -13,8 +13,12 @@ export const metadata: Metadata = {
   description:
     "Wedyora is India's managed occasion-planning platform: book verified photographers, decorators, caterers and more for weddings, parties, and every special celebration.",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico?v=magenta", sizes: "any" },
+      { url: "/icon-32.png?v=magenta", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png?v=magenta", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png?v=magenta", sizes: "180x180" }],
   },
 };
 
