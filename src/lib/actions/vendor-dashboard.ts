@@ -23,7 +23,7 @@ export async function acceptLeadAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/vendor/login");
 
   const { data: booking, error } = await supabase
     .from("bookings")
@@ -72,7 +72,7 @@ export async function rejectLeadAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/vendor/login");
 
   // Sends it back to "pending_assignment" (clearing the vendor/package/
   // price) so admin can hand it to a different vendor — same status a
@@ -130,7 +130,7 @@ export async function createVendorPackageAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/vendor/login");
 
   const { error } = await supabase.from("packages").insert({
     vendor_id: user.id,
@@ -161,7 +161,7 @@ export async function toggleVendorPackageActiveAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/vendor/login");
 
   await supabase
     .from("packages")
@@ -194,7 +194,7 @@ export async function updateVendorProfileAction(formData: FormData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/vendor/login");
 
   const serviceAreas = serviceAreasRaw
     ? serviceAreasRaw.split(",").map((s) => s.trim()).filter(Boolean)

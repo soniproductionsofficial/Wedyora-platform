@@ -27,7 +27,7 @@ export default async function VendorDashboardLayout({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login?redirectTo=/vendor/dashboard");
+    redirect("/vendor/login");
   }
 
   const { data: profile } = await supabase

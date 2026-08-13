@@ -30,6 +30,7 @@ export default async function SiteHeader() {
     : [
         { href: "/signup", label: "Customer Sign Up" },
         { href: "/login", label: "Log In" },
+        { href: "/vendor/login", label: "Vendor Log In" },
         { href: "/photography-in-minutes", label: "Photography in Minutes" },
         { href: "/vendor/apply", label: "Become a Partner" },
       ];

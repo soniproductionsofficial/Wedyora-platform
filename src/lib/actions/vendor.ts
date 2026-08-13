@@ -153,7 +153,12 @@ export async function verifyVendorOtpAction(formData: FormData) {
 
   await admin
     .from("profiles")
-    .update({ full_name: fields.full_name, phone, city: fields.city })
+    .update({
+      full_name: fields.full_name,
+      phone,
+      city: fields.city,
+      role: "vendor",
+    })
     .eq("id", userId);
 
   const { error: vendorError } = await admin.from("vendor_profiles").insert({
@@ -222,7 +227,7 @@ export async function uploadPortfolioAction(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/vendor/login");
   }
 
   const files = formData
@@ -264,4 +269,94 @@ export async function uploadPortfolioAction(formData: FormData) {
   }
 
   redirect("/vendor/apply?phase=done");
+}
+
+// --- Vendor phone login (existing partners) ---
+//
+// Separate from /login so we never auto-create a customer account for a
+// vendor number, and so non-vendors get a clear "apply first" message
+// instead of landing on the customer account page.
+
+export async function requestVendorLoginOtpAction(formData: FormData) {
+  const phoneRaw = String(formData.get("phone") ?? "").trim();
+
+  if (!phoneRaw) {
+    redirect(
+      "/vendor/login?error=" + encodeURIComponent("Please enter your phone number.")
+    );
+  }
+
+  const phone = normalizePhone(phoneRaw);
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithOtp({
+    phone,
+    options: {
+      // Existing vendor accounts only — new partners go through /vendor/apply.
+      shouldCreateUser: false,
+    },
+  });
+
+  if (error) {
+    const message =
+      error.message.toLowerCase().includes("signups not allowed") ||
+      error.message.toLowerCase().includes("user not found")
+        ? "No vendor account found for this number. Apply as a partner first."
+        : error.message;
+    redirect("/vendor/login?error=" + encodeURIComponent(message));
+  }
+
+  const params = new URLSearchParams({ phase: "otp", phone });
+  redirect(`/vendor/login?${params.toString()}`);
+}
+
+export async function verifyVendorLoginOtpAction(formData: FormData) {
+  const phone = String(formData.get("phone") ?? "").trim();
+  const token = String(formData.get("token") ?? "").trim();
+
+  const supabase = await createClient();
+  const { error, data } = await supabase.auth.verifyOtp({
+    phone,
+    token,
+    type: "sms",
+  });
+
+  if (error || !data.user) {
+    const params = new URLSearchParams({
+      phase: "otp",
+      phone,
+      error: error?.message ?? "Could not verify that code.",
+    });
+    redirect(`/vendor/login?${params.toString()}`);
+  }
+
+  const userId = data.user.id;
+  const [{ data: profile }, { data: vendor }] = await Promise.all([
+    supabase.from("profiles").select("role, phone").eq("id", userId).single(),
+    supabase.from("vendor_profiles").select("id").eq("id", userId).maybeSingle(),
+  ]);
+
+  const isVendor = profile?.role === "vendor" || !!vendor;
+
+  if (!isVendor) {
+    await supabase.auth.signOut();
+    redirect(
+      "/vendor/login?error=" +
+        encodeURIComponent(
+          "This number is not registered as a vendor. Apply as a partner to continue."
+        )
+    );
+  }
+
+  // Keep role + phone in sync for older accounts created before role metadata
+  // was set consistently on every path.
+  const admin = createAdminClient();
+  await admin
+    .from("profiles")
+    .update({
+      role: "vendor",
+      phone: phone || profile?.phone || null,
+    })
+    .eq("id", userId);
+
+  redirect("/vendor/dashboard");
 }
