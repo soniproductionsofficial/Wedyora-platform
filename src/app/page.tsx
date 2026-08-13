@@ -276,10 +276,10 @@ export default function Home() {
 
         <div className="relative mx-auto max-w-6xl px-6">
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-wedding-red">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
               Our Services
             </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-wedding-deep md:text-5xl">
+            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-5xl">
               Everything for a joyful celebration
             </h2>
             <p className="mt-4 text-brand-gray md:text-lg">
@@ -316,7 +316,7 @@ export default function Home() {
                   <p className="text-sm leading-relaxed text-brand-gray">
                     {service.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-wedding-red transition-colors duration-300 group-hover:text-wedding-purple">
+                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-brand-magenta transition-colors duration-300 group-hover:text-brand-magenta-deep">
                     Book this service
                     <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">
                       →
@@ -336,7 +336,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl px-6">
           <div className="mb-14 text-center">
-            <h2 className="font-wedding-display text-3xl font-semibold text-wedding-deep md:text-4xl">
+            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
               How Wedyora Works
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-brand-gray md:text-lg">
@@ -353,7 +353,7 @@ export default function Home() {
                 <span className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-wedding-gold to-wedding-coral text-sm font-bold text-wedding-deep">
                   {i + 1}
                 </span>
-                <h3 className="mt-3 font-wedding-display text-lg font-semibold text-wedding-deep">
+                <h3 className="mt-3 font-wedding-display text-lg font-semibold text-brand-magenta">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-xs leading-relaxed text-brand-gray md:text-sm">
