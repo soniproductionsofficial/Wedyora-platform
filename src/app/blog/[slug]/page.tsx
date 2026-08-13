@@ -14,7 +14,7 @@ export default async function BlogPostPage({
 
   return (
     <div>
-      <section className="bg-brand-black text-white">
+      <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-3xl px-6 py-16">
           <Link href="/blog" className="text-xs text-white/60 hover:text-white">
             &larr; Back to Blog
