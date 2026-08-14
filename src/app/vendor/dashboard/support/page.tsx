@@ -14,16 +14,16 @@ export default function VendorSupportPage() {
         </p>
         <div className="flex flex-col gap-3 text-sm">
           <a
-            href="mailto:vendors@wedyora.com"
+            href="mailto:admin@wedyora.com"
             className="flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-brand-line hover:bg-brand-cream transition-colors"
           >
-            <Mail className="h-4 w-4" /> vendors@wedyora.com
+            <Mail className="h-4 w-4" /> admin@wedyora.com
           </a>
           <a
-            href="tel:+911234567890"
+            href="tel:+919187951975"
             className="flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-brand-line hover:bg-brand-cream transition-colors"
           >
-            <Phone className="h-4 w-4" /> +91 12345 67890
+            <Phone className="h-4 w-4" /> +91 91879 51975
           </a>
         </div>
       </div>
