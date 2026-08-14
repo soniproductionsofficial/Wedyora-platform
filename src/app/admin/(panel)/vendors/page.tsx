@@ -148,37 +148,33 @@ export default async function AdminVendorsPage({
 
                 <div className="mt-3 pt-3 border-t border-brand-line grid sm:grid-cols-2 gap-x-6 gap-y-1 text-xs text-brand-gray max-w-xl">
                   <p>
-                    <span className="font-medium text-brand-black">PAN:</span>{" "}
-                    {v.pan_number || "—"}
-                    {kycSignedUrls[v.id]?.pan && (
-                      <>
-                        {" · "}
-                        <a
-                          href={kycSignedUrls[v.id]!.pan}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-brand-orange underline"
-                        >
-                          View document
-                        </a>
-                      </>
+                    <span className="font-medium text-brand-black">Aadhaar document:</span>{" "}
+                    {kycSignedUrls[v.id]?.aadhaar ? (
+                      <a
+                        href={kycSignedUrls[v.id]!.aadhaar}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand-orange underline"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      "—"
                     )}
                   </p>
                   <p>
-                    <span className="font-medium text-brand-black">Aadhaar:</span>{" "}
-                    {v.aadhaar_number || "—"}
-                    {kycSignedUrls[v.id]?.aadhaar && (
-                      <>
-                        {" · "}
-                        <a
-                          href={kycSignedUrls[v.id]!.aadhaar}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-brand-orange underline"
-                        >
-                          View document
-                        </a>
-                      </>
+                    <span className="font-medium text-brand-black">PAN document:</span>{" "}
+                    {kycSignedUrls[v.id]?.pan ? (
+                      <a
+                        href={kycSignedUrls[v.id]!.pan}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand-orange underline"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      "—"
                     )}
                   </p>
                   <p>
