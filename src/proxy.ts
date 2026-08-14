@@ -32,12 +32,13 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Gate everything under /admin behind login. Role check (is this user
-  // actually an admin?) happens again inside each admin page/query via RLS,
-  // this is just the first, cheap layer.
-  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
-    const redirectUrl = new URL("/login", request.url);
-    redirectUrl.searchParams.set("redirectTo", request.nextUrl.pathname);
+  // Gate /admin behind the dedicated email/password login (not phone OTP).
+  // /admin/login stays public so admins can sign in / bootstrap.
+  // Role check (role=admin) happens again in the admin panel layout + RLS.
+  const path = request.nextUrl.pathname;
+  const isAdminLogin = path === "/admin/login" || path.startsWith("/admin/login/");
+  if (path.startsWith("/admin") && !isAdminLogin && !user) {
+    const redirectUrl = new URL("/admin/login", request.url);
     return NextResponse.redirect(redirectUrl);
   }
 
