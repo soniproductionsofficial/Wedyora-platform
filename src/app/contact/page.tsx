@@ -98,7 +98,12 @@ export default async function ContactPage({
                 </span>
                 <div>
                   <p className="text-brand-gray text-xs">Email</p>
-                  <p className="font-medium">hello@wedyora.com</p>
+                  <a
+                    href="mailto:admin@wedyora.com"
+                    className="font-medium text-brand-black hover:text-brand-orange transition-colors"
+                  >
+                    admin@wedyora.com
+                  </a>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -107,12 +112,14 @@ export default async function ContactPage({
                 </span>
                 <div>
                   <p className="text-brand-gray text-xs">Phone</p>
-                  <p className="font-medium">+91-00000-00000</p>
+                  <a
+                    href="tel:+919187951975"
+                    className="font-medium text-brand-black hover:text-brand-orange transition-colors"
+                  >
+                    +91 91879 51975
+                  </a>
                 </div>
               </div>
-              <p className="text-xs text-brand-gray mt-2">
-                <em>(Placeholder contact details above — swap in your real support email and phone number.)</em>
-              </p>
             </div>
           </div>
         </div>
