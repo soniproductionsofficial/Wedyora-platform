@@ -291,7 +291,11 @@ export default async function VendorApplyPage({
           )}
 
           {phase === "details" && (
-            <form action={submitVendorDetailsAction} className="flex flex-col gap-4">
+            <form
+              action={submitVendorDetailsAction}
+              encType="multipart/form-data"
+              className="flex flex-col gap-4"
+            >
               <fieldset className="mb-2 flex flex-col gap-4 border-b border-brand-line pb-6">
                 <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
                   Account (Mobile Verification)
@@ -376,8 +380,22 @@ export default async function VendorApplyPage({
                   publicly, only visible to you and the Wedyora team.
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="PAN Number" name="pan_number" />
-                  <Field label="Aadhaar Number" name="aadhaar_number" />
+                  <div className="flex flex-col gap-3">
+                    <Field label="PAN Number" name="pan_number" />
+                    <FileField
+                      label="Upload PAN document"
+                      name="pan_document"
+                      hint="JPG, PNG, WEBP, or PDF · max 10 MB"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <Field label="Aadhaar Number" name="aadhaar_number" />
+                    <FileField
+                      label="Upload Aadhaar document"
+                      name="aadhaar_document"
+                      hint="JPG, PNG, WEBP, or PDF · max 10 MB"
+                    />
+                  </div>
                 </div>
                 <Field label="GST Number (if registered)" name="gst_number" />
               </fieldset>
@@ -386,6 +404,7 @@ export default async function VendorApplyPage({
                 <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
                   Bank Details (for payouts)
                 </legend>
+                <Field label="Bank Name" name="bank_name" />
                 <Field label="Account Holder Name" name="bank_account_holder_name" />
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Account Number" name="bank_account_number" />
@@ -518,6 +537,29 @@ function Field({
         defaultValue={defaultValue}
         className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
       />
+    </label>
+  );
+}
+
+function FileField({
+  label,
+  name,
+  hint,
+}: {
+  label: string;
+  name: string;
+  hint?: string;
+}) {
+  return (
+    <label className="flex flex-col gap-1.5 text-sm font-medium">
+      {label}
+      <input
+        name={name}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,application/pdf"
+        className="rounded-lg border border-dashed border-brand-line bg-brand-cream/40 px-3 py-2.5 text-sm font-normal file:mr-3 file:rounded-full file:border-0 file:bg-brand-black file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:border-brand-orange/50 focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+      />
+      {hint ? <span className="text-xs font-normal text-brand-gray">{hint}</span> : null}
     </label>
   );
 }

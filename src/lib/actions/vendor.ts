@@ -20,6 +20,7 @@ const DETAIL_FIELDS = [
   "pan_number",
   "aadhaar_number",
   "gst_number",
+  "bank_name",
   "bank_account_holder_name",
   "bank_account_number",
   "bank_ifsc",
@@ -213,6 +214,57 @@ export async function submitVendorDetailsAction(formData: FormData) {
   const agreedAt = new Date().toISOString();
   const admin = createAdminClient();
 
+  async function uploadKycDoc(
+    file: FormDataEntryValue | null,
+    kind: "pan" | "aadhaar",
+  ): Promise<string | null> {
+    if (!(file instanceof File) || file.size === 0) return null;
+
+    const allowed = new Set([
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+    ]);
+    if (!allowed.has(file.type)) {
+      redirect(
+        "/vendor/apply?phase=details&error=" +
+          encodeURIComponent(
+            `${kind.toUpperCase()} document must be a JPG, PNG, WEBP, or PDF.`
+          )
+      );
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      redirect(
+        "/vendor/apply?phase=details&error=" +
+          encodeURIComponent(`${kind.toUpperCase()} document must be under 10 MB.`)
+      );
+    }
+
+    const ext =
+      file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") ||
+      (file.type === "application/pdf" ? "pdf" : "jpg");
+    const path = `${user!.id}/${kind}-${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await admin.storage
+      .from("vendor-kyc")
+      .upload(path, file, { contentType: file.type, upsert: false });
+
+    if (uploadError) {
+      redirect(
+        "/vendor/apply?phase=details&error=" +
+          encodeURIComponent(`Could not upload ${kind.toUpperCase()} document: ${uploadError.message}`)
+      );
+    }
+    return path;
+  }
+
+  const panDocumentPath = await uploadKycDoc(formData.get("pan_document"), "pan");
+  const aadhaarDocumentPath = await uploadKycDoc(
+    formData.get("aadhaar_document"),
+    "aadhaar",
+  );
+
   await admin
     .from("profiles")
     .update({
@@ -236,9 +288,12 @@ export async function submitVendorDetailsAction(formData: FormData) {
     pan_number: fields.pan_number || null,
     aadhaar_number: fields.aadhaar_number || null,
     gst_number: fields.gst_number || null,
+    bank_name: fields.bank_name || null,
     bank_account_holder_name: fields.bank_account_holder_name || null,
     bank_account_number: fields.bank_account_number || null,
     bank_ifsc: fields.bank_ifsc || null,
+    ...(panDocumentPath ? { pan_document_path: panDocumentPath } : {}),
+    ...(aadhaarDocumentPath ? { aadhaar_document_path: aadhaarDocumentPath } : {}),
     agreed_to_vendor_terms_at: agreedAt,
     agreed_to_cancellation_policy_at: agreedAt,
     status: "pending_payment" as const,

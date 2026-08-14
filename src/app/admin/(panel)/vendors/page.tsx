@@ -33,13 +33,31 @@ export default async function AdminVendorsPage({
   const { data: vendors, error: vendorsError } = await supabase
     .from("vendor_profiles")
     .select(
-      "id, business_name, city, bio, experience_years, status, created_at, team_size, service_areas, available_from, equipment_details, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, portfolio_urls, plan, security_deposit_amount, plan_paid_at, plan_expires_at, successful_events_count, partner_tier, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
+      "id, business_name, city, bio, experience_years, status, created_at, team_size, service_areas, available_from, equipment_details, pan_number, aadhaar_number, gst_number, bank_name, bank_account_holder_name, bank_account_number, bank_ifsc, pan_document_path, aadhaar_document_path, portfolio_urls, plan, security_deposit_amount, plan_paid_at, plan_expires_at, successful_events_count, partner_tier, service_categories(name), profiles!vendor_profiles_id_fkey(full_name, phone)"
     )
     .eq("status", activeStatus)
     .order("created_at", { ascending: true });
 
   if (vendorsError) {
     console.error("Failed to load vendor applications:", vendorsError);
+  }
+
+  const kycSignedUrls: Record<string, { pan?: string; aadhaar?: string }> = {};
+  for (const v of vendors ?? []) {
+    const entry: { pan?: string; aadhaar?: string } = {};
+    if (v.pan_document_path) {
+      const { data } = await supabase.storage
+        .from("vendor-kyc")
+        .createSignedUrl(v.pan_document_path, 60 * 30);
+      if (data?.signedUrl) entry.pan = data.signedUrl;
+    }
+    if (v.aadhaar_document_path) {
+      const { data } = await supabase.storage
+        .from("vendor-kyc")
+        .createSignedUrl(v.aadhaar_document_path, 60 * 30);
+      if (data?.signedUrl) entry.aadhaar = data.signedUrl;
+    }
+    if (entry.pan || entry.aadhaar) kycSignedUrls[v.id] = entry;
   }
 
   const vendorIds = (vendors ?? []).map((v) => v.id);
@@ -132,20 +150,46 @@ export default async function AdminVendorsPage({
                   <p>
                     <span className="font-medium text-brand-black">PAN:</span>{" "}
                     {v.pan_number || "—"}
+                    {kycSignedUrls[v.id]?.pan && (
+                      <>
+                        {" · "}
+                        <a
+                          href={kycSignedUrls[v.id]!.pan}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-orange underline"
+                        >
+                          View document
+                        </a>
+                      </>
+                    )}
                   </p>
                   <p>
                     <span className="font-medium text-brand-black">Aadhaar:</span>{" "}
                     {v.aadhaar_number || "—"}
+                    {kycSignedUrls[v.id]?.aadhaar && (
+                      <>
+                        {" · "}
+                        <a
+                          href={kycSignedUrls[v.id]!.aadhaar}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-orange underline"
+                        >
+                          View document
+                        </a>
+                      </>
+                    )}
                   </p>
                   <p>
                     <span className="font-medium text-brand-black">GST:</span>{" "}
                     {v.gst_number || "—"}
                   </p>
                   <p>
-                    <span className="font-medium text-brand-black">Bank A/C:</span>{" "}
+                    <span className="font-medium text-brand-black">Bank:</span>{" "}
                     {v.bank_account_number
-                      ? `${v.bank_account_holder_name ?? ""} · ${v.bank_account_number} · ${v.bank_ifsc ?? ""}`
-                      : "—"}
+                      ? `${v.bank_name ? `${v.bank_name} · ` : ""}${v.bank_account_holder_name ?? ""} · ${v.bank_account_number} · ${v.bank_ifsc ?? ""}`
+                      : v.bank_name || "—"}
                   </p>
                 </div>
 
