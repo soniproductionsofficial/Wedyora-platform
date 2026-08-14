@@ -118,9 +118,12 @@ export interface Database {
           pan_number: string | null;
           aadhaar_number: string | null;
           gst_number: string | null;
+          bank_name: string | null;
           bank_account_holder_name: string | null;
           bank_account_number: string | null;
           bank_ifsc: string | null;
+          pan_document_path: string | null;
+          aadhaar_document_path: string | null;
           team_size: number | null;
           service_areas: string[];
           available_from: string | null;

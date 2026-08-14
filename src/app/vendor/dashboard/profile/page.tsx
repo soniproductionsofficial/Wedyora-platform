@@ -25,7 +25,7 @@ export default async function VendorProfilePage({
     supabase
       .from("vendor_profiles")
       .select(
-        "business_name, city, bio, service_areas, team_size, available_from, equipment_details, portfolio_urls, pan_number, aadhaar_number, gst_number, bank_account_holder_name, bank_account_number, bank_ifsc, plan, security_deposit_amount, plan_paid_at, plan_expires_at, successful_events_count, partner_tier, service_categories(name)"
+        "business_name, city, bio, service_areas, team_size, available_from, equipment_details, portfolio_urls, pan_number, aadhaar_number, gst_number, bank_name, bank_account_holder_name, bank_account_number, bank_ifsc, pan_document_path, aadhaar_document_path, plan, security_deposit_amount, plan_paid_at, plan_expires_at, successful_events_count, partner_tier, service_categories(name)"
       )
       .eq("id", user.id)
       .single(),
@@ -46,6 +46,21 @@ export default async function VendorProfilePage({
 
   const plan = getVendorPlan(vendorProfile.plan);
   const nextTier = nextIncentiveTier(vendorProfile.successful_events_count);
+
+  let panDocUrl: string | undefined;
+  let aadhaarDocUrl: string | undefined;
+  if (vendorProfile.pan_document_path) {
+    const { data } = await supabase.storage
+      .from("vendor-kyc")
+      .createSignedUrl(vendorProfile.pan_document_path, 60 * 30);
+    panDocUrl = data?.signedUrl;
+  }
+  if (vendorProfile.aadhaar_document_path) {
+    const { data } = await supabase.storage
+      .from("vendor-kyc")
+      .createSignedUrl(vendorProfile.aadhaar_document_path, 60 * 30);
+    aadhaarDocUrl = data?.signedUrl;
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -346,8 +361,19 @@ export default async function VendorProfilePage({
         <div className="grid sm:grid-cols-2 gap-4 text-sm">
           <ReadOnlyField label="Category" value={vendorProfile.service_categories?.name} />
           <ReadOnlyField label="PAN" value={vendorProfile.pan_number} />
+          <ReadOnlyField
+            label="PAN Document"
+            value={panDocUrl ? "Uploaded" : null}
+            href={panDocUrl}
+          />
           <ReadOnlyField label="Aadhaar" value={vendorProfile.aadhaar_number} />
+          <ReadOnlyField
+            label="Aadhaar Document"
+            value={aadhaarDocUrl ? "Uploaded" : null}
+            href={aadhaarDocUrl}
+          />
           <ReadOnlyField label="GST" value={vendorProfile.gst_number} />
+          <ReadOnlyField label="Bank Name" value={vendorProfile.bank_name} />
           <ReadOnlyField label="Bank Account Holder" value={vendorProfile.bank_account_holder_name} />
           <ReadOnlyField label="Bank Account Number" value={vendorProfile.bank_account_number} />
           <ReadOnlyField label="IFSC" value={vendorProfile.bank_ifsc} />
@@ -357,11 +383,30 @@ export default async function VendorProfilePage({
   );
 }
 
-function ReadOnlyField({ label, value }: { label: string; value: string | null | undefined }) {
+function ReadOnlyField({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value: string | null | undefined;
+  href?: string;
+}) {
   return (
     <div>
       <p className="text-brand-gray text-xs mb-0.5">{label}</p>
-      <p className="font-medium">{value || "—"}</p>
+      {href ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-brand-orange underline"
+        >
+          {value || "View"}
+        </a>
+      ) : (
+        <p className="font-medium">{value || "—"}</p>
+      )}
     </div>
   );
 }
