@@ -119,11 +119,7 @@ export default function ServicesShop() {
         <p className="mt-8 text-center text-xs text-brand-gray">
           GST, travel, peak-date premiums, and minimum guest counts may apply.
           Catering prices are typically per person; décor and makeup are per
-          booking. Final quotes are confirmed with your matched vendor.{" "}
-          <a href="#legacy-catalogs" className="text-brand-orange underline">
-            See full Catering, Decoration &amp; Makeup catalogs below
-          </a>
-          .
+          booking. Final quotes are confirmed with your matched vendor.
         </p>
       </div>
 
