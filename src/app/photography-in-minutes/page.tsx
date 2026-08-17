@@ -57,16 +57,16 @@ export default function PhotographyInMinutesPage() {
       <section className="relative z-0 min-h-[min(78vh,720px)] overflow-hidden text-white md:min-h-[82vh]">
         <div className="absolute inset-0 bg-brand-black">
           <Image
-            src="/images/services/photography.jpg"
+            src="/images/minutes/photography-in-minutes.jpg"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="minutes-hero-media object-cover object-[center_30%]"
+            className="minutes-hero-media object-cover object-center"
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/30"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20"
             aria-hidden
           />
         </div>

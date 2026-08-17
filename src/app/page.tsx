@@ -259,6 +259,40 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Photography in Minutes */}
+      <section className="relative overflow-hidden bg-[#f4efe8]">
+        <div className="relative mx-auto grid min-h-[min(70vh,640px)] max-w-6xl items-center gap-0 lg:grid-cols-2">
+          <div className="relative z-10 px-6 py-14 sm:px-8 md:py-16 lg:pr-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+              Wedyora Minutes
+            </p>
+            <h2 className="mt-3 font-wedding-display text-3xl font-semibold leading-tight text-brand-magenta md:text-4xl lg:text-[2.75rem]">
+              Photography in Minutes
+            </h2>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-brand-gray md:text-base">
+              Our in-house photography team — book on Wedyora, get a Minutes
+              shooter assigned, and receive quality delivery from one place.
+            </p>
+            <Link
+              href="/photography-in-minutes"
+              className="mt-7 inline-flex items-center justify-center rounded-full bg-brand-button px-7 py-3.5 text-sm font-semibold text-brand-black transition-colors hover:bg-brand-button-dark md:text-base"
+            >
+              Explore Photography in Minutes
+            </Link>
+          </div>
+          <div className="relative min-h-[280px] w-full self-stretch sm:min-h-[360px] lg:min-h-full">
+            <Image
+              src="/images/minutes/photography-in-minutes.jpg"
+              alt="Photographer arriving in minutes — Wedyora Minutes"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover object-center"
+              priority={false}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Services grid */}
       <section
         id="services"
