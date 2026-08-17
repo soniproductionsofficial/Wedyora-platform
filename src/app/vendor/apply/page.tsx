@@ -6,10 +6,9 @@ import {
   requestVendorOtpAction,
   verifyVendorOtpAction,
   submitVendorDetailsAction,
-  selectVendorPlanAction,
   resolveVendorOnboardingPhase,
 } from "@/lib/actions/vendor";
-import { VENDOR_PLANS, planGstAmount, planTotalPayable } from "@/lib/vendor-plans";
+import VendorPlanFlowPicker from "@/components/vendor-plan-flow-picker";
 import PayVendorFeesButton from "@/components/pay-vendor-fees-button";
 import VendorLocationStep from "@/components/vendor-location-step";
 
@@ -108,7 +107,7 @@ export default async function VendorApplyPage({
           aria-modal="true"
           aria-labelledby="vendor-plan-title"
         >
-          <div className="max-h-[min(90vh,40rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-brand-line bg-white p-5 shadow-2xl sm:p-7">
+          <div className="max-h-[min(92vh,48rem)] w-full max-w-xl overflow-y-auto rounded-2xl border border-brand-line bg-white p-5 shadow-2xl sm:p-7">
             <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">
               Next step
             </p>
@@ -116,10 +115,11 @@ export default async function VendorApplyPage({
               id="vendor-plan-title"
               className="mt-2 text-center font-heading text-2xl font-semibold"
             >
-              Vendor registration fee model
+              Choose your vendor tier
             </h2>
-            <p className="mt-2 mb-6 text-center text-sm text-brand-gray">
-              Simple registration · Verified vendors · More bookings · More growth
+            <p className="mt-2 mb-5 text-center text-sm text-brand-gray">
+              Follow the flow from Basic → Elite. Expand a step to see exactly
+              what you get, then continue to payment.
             </p>
 
             {error && (
@@ -128,70 +128,7 @@ export default async function VendorApplyPage({
               </p>
             )}
 
-            <form action={selectVendorPlanAction} className="flex flex-col gap-4">
-              <fieldset className="flex flex-col gap-3">
-                <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
-                  Registration Plan <span className="text-brand-orange">*</span>
-                </legend>
-                {VENDOR_PLANS.map((p) => {
-                  const gst = planGstAmount(p.registrationFee);
-                  const total = planTotalPayable(p.registrationFee);
-                  return (
-                    <label
-                      key={p.key}
-                      className="flex cursor-pointer items-start gap-3 rounded-xl border border-brand-line px-4 py-3 text-sm transition-colors hover:border-brand-magenta has-[:checked]:border-brand-magenta has-[:checked]:bg-brand-magenta/5"
-                    >
-                      <input
-                        type="radio"
-                        name="plan"
-                        value={p.key}
-                        required
-                        defaultChecked={Boolean(p.recommended)}
-                        className="mt-1 accent-brand-magenta"
-                      />
-                      <span className="min-w-0 flex-1">
-                        <span className="flex flex-wrap items-center gap-2">
-                          <span className="font-semibold text-brand-black">
-                            {p.label}
-                          </span>
-                          {p.recommended ? (
-                            <span className="rounded-full bg-brand-button px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-black">
-                              Recommended
-                            </span>
-                          ) : null}
-                        </span>
-                        <span className="mt-0.5 block text-xs text-brand-gray">
-                          Best for {p.targetVendor} · {p.validityMonths} months
-                          validity
-                        </span>
-                        <span className="mt-2 block space-y-0.5 text-xs text-brand-gray">
-                          <span className="block">
-                            Registration fee (excl. GST): ₹
-                            {p.registrationFee.toLocaleString("en-IN")}
-                          </span>
-                          <span className="block">
-                            GST @ 18%: ₹
-                            {gst.toLocaleString("en-IN", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </span>
-                          <span className="mt-1 inline-block rounded-full bg-brand-magenta px-2.5 py-0.5 text-xs font-semibold text-white">
-                            Total payable ₹{total.toLocaleString("en-IN")}
-                          </span>
-                        </span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </fieldset>
-              <button
-                type="submit"
-                className="mt-1 w-full rounded-full bg-brand-black py-3 font-semibold text-white transition-colors hover:bg-brand-charcoal"
-              >
-                Continue to Payment
-              </button>
-            </form>
+            <VendorPlanFlowPicker />
           </div>
         </div>
       )}
