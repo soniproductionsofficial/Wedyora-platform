@@ -19,7 +19,20 @@ export async function createBookingAction(formData: FormData) {
   const guestCount = Number(formData.get("guest_count") ?? 0) || null;
   const budgetMin = Number(formData.get("budget_min") ?? 0) || null;
   const budgetMax = Number(formData.get("budget_max") ?? 0) || null;
-  const specialRequirements = String(formData.get("special_requirements") ?? "");
+  const specialRequirementsRaw = String(formData.get("special_requirements") ?? "");
+  const cartSummary = String(formData.get("cart_summary") ?? "").trim();
+  const cartTotal = String(formData.get("cart_total") ?? "").trim();
+
+  const specialRequirements = [
+    cartSummary
+      ? `Selected packages (indicative):\n${cartSummary}${
+          cartTotal ? `\nEstimated cart total: ₹${Number(cartTotal).toLocaleString("en-IN")}` : ""
+        }`
+      : "",
+    specialRequirementsRaw,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   if (!categoryId || !eventDate || !city) {
     redirect("/book?error=" + encodeURIComponent("Please fill in all required fields."));
