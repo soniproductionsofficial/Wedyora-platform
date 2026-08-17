@@ -259,6 +259,42 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Photography in Minutes */}
+      <section className="relative min-h-[min(72vh,680px)] overflow-hidden text-white">
+        <Image
+          src="/images/minutes/photography-in-minutes.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-[center_40%]"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/15"
+          aria-hidden
+        />
+        <div className="relative z-10 mx-auto flex min-h-[min(72vh,680px)] max-w-6xl flex-col justify-end px-6 py-14 sm:justify-center sm:py-16">
+          <div className="max-w-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold-bright">
+              Wedyora Minutes
+            </p>
+            <h2 className="mt-3 font-wedding-display text-3xl font-semibold leading-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.55)] md:text-4xl lg:text-[2.75rem]">
+              Photography in Minutes
+            </h2>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-white/90 [text-shadow:0_1px_14px_rgba(0,0,0,0.65)] md:text-base">
+              Our in-house photography team — book on Wedyora, get a Minutes
+              shooter assigned, and receive quality delivery from one place.
+            </p>
+            <Link
+              href="/photography-in-minutes"
+              className="mt-7 inline-flex items-center justify-center rounded-full bg-brand-button px-7 py-3.5 text-sm font-semibold text-brand-black transition-colors hover:bg-brand-button-dark md:text-base"
+            >
+              Explore Photography in Minutes
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Services grid */}
       <section
         id="services"
