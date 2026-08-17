@@ -62,7 +62,7 @@ export default function PhotographyInMinutesPage() {
       {/* Hero — report cover message */}
       <section className="relative z-0 min-h-[min(92vh,860px)] w-full overflow-hidden bg-[#1a0a12] text-white">
         <Image
-          src="/images/minutes/photography-in-minutes.jpg"
+          src="/images/minutes/photography-in-minutes-hero.jpg"
           alt=""
           fill
           priority
