@@ -7,17 +7,36 @@ import BookingCartSummary from "@/components/booking-cart-summary";
 export default async function BookPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    source?: string;
+    package?: string;
+  }>;
 }) {
-  const { error } = await searchParams;
+  const { error, source, package: packageName } = await searchParams;
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    redirect("/login?redirectTo=/book");
+    const qs = new URLSearchParams();
+    if (source) qs.set("source", source);
+    if (packageName) qs.set("package", packageName);
+    const bookPath = qs.size > 0 ? `/book?${qs.toString()}` : "/book";
+    redirect(`/login?redirectTo=${encodeURIComponent(bookPath)}`);
   }
+
+  const fromMinutes = source === "minutes";
+  const specialDefault = fromMinutes
+    ? [
+        "Photography in Minutes (Wedyora Minutes) booking request.",
+        packageName ? `Preferred package: ${packageName}.` : null,
+        "Please assign the in-house Minutes photography team.",
+      ]
+        .filter(Boolean)
+        .join(" ")
+    : "";
 
   const { data: categories } = await supabase
     .from("service_categories")
@@ -33,11 +52,12 @@ export default async function BookPage({
             <CalendarCheck className="h-5 w-5" />
           </span>
           <h1 className="font-heading text-3xl font-bold mb-2">
-            Plan Your Occasion
+            {fromMinutes ? "Book Photography in Minutes" : "Plan Your Occasion"}
           </h1>
           <p className="text-white/70 text-sm max-w-xl mx-auto">
-            Tell us what you need — Wedyora will match you with a verified
-            vendor and confirm the details before anything is charged.
+            {fromMinutes
+              ? "Request Wedyora Minutes — our in-house photography team. We will confirm package, date, and advance before anything is charged."
+              : "Tell us what you need — Wedyora will match you with a verified vendor and confirm the details before anything is charged."}
           </p>
         </div>
       </section>
@@ -124,6 +144,7 @@ export default async function BookPage({
               <textarea
                 name="special_requirements"
                 rows={3}
+                defaultValue={specialDefault}
                 className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
               />
             </label>
