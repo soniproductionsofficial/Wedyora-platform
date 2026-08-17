@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { SERVICE_CATALOGS } from "@/lib/service-catalogs";
-import ServiceCatalogSection from "@/components/service-catalog";
 import { ServicesCartProvider } from "@/components/services-cart-context";
 import ServicesShop from "@/components/services-shop";
 
@@ -26,27 +23,6 @@ export default function ServicesPage() {
       <ServicesCartProvider>
         <ServicesShop />
       </ServicesCartProvider>
-
-      <div id="legacy-catalogs" className="scroll-mt-24">
-        <div className="border-t border-brand-line bg-white px-6 py-10 text-center">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">
-            Detailed rate cards
-          </p>
-          <h2 className="font-heading text-2xl font-semibold md:text-3xl">
-            Catering · Decoration · Makeup
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-brand-gray">
-            Full package menus for these categories. Request via{" "}
-            <Link href="/book" className="text-brand-orange underline">
-              Plan Your Occasion
-            </Link>{" "}
-            after reviewing.
-          </p>
-        </div>
-        {SERVICE_CATALOGS.map((catalog) => (
-          <ServiceCatalogSection key={catalog.slug} catalog={catalog} />
-        ))}
-      </div>
     </div>
   );
 }
