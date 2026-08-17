@@ -10,7 +10,6 @@ import {
 } from "@/lib/actions/vendor";
 import VendorPlanFlowPicker from "@/components/vendor-plan-flow-picker";
 import PayVendorFeesButton from "@/components/pay-vendor-fees-button";
-import VendorLocationStep from "@/components/vendor-location-step";
 
 type ApplyFields = {
   error?: string;
@@ -57,17 +56,19 @@ export default async function VendorApplyPage({
   let draftBusinessName = business_name ?? "";
   let draftPhone = phone ?? "";
   let draftFullName = "";
+  let draftEmail = "";
+  let selectedPlanLabel: string | null = null;
 
   if (user) {
     const [{ data: profile }, { data: vendor }] = await Promise.all([
       supabase
         .from("profiles")
-        .select("full_name, phone")
+        .select("full_name, phone, email")
         .eq("id", user.id)
         .single(),
       supabase
         .from("vendor_profiles")
-        .select("business_name")
+        .select("business_name, plan")
         .eq("id", user.id)
         .maybeSingle(),
     ]);
@@ -75,7 +76,12 @@ export default async function VendorApplyPage({
     vendorPhone = profile?.phone ?? null;
     draftFullName = profile?.full_name ?? "";
     draftPhone = profile?.phone ?? draftPhone;
+    draftEmail = profile?.email ?? "";
     draftBusinessName = vendor?.business_name ?? draftBusinessName;
+    if (vendor?.plan) {
+      const { getVendorPlan } = await import("@/lib/vendor-plans");
+      selectedPlanLabel = getVendorPlan(vendor.plan)?.label ?? vendor.plan;
+    }
 
     if (phase === "fees") {
       const { data: pendingFees } = await supabase
@@ -91,11 +97,10 @@ export default async function VendorApplyPage({
   const titles: Record<string, string> = {
     signup: "Become a Wedyora Vendor",
     otp: "Verify your phone",
-    details: "Complete your application",
-    location: "Allow location access",
     plan: "Choose your plan",
+    details: "Complete your application",
     fees: "Complete payment",
-    done: "Application submitted",
+    done: "Registration successful",
   };
 
   return (
@@ -119,7 +124,7 @@ export default async function VendorApplyPage({
             </h2>
             <p className="mt-2 mb-5 text-center text-sm text-brand-gray">
               Follow the flow from Basic → Elite. Expand a step to see exactly
-              what you get, then continue to payment.
+              what you get, then continue to your application details.
             </p>
 
             {error && (
@@ -151,8 +156,10 @@ export default async function VendorApplyPage({
               Application submitted
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-brand-gray">
-              Thank you for applying to become a Wedyora vendor. Our team will
-              verify your details and get back to you soon.
+              Thank you for registering with Wedyora. Payment is confirmed and
+              our team will review your application shortly.
+              {` `}
+              Check your email for the registration success message.
             </p>
             <Link
               href="/vendor/dashboard"
@@ -192,14 +199,14 @@ export default async function VendorApplyPage({
             {phase === "signup" &&
               "Sign up with your business name and contact number. We’ll text you a code to log in."}
             {phase === "otp" && `Enter the code we texted to ${phone}.`}
+            {phase === "plan" &&
+              "Choose Basic, Verified, Premium, or Elite to continue."}
             {phase === "details" &&
-              "Tell us about your business, KYC, and payout details to submit your application."}
-            {phase === "location" &&
-              "Help us place you in the right city for nearby bookings."}
-            {phase === "plan" && "Choose a registration plan to continue."}
+              "Fill every field below, accept the terms, then continue to Razorpay payment."}
             {phase === "fees" &&
-              "Pay the registration fee (including 18% GST) to finish."}
-            {phase === "done" && "You’re all set — we’ll review your application shortly."}
+              "Pay the registration fee for your chosen tier (including 18% GST)."}
+            {phase === "done" &&
+              "Payment received — a registration successful email is on its way if you shared your email."}
           </p>
 
           {error && phase !== "plan" && (
@@ -257,9 +264,18 @@ export default async function VendorApplyPage({
               encType="multipart/form-data"
               className="flex flex-col gap-4"
             >
+              {selectedPlanLabel ? (
+                <div className="rounded-xl border border-brand-magenta/30 bg-brand-magenta/5 px-4 py-3 text-center text-sm">
+                  Selected tier:{" "}
+                  <span className="font-semibold text-brand-magenta">
+                    {selectedPlanLabel}
+                  </span>
+                </div>
+              ) : null}
+
               <fieldset className="mb-2 flex flex-col gap-4 border-b border-brand-line pb-6">
                 <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
-                  Account (Mobile Verification)
+                  Account
                 </legend>
                 <Field
                   label="Full Name"
@@ -273,6 +289,13 @@ export default async function VendorApplyPage({
                   type="tel"
                   required
                   defaultValue={draftPhone}
+                />
+                <Field
+                  label="Email"
+                  name="email"
+                  type="email"
+                  required
+                  defaultValue={draftEmail}
                 />
               </fieldset>
 
@@ -307,26 +330,35 @@ export default async function VendorApplyPage({
                 <Field
                   label="Service Areas (comma-separated, e.g. Bangalore, Mysore)"
                   name="service_areas"
+                  required
                 />
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Years of Experience" name="experience_years" type="number" />
-                  <Field label="Team Size" name="team_size" type="number" />
-                </div>
-                <Field label="Available From" name="available_from" type="date" />
-                <label className="flex flex-col gap-1.5 text-sm font-medium">
-                  Equipment Details{" "}
-                  <span className="font-normal text-brand-gray">(optional)</span>
-                  <input
-                    name="equipment_details"
-                    placeholder="e.g. 2 DSLR bodies, drone, LED lighting kit"
-                    className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                  <Field
+                    label="Years of Experience"
+                    name="experience_years"
+                    type="number"
+                    required
                   />
-                </label>
+                  <Field label="Team Size" name="team_size" type="number" required />
+                </div>
+                <Field
+                  label="Available From"
+                  name="available_from"
+                  type="date"
+                  required
+                />
+                <Field
+                  label="Equipment Details"
+                  name="equipment_details"
+                  required
+                  placeholder="e.g. 2 DSLR bodies, drone, LED lighting kit"
+                />
                 <label className="flex flex-col gap-1.5 text-sm font-medium">
-                  Tell us about your work
+                  Tell us about your work <span className="text-brand-orange">*</span>
                   <textarea
                     name="bio"
                     rows={4}
+                    required
                     className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
                   />
                 </label>
@@ -342,34 +374,49 @@ export default async function VendorApplyPage({
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-3">
-                    <Field label="PAN Number" name="pan_number" />
+                    <Field label="PAN Number" name="pan_number" required />
                     <FileField
                       label="Upload PAN document"
                       name="pan_document"
                       hint="JPG, PNG, WEBP, or PDF · max 10 MB"
+                      required
                     />
                   </div>
                   <div className="flex flex-col gap-3">
-                    <Field label="Aadhaar Number" name="aadhaar_number" />
+                    <Field label="Aadhaar Number" name="aadhaar_number" required />
                     <FileField
                       label="Upload Aadhaar document"
                       name="aadhaar_document"
                       hint="JPG, PNG, WEBP, or PDF · max 10 MB"
+                      required
                     />
                   </div>
                 </div>
-                <Field label="GST Number (if registered)" name="gst_number" />
+                <Field
+                  label="GST Number"
+                  name="gst_number"
+                  required
+                  placeholder="Enter GSTIN, or NA if not registered"
+                />
               </fieldset>
 
               <fieldset className="flex flex-col gap-4">
                 <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
                   Bank Details (for payouts)
                 </legend>
-                <Field label="Bank Name" name="bank_name" />
-                <Field label="Account Holder Name" name="bank_account_holder_name" />
+                <Field label="Bank Name" name="bank_name" required />
+                <Field
+                  label="Account Holder Name"
+                  name="bank_account_holder_name"
+                  required
+                />
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Account Number" name="bank_account_number" />
-                  <Field label="IFSC Code" name="bank_ifsc" />
+                  <Field
+                    label="Account Number"
+                    name="bank_account_number"
+                    required
+                  />
+                  <Field label="IFSC Code" name="bank_ifsc" required />
                 </div>
               </fieldset>
 
@@ -425,12 +472,10 @@ export default async function VendorApplyPage({
                 type="submit"
                 className="mt-2 w-full rounded-full bg-brand-black py-3 font-semibold text-white transition-colors hover:bg-brand-charcoal"
               >
-                Submit Application
+                Submit &amp; Continue to Payment
               </button>
             </form>
           )}
-
-          {phase === "location" && <VendorLocationStep />}
 
           {phase === "fees" && (
             <div className="flex flex-col gap-4">
@@ -478,6 +523,7 @@ function Field({
   required,
   minLength,
   defaultValue,
+  placeholder,
 }: {
   label: string;
   name: string;
@@ -485,17 +531,21 @@ function Field({
   required?: boolean;
   minLength?: number;
   defaultValue?: string;
+  placeholder?: string;
 }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm font-medium">
-      {label}
-      {required ? <span className="text-brand-orange"> *</span> : null}
+      <span>
+        {label}
+        {required ? <span className="text-brand-orange"> *</span> : null}
+      </span>
       <input
         name={name}
         type={type}
         required={required}
         minLength={minLength}
         defaultValue={defaultValue}
+        placeholder={placeholder}
         className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
       />
     </label>
@@ -506,17 +556,23 @@ function FileField({
   label,
   name,
   hint,
+  required,
 }: {
   label: string;
   name: string;
   hint?: string;
+  required?: boolean;
 }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm font-medium">
-      {label}
+      <span>
+        {label}
+        {required ? <span className="text-brand-orange"> *</span> : null}
+      </span>
       <input
         name={name}
         type="file"
+        required={required}
         accept="image/jpeg,image/png,image/webp,application/pdf"
         className="rounded-lg border border-dashed border-brand-line bg-brand-cream/40 px-3 py-2.5 text-sm font-normal file:mr-3 file:rounded-full file:border-0 file:bg-brand-black file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:border-brand-orange/50 focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
       />

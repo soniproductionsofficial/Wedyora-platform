@@ -29,7 +29,7 @@ export const FAQS: FaqItem[] = [
   {
     question: "How do I become a vendor on Wedyora?",
     answer:
-      "Apply through Become a Partner. You'll submit your business details and portfolio, choose a registration plan (Basic, Verified, Premium, or Elite), and pay the registration fee including 18% GST once your application reaches payment.",
+      "Apply through Become a Partner. Sign up with OTP, log in with your phone, choose a registration tier (Basic, Verified, Premium, or Elite), complete every application field and accept the terms, then pay the registration fee including 18% GST via Razorpay.",
   },
   {
     question: "Who do I contact if something goes wrong on the wedding day?",

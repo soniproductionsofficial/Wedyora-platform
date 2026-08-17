@@ -66,7 +66,7 @@ export default async function VendorLoginPage({
                 type="submit"
                 className="mt-2 w-full rounded-full bg-brand-button py-3 font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
               >
-                Verify &amp; Open Dashboard
+                Verify &amp; Continue
               </button>
               <Link href="/vendor/login" className="text-center text-xs text-brand-gray">
                 Wrong number? Start over

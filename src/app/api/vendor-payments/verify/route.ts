@@ -79,5 +79,34 @@ export async function POST(request: Request) {
     .eq("id", user.id)
     .eq("status", "pending_payment");
 
+  try {
+    const [{ data: profile }, { data: vendor }] = await Promise.all([
+      admin
+        .from("profiles")
+        .select("full_name, email")
+        .eq("id", user.id)
+        .maybeSingle(),
+      admin
+        .from("vendor_profiles")
+        .select("business_name, plan")
+        .eq("id", user.id)
+        .maybeSingle(),
+    ]);
+
+    if (profile?.email) {
+      const { sendVendorRegistrationSuccessEmail } = await import(
+        "@/lib/vendor-registration-email"
+      );
+      await sendVendorRegistrationSuccessEmail({
+        to: profile.email,
+        name: profile.full_name ?? "",
+        businessName: vendor?.business_name ?? "",
+        planKey: vendor?.plan ?? null,
+      });
+    }
+  } catch (err) {
+    console.error("[vendor-payments/verify] success email error", err);
+  }
+
   return NextResponse.json({ success: true });
 }
