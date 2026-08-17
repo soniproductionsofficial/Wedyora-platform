@@ -30,7 +30,12 @@ export default function BookingCartSummary() {
 
   const total = items.reduce((s, i) => s + i.price, 0);
   const summary = items
-    .map((i) => `${i.serviceName}: ${i.packageName} (${formatInr(i.price)})`)
+    .map((i) => {
+      if (i.guestCount != null && i.unitPrice != null) {
+        return `${i.serviceName}: ${i.packageName} — ${i.guestCount} guests × ${formatInr(i.unitPrice)} = ${formatInr(i.price)}`;
+      }
+      return `${i.serviceName}: ${i.packageName} (${formatInr(i.price)})`;
+    })
     .join("\n");
 
   return (
@@ -43,6 +48,7 @@ export default function BookingCartSummary() {
               <span className="font-medium text-brand-black">{i.serviceName}</span>
               {" · "}
               {i.packageName}
+              {i.guestCount != null ? ` · ${i.guestCount} guests` : ""}
             </span>
             <span className="shrink-0 font-medium text-brand-black">
               {formatInr(i.price)}

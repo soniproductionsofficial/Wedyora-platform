@@ -12,7 +12,11 @@ import {
 } from "react";
 import {
   CART_STORAGE_KEY,
+  cateringLineId,
+  cateringUnitPrice,
+  DEFAULT_CATERING_GUESTS,
   type CartItem,
+  type DietOption,
   type ShopPackage,
   type ShopService,
 } from "@/lib/shop-packages";
@@ -20,9 +24,17 @@ import {
 type CartContextValue = {
   items: CartItem[];
   addPackage: (service: ShopService, pkg: ShopPackage) => void;
+  addCateringPackage: (
+    service: ShopService,
+    pkg: ShopPackage,
+    diet: DietOption,
+    guestCount: number
+  ) => void;
+  updateCateringGuests: (lineId: string, guestCount: number) => void;
   removePackage: (packageId: string) => void;
   clearCart: () => void;
   hasPackage: (packageId: string) => boolean;
+  getLine: (packageId: string) => CartItem | undefined;
   total: number;
   count: number;
 };
@@ -39,6 +51,11 @@ function readStoredCart(): CartItem[] {
   } catch {
     return [];
   }
+}
+
+function clampGuests(n: number, min = 1) {
+  if (!Number.isFinite(n)) return min;
+  return Math.max(min, Math.floor(n));
 }
 
 export function ServicesCartProvider({ children }: { children: ReactNode }) {
@@ -75,6 +92,56 @@ export function ServicesCartProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const addCateringPackage = useCallback(
+    (
+      service: ShopService,
+      pkg: ShopPackage,
+      diet: DietOption,
+      guestCount: number
+    ) => {
+      const min = pkg.minGuests ?? DEFAULT_CATERING_GUESTS;
+      const guests = clampGuests(guestCount, min);
+      const unit = cateringUnitPrice(pkg, diet);
+      const lineId = cateringLineId(pkg.id, diet);
+      const dietLabel = diet === "veg" ? "Veg" : "Non-Veg";
+
+      setItems((prev) => {
+        const next = prev.filter((i) => i.packageId !== lineId);
+        return [
+          ...next,
+          {
+            packageId: lineId,
+            serviceId: service.id,
+            serviceName: service.name,
+            packageName: `${pkg.name} (${dietLabel})`,
+            unitPrice: unit,
+            guestCount: guests,
+            diet,
+            price: unit * guests,
+          },
+        ];
+      });
+    },
+    []
+  );
+
+  const updateCateringGuests = useCallback(
+    (lineId: string, guestCount: number) => {
+      setItems((prev) =>
+        prev.map((item) => {
+          if (item.packageId !== lineId || item.unitPrice == null) return item;
+          const guests = clampGuests(guestCount, 1);
+          return {
+            ...item,
+            guestCount: guests,
+            price: item.unitPrice * guests,
+          };
+        })
+      );
+    },
+    []
+  );
+
   const removePackage = useCallback((packageId: string) => {
     setItems((prev) => prev.filter((i) => i.packageId !== packageId));
   }, []);
@@ -83,6 +150,11 @@ export function ServicesCartProvider({ children }: { children: ReactNode }) {
 
   const hasPackage = useCallback(
     (packageId: string) => items.some((i) => i.packageId === packageId),
+    [items]
+  );
+
+  const getLine = useCallback(
+    (packageId: string) => items.find((i) => i.packageId === packageId),
     [items]
   );
 
@@ -95,13 +167,26 @@ export function ServicesCartProvider({ children }: { children: ReactNode }) {
     () => ({
       items,
       addPackage,
+      addCateringPackage,
+      updateCateringGuests,
       removePackage,
       clearCart,
       hasPackage,
+      getLine,
       total,
       count: items.length,
     }),
-    [items, addPackage, removePackage, clearCart, hasPackage, total]
+    [
+      items,
+      addPackage,
+      addCateringPackage,
+      updateCateringGuests,
+      removePackage,
+      clearCart,
+      hasPackage,
+      getLine,
+      total,
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

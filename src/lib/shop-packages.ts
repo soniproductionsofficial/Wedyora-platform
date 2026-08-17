@@ -1,10 +1,19 @@
 /** Customer-facing shop packages on /services (indicative planner market rates). */
 
+export type DietOption = "veg" | "non-veg";
+
 export type ShopPackage = {
   id: string;
   name: string;
   description: string;
-  price: number; // INR starting price
+  /** Flat / starting price for non-catering (or fallback). */
+  price: number;
+  /** Per-person catering: veg rate. */
+  vegPrice?: number;
+  /** Per-person catering: non-veg rate. */
+  nonVegPrice?: number;
+  /** Minimum guests for catering packages. */
+  minGuests?: number;
 };
 
 export type ShopService = {
@@ -101,79 +110,133 @@ export const SHOP_SERVICES: ShopService[] = [
     slug: "catering",
     name: "Catering",
     blurb:
-      "Per-person menus for weddings, engagements, parties & corporates (indicative).",
+      "Choose a menu, set guest count, and add Veg or Non-Veg — total updates automatically.",
     packages: [
       {
         id: "cater-wedding-basic",
         name: "Wedding Catering — Basic",
-        description: "From ₹350 veg / ₹450 non-veg · welcome drink · starters · mains",
+        description: "Welcome drink · starters · mains · rice/bread · dessert",
         price: 350,
+        vegPrice: 350,
+        nonVegPrice: 450,
+        minGuests: 50,
+      },
+      {
+        id: "cater-wedding-standard",
+        name: "Wedding Catering — Standard",
+        description: "Expanded starters & mains · dual desserts",
+        price: 550,
+        vegPrice: 550,
+        nonVegPrice: 650,
+        minGuests: 50,
       },
       {
         id: "cater-wedding-premium",
         name: "Wedding Catering — Premium",
-        description: "From ₹750 veg / ₹850 non-veg · fuller spread · 2 desserts",
+        description: "Fuller spread · premium desserts · live options available",
         price: 750,
+        vegPrice: 750,
+        nonVegPrice: 850,
+        minGuests: 50,
+      },
+      {
+        id: "cater-wedding-luxury",
+        name: "Wedding Catering — Luxury",
+        description: "Luxury multi-course · elevated presentation",
+        price: 950,
+        vegPrice: 950,
+        nonVegPrice: 1150,
+        minGuests: 50,
       },
       {
         id: "cater-wedding-royal",
         name: "Wedding Catering — Royal",
-        description: "From ₹1,250 veg / ₹1,450 non-veg · luxury multi-course",
+        description: "Flagship multi-course · premium service team",
         price: 1250,
+        vegPrice: 1250,
+        nonVegPrice: 1450,
+        minGuests: 50,
       },
       {
         id: "cater-engagement",
         name: "Engagement / Reception Menu",
-        description: "From ₹300 veg / ₹400 non-veg · reception-friendly flow",
+        description: "Reception-friendly flow · welcome drink · starters & mains",
         price: 300,
+        vegPrice: 300,
+        nonVegPrice: 400,
+        minGuests: 50,
       },
       {
         id: "cater-housewarming",
         name: "Housewarming / Grihapravesh",
-        description: "From ₹250 veg / ₹350 non-veg · compact festive menu",
+        description: "Compact festive menu · traditional favourites",
         price: 250,
+        vegPrice: 250,
+        nonVegPrice: 350,
+        minGuests: 30,
       },
       {
         id: "cater-birthday",
         name: "Birthday / Anniversary",
-        description: "From ₹250 · kids menu options available",
+        description: "Celebration menu · kids options available on request",
         price: 250,
+        vegPrice: 250,
+        nonVegPrice: 350,
+        minGuests: 25,
       },
       {
         id: "cater-corporate",
         name: "Corporate Events",
-        description: "From ₹250 economy to ₹800+ executive · buffet or plated",
+        description: "Buffet or plated · economy to executive range",
         price: 250,
+        vegPrice: 250,
+        nonVegPrice: 350,
+        minGuests: 30,
       },
       {
         id: "cater-outdoor-bbq",
         name: "Outdoor / Barbecue Menu",
-        description: "From ₹900 · live counters · outdoor service setup",
+        description: "Outdoor service · live counters available",
         price: 900,
+        vegPrice: 900,
+        nonVegPrice: 1100,
+        minGuests: 50,
       },
       {
         id: "cater-festival",
-        name: "Festival / Satvik Menu",
-        description: "From ₹300 satvik · festival & special occasion menus",
+        name: "Festival / Special Occasion",
+        description: "Festival & satvik-friendly menus available",
         price: 300,
+        vegPrice: 300,
+        nonVegPrice: 500,
+        minGuests: 30,
       },
       {
         id: "cater-kitty",
         name: "Kitty Party / Get-Together",
-        description: "From ₹200 · light bites to premium small-group menus",
+        description: "Light bites to premium small-group menus",
         price: 200,
+        vegPrice: 200,
+        nonVegPrice: 250,
+        minGuests: 20,
       },
       {
         id: "cater-live-counter",
-        name: "Live Counter Add-on (per pax)",
-        description: "Chaat, pasta, BBQ, dessert counters from ₹65–₹120",
+        name: "Live Counter Add-on",
+        description: "Chaat, pasta, BBQ, Chinese, dessert counters (per person)",
         price: 65,
+        vegPrice: 65,
+        nonVegPrice: 120,
+        minGuests: 50,
       },
       {
         id: "cater-gold-combo",
-        name: "Gold Combo Package (per pax)",
-        description: "From ₹699 · 1 live counter · mid-size events (min pax apply)",
+        name: "Gold Combo Package",
+        description: "Curated menu + 1 live counter (min pax apply)",
         price: 699,
+        vegPrice: 699,
+        nonVegPrice: 799,
+        minGuests: 100,
       },
     ],
   },
@@ -694,12 +757,31 @@ export function formatInr(amount: number): string {
   return `₹${amount.toLocaleString("en-IN")}`;
 }
 
+export function isCateringPackage(pkg: ShopPackage): boolean {
+  return pkg.vegPrice != null && pkg.nonVegPrice != null;
+}
+
+export function cateringLineId(packageId: string, diet: DietOption): string {
+  return `${packageId}__${diet}`;
+}
+
+export function cateringUnitPrice(pkg: ShopPackage, diet: DietOption): number {
+  if (diet === "veg") return pkg.vegPrice ?? pkg.price;
+  return pkg.nonVegPrice ?? pkg.price;
+}
+
 export type CartItem = {
+  /** Unique cart line id (catering: packageId__veg / packageId__non-veg). */
   packageId: string;
   serviceId: string;
   serviceName: string;
   packageName: string;
+  /** Line total (unit × guests for catering). */
   price: number;
+  unitPrice?: number;
+  guestCount?: number;
+  diet?: DietOption;
 };
 
 export const CART_STORAGE_KEY = "wedyora-services-cart-v1";
+export const DEFAULT_CATERING_GUESTS = 50;

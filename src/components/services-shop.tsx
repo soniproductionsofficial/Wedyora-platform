@@ -3,12 +3,155 @@
 import { useState, startTransition } from "react";
 import Link from "next/link";
 import { ChevronDown, ShoppingBag, Check, Plus, X } from "lucide-react";
-import { SHOP_SERVICES, formatInr } from "@/lib/shop-packages";
+import {
+  SHOP_SERVICES,
+  formatInr,
+  isCateringPackage,
+  cateringLineId,
+  cateringUnitPrice,
+  DEFAULT_CATERING_GUESTS,
+  type DietOption,
+  type ShopPackage,
+  type ShopService,
+} from "@/lib/shop-packages";
 import { useServicesCart } from "@/components/services-cart-context";
 
+function CateringPackageRow({
+  service,
+  pkg,
+  onAdded,
+}: {
+  service: ShopService;
+  pkg: ShopPackage;
+  onAdded: () => void;
+}) {
+  const {
+    addCateringPackage,
+    updateCateringGuests,
+    removePackage,
+    hasPackage,
+    getLine,
+  } = useServicesCart();
+
+  const min = pkg.minGuests ?? DEFAULT_CATERING_GUESTS;
+  const vegId = cateringLineId(pkg.id, "veg");
+  const nonVegId = cateringLineId(pkg.id, "non-veg");
+  const vegLine = getLine(vegId);
+  const nonVegLine = getLine(nonVegId);
+
+  const [guests, setGuests] = useState<number>(
+    vegLine?.guestCount ?? nonVegLine?.guestCount ?? min
+  );
+
+  const vegUnit = cateringUnitPrice(pkg, "veg");
+  const nonVegUnit = cateringUnitPrice(pkg, "non-veg");
+  const safeGuests = Math.max(min, guests || min);
+
+  function setGuestCount(next: number) {
+    const value = Math.max(min, Number.isFinite(next) ? Math.floor(next) : min);
+    setGuests(value);
+    if (hasPackage(vegId)) updateCateringGuests(vegId, value);
+    if (hasPackage(nonVegId)) updateCateringGuests(nonVegId, value);
+  }
+
+  function addDiet(diet: DietOption) {
+    addCateringPackage(service, pkg, diet, safeGuests);
+    onAdded();
+  }
+
+  return (
+    <li className="rounded-xl border border-brand-line bg-white p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium text-brand-black">{pkg.name}</p>
+          <p className="mt-1 text-xs text-brand-gray">{pkg.description}</p>
+          <p className="mt-2 text-sm text-brand-black">
+            <span className="font-semibold">Veg {formatInr(vegUnit)}</span>
+            <span className="text-brand-gray"> / person</span>
+            <span className="mx-2 text-brand-gray">·</span>
+            <span className="font-semibold">Non-Veg {formatInr(nonVegUnit)}</span>
+            <span className="text-brand-gray"> / person</span>
+          </p>
+        </div>
+
+        <label className="flex w-full flex-col gap-1 text-xs font-medium sm:w-36">
+          Guest count
+          <input
+            type="number"
+            min={min}
+            step={1}
+            value={safeGuests}
+            onChange={(e) => setGuestCount(Number(e.target.value))}
+            className="rounded-lg border border-brand-line px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+          />
+          <span className="font-normal text-brand-gray">Min {min}</span>
+        </label>
+      </div>
+
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        <div className="rounded-lg border border-brand-line bg-brand-cream/40 p-3">
+          <p className="text-xs text-brand-gray">Veg total</p>
+          <p className="font-semibold">{formatInr(vegUnit * safeGuests)}</p>
+          {hasPackage(vegId) ? (
+            <button
+              type="button"
+              onClick={() => removePackage(vegId)}
+              className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-brand-line bg-white px-3 py-2 text-xs font-semibold"
+            >
+              <Check className="h-3.5 w-3.5 text-brand-orange" />
+              Veg in cart · Remove
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => addDiet("veg")}
+              className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-brand-black px-3 py-2 text-xs font-semibold text-white hover:bg-brand-charcoal"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add Veg to cart
+            </button>
+          )}
+        </div>
+
+        <div className="rounded-lg border border-brand-line bg-brand-cream/40 p-3">
+          <p className="text-xs text-brand-gray">Non-Veg total</p>
+          <p className="font-semibold">{formatInr(nonVegUnit * safeGuests)}</p>
+          {hasPackage(nonVegId) ? (
+            <button
+              type="button"
+              onClick={() => removePackage(nonVegId)}
+              className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-brand-line bg-white px-3 py-2 text-xs font-semibold"
+            >
+              <Check className="h-3.5 w-3.5 text-brand-orange" />
+              Non-Veg in cart · Remove
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => addDiet("non-veg")}
+              className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-brand-black px-3 py-2 text-xs font-semibold text-white hover:bg-brand-charcoal"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add Non-Veg to cart
+            </button>
+          )}
+        </div>
+      </div>
+    </li>
+  );
+}
+
 export default function ServicesShop() {
-  const { items, addPackage, removePackage, hasPackage, total, count, clearCart } =
-    useServicesCart();
+  const {
+    items,
+    addPackage,
+    removePackage,
+    hasPackage,
+    updateCateringGuests,
+    total,
+    count,
+    clearCart,
+  } = useServicesCart();
   const [openId, setOpenId] = useState<string>("photography");
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -24,8 +167,8 @@ export default function ServicesShop() {
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-brand-gray">
             Open a service, add packages to your cart, then request a booking.
-            Prices are indicative starting rates — final quotes confirmed with
-            your matched vendor.
+            For catering, set guest count and add Veg or Non-Veg separately —
+            totals update automatically.
           </p>
         </div>
 
@@ -41,9 +184,7 @@ export default function ServicesShop() {
                   type="button"
                   aria-expanded={open}
                   onClick={() =>
-                    startTransition(() =>
-                      setOpenId(open ? "" : service.id)
-                    )
+                    startTransition(() => setOpenId(open ? "" : service.id))
                   }
                   className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-brand-cream/60 md:px-6"
                 >
@@ -66,6 +207,17 @@ export default function ServicesShop() {
                   <div className="border-t border-brand-line bg-brand-cream/30 px-4 py-4 md:px-6 md:py-5">
                     <ul className="flex flex-col gap-3">
                       {service.packages.map((pkg) => {
+                        if (service.id === "catering" && isCateringPackage(pkg)) {
+                          return (
+                            <CateringPackageRow
+                              key={pkg.id}
+                              service={service}
+                              pkg={pkg}
+                              onAdded={() => setCartOpen(true)}
+                            />
+                          );
+                        }
+
                         const inCart = hasPackage(pkg.id);
                         return (
                           <li
@@ -118,12 +270,11 @@ export default function ServicesShop() {
 
         <p className="mt-8 text-center text-xs text-brand-gray">
           GST, travel, peak-date premiums, and minimum guest counts may apply.
-          Catering prices are typically per person; décor and makeup are per
-          booking. Final quotes are confirmed with your matched vendor.
+          Catering totals = per-person rate × guest count. Final quotes are
+          confirmed with your matched vendor.
         </p>
       </div>
 
-      {/* Sticky cart bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-line bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 md:px-6">
           <button
@@ -162,7 +313,6 @@ export default function ServicesShop() {
         </div>
       </div>
 
-      {/* Cart drawer */}
       {cartOpen ? (
         <div className="fixed inset-0 z-50 flex justify-end">
           <button
@@ -193,24 +343,49 @@ export default function ServicesShop() {
                   {items.map((item) => (
                     <li
                       key={item.packageId}
-                      className="flex items-start justify-between gap-3 rounded-xl border border-brand-line p-3"
+                      className="rounded-xl border border-brand-line p-3"
                     >
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-brand-orange">
-                          {item.serviceName}
-                        </p>
-                        <p className="font-medium">{item.packageName}</p>
-                        <p className="mt-1 text-sm font-semibold">
-                          {formatInr(item.price)}
-                        </p>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-brand-orange">
+                            {item.serviceName}
+                          </p>
+                          <p className="font-medium">{item.packageName}</p>
+                          {item.guestCount != null && item.unitPrice != null ? (
+                            <p className="mt-1 text-xs text-brand-gray">
+                              {formatInr(item.unitPrice)} × {item.guestCount}{" "}
+                              guests
+                            </p>
+                          ) : null}
+                          <p className="mt-1 text-sm font-semibold">
+                            {formatInr(item.price)}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removePackage(item.packageId)}
+                          className="text-xs text-brand-gray underline hover:text-brand-orange"
+                        >
+                          Remove
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => removePackage(item.packageId)}
-                        className="text-xs text-brand-gray underline hover:text-brand-orange"
-                      >
-                        Remove
-                      </button>
+                      {item.guestCount != null && item.unitPrice != null ? (
+                        <label className="mt-3 flex items-center gap-2 text-xs font-medium">
+                          Guests
+                          <input
+                            type="number"
+                            min={1}
+                            value={item.guestCount}
+                            onChange={(e) =>
+                              updateCateringGuests(
+                                item.packageId,
+                                Number(e.target.value)
+                              )
+                            }
+                            className="w-24 rounded-lg border border-brand-line px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                          />
+                        </label>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
