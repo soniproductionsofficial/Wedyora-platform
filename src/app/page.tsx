@@ -161,9 +161,6 @@ export default function Home() {
         .wedding-home .hero-copy > *:nth-child(4) { animation-delay: 0.64s; }
 
         .wedding-home .hero-media {
-          /* Still image fallback only — video has its own motion */
-        }
-        .wedding-home .hero-media-still {
           animation: heroKenBurns 18s ease-out forwards;
         }
 
@@ -193,7 +190,7 @@ export default function Home() {
 
         @media (prefers-reduced-motion: reduce) {
           .wedding-home .hero-copy > *,
-          .wedding-home .hero-media-still,
+          .wedding-home .hero-media,
           .wedding-home .petal,
           .wedding-home .service-card,
           .wedding-home .cta-shimmer {
@@ -201,13 +198,10 @@ export default function Home() {
             opacity: 1 !important;
             transform: none !important;
           }
-          .wedding-home .hero-media {
-            display: none !important;
-          }
         }
       `}</style>
 
-      {/* Full-bleed hero — video (poster/still kept for fallback & easy revert) */}
+      {/* Full-bleed hero — static celebration still */}
       <section className="relative z-0 min-h-[min(88vh,820px)] overflow-hidden text-white md:min-h-[92vh]">
         <div className="absolute inset-0 bg-wedding-deep">
           <Image
@@ -216,21 +210,9 @@ export default function Home() {
             fill
             priority
             sizes="100vw"
-            className="hero-media-still object-cover object-[center_40%]"
+            className="hero-media object-cover object-[center_40%]"
             aria-hidden
           />
-          <video
-            className="hero-media absolute inset-0 h-full w-full object-cover object-[center_40%]"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/images/hero/wedding-celebration.png"
-            aria-label="Celebration highlight reel"
-          >
-            <source src="/images/hero/hero-video.mp4" type="video/mp4" />
-          </video>
           <div
             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-black/25"
             aria-hidden
