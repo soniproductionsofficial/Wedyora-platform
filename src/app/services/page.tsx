@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getCategoryIcon } from "@/lib/category-icons";
+import { SERVICE_CATALOGS } from "@/lib/service-catalogs";
+import ServiceCatalogSection from "@/components/service-catalog";
 
 // Fixed display order for the full services page (independent of the
 // alphabetical `name` sort used elsewhere) — mirrors the canonical category
@@ -9,12 +11,12 @@ import { getCategoryIcon } from "@/lib/category-icons";
 // added later and not yet given copy) still renders, just appended at the
 // end using a generic fallback description.
 const CATEGORY_ORDER = [
+  "catering",
+  "decoration",
+  "makeup",
   "photography",
   "videography",
   "drone",
-  "decoration",
-  "makeup",
-  "catering",
   "venue",
   "mehendi",
   "music",
@@ -28,17 +30,9 @@ const CATEGORY_ORDER = [
   "flower-arrangement",
 ];
 
-// NOTE ON IMAGES: `public/images/services/<slug>.jpg` are brand-colored
-// placeholder graphics generated locally, not vendor or stock photography.
-// This build environment's network egress is restricted to github.com/npm/
-// pypi-family hosts, so the free stock photos researched for each category
-// (Pexels — see accompanying report for direct URLs + photographer credit)
-// could not actually be downloaded here. Swap these files for the real
-// photos (or eventual real vendor photos) — the <Image> calls below and the
-// alt text already describe the intended real-photo content.
 const SERVICE_CONTENT: Record<
   string,
-  { description: string; alt: string }
+  { description: string; alt: string; startingFrom?: string }
 > = {
   photography: {
     description:
@@ -57,18 +51,21 @@ const SERVICE_CONTENT: Record<
   },
   decoration: {
     description:
-      "From an intimate mandap to a full reception stage, decoration sets the tone before a single guest arrives. We pair you with a decorator who works within your budget and color palette, not a one-size-fits-all package.",
+      "From an intimate mandap to a full reception stage, decoration sets the tone before a single guest arrives. Browse package starting prices below — final designs are confirmed with your matched decorator.",
     alt: "Elegant floral wedding stage backdrop and decoration",
+    startingFrom: "₹15,000",
   },
   makeup: {
     description:
-      "Your makeup artist is one of the few vendors you'll spend real time with on the big day, so fit matters. We match you with an artist experienced in bridal looks, HD, airbrush, or traditional, who can handle long ceremony hours without a single touch-up emergency.",
+      "Premium bridal and event makeup for Bengaluru / Karnataka — HD, airbrush, and luxury looks. Wedyora shows starting from ₹18,000; verified artists set final pricing within their category.",
     alt: "Bridal makeup artist applying makeup to a bride",
+    startingFrom: "₹18,000",
   },
   catering: {
     description:
-      "Feeding a wedding crowd well, on time, and without a dietary slip-up takes real coordination. Our catering partners handle everything from an intimate family lunch to a multi-course reception spread, built around your guest count and menu preferences.",
+      "Wedding, engagement, corporate, and festival menus with transparent per-person pricing, live counters, and combo packages. Hygienic kitchens and verified catering partners.",
     alt: "Elegant wedding catering buffet spread",
+    startingFrom: "₹200 / pax",
   },
   venue: {
     description:
@@ -130,8 +127,6 @@ const SERVICE_CONTENT: Record<
 const FALLBACK_DESCRIPTION =
   "Tell us your date, city, and budget, and we'll match you with a verified vendor for this service, at a price confirmed with you before anything is charged.";
 
-// These stay real, bookable categories (vendor applications, /book, admin) —
-// they're just left out of this specific showcase page per request.
 const HIDDEN_FROM_SERVICES_PAGE = [
   "live-streaming",
   "invitation",
@@ -139,6 +134,8 @@ const HIDDEN_FROM_SERVICES_PAGE = [
   "lighting",
   "flower-arrangement",
 ];
+
+const FEATURED_SLUGS = new Set(SERVICE_CATALOGS.map((c) => c.slug));
 
 export default async function ServicesPage() {
   const supabase = await createClient();
@@ -162,32 +159,61 @@ export default async function ServicesPage() {
       })
     : [];
 
+  const overviewCategories = orderedCategories.filter(
+    (c) => !FEATURED_SLUGS.has(c.slug)
+  );
+
   return (
     <div>
       <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold-bright">
             What We Offer
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
-            Every Wedding Service, One Verified Platform
+          <h1 className="mb-6 font-heading text-3xl font-bold md:text-4xl">
+            Every Occasion Service, Transparent Pricing
           </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
-            Browse by service, tell us your date and city, and we&rsquo;ll
-            match you with a verified vendor who fits your budget.
+          <p className="mx-auto max-w-2xl text-white/70">
+            Explore detailed rate cards for Catering, Decoration, and Makeup —
+            then request a booking and we&rsquo;ll match you with a verified
+            vendor.
           </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {SERVICE_CATALOGS.map((c) => (
+              <a
+                key={c.slug}
+                href={`#${c.slug}`}
+                className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:border-brand-gold-bright hover:bg-white/15"
+              >
+                {c.eyebrow}
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="bg-white">
+      {SERVICE_CATALOGS.map((catalog) => (
+        <ServiceCatalogSection key={catalog.slug} catalog={catalog} />
+      ))}
+
+      <section className="border-t border-brand-line bg-white">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          {orderedCategories.length === 0 ? (
-            <p className="text-brand-gray text-sm text-center">
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">
+              More services
+            </p>
+            <h2 className="font-heading text-2xl font-semibold md:text-3xl">
+              Photography, music, venues &amp; more
+            </h2>
+          </div>
+
+          {overviewCategories.length === 0 ? (
+            <p className="text-center text-sm text-brand-gray">
               We&rsquo;re setting up our service categories — check back soon.
             </p>
           ) : (
             <div className="flex flex-col gap-12 md:gap-16">
-              {orderedCategories.map((c, i) => {
+              {overviewCategories.map((c, i) => {
                 const Icon = getCategoryIcon(c.slug);
                 const content = SERVICE_CONTENT[c.slug];
                 const imageSrc = `/images/services/${c.slug}.jpg`;
@@ -198,9 +224,9 @@ export default async function ServicesPage() {
                     key={c.id}
                     className={`flex flex-col ${
                       reversed ? "md:flex-row-reverse" : "md:flex-row"
-                    } items-center gap-8 md:gap-12 rounded-2xl border border-brand-line bg-brand-cream p-6 md:p-8`}
+                    } items-center gap-8 rounded-2xl border border-brand-line bg-brand-cream p-6 md:gap-12 md:p-8`}
                   >
-                    <div className="relative w-full md:w-1/2 aspect-[4/3] rounded-2xl overflow-hidden shrink-0">
+                    <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-2xl md:w-1/2">
                       <Image
                         src={imageSrc}
                         alt={content?.alt ?? `${c.name} wedding service`}
@@ -211,20 +237,20 @@ export default async function ServicesPage() {
                     </div>
 
                     <div className="w-full md:w-1/2">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white border border-brand-line">
+                      <div className="mb-4 flex items-center gap-3">
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brand-line bg-white">
                           <Icon className="h-5 w-5" />
                         </span>
-                        <h2 className="font-heading text-xl md:text-2xl font-semibold">
+                        <h2 className="font-heading text-xl font-semibold md:text-2xl">
                           {c.name}
                         </h2>
                       </div>
-                      <p className="text-brand-gray text-sm leading-relaxed mb-6">
+                      <p className="mb-6 text-sm leading-relaxed text-brand-gray">
                         {content?.description ?? FALLBACK_DESCRIPTION}
                       </p>
                       <Link
                         href="/book"
-                        className="inline-block px-5 py-2.5 rounded-full bg-brand-button text-brand-black text-sm font-semibold hover:bg-brand-button-dark transition-colors"
+                        className="inline-block rounded-full bg-brand-button px-5 py-2.5 text-sm font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
                       >
                         Request this service &rarr;
                       </Link>
@@ -237,20 +263,20 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-brand-cream border-t border-brand-line">
+      <section className="border-t border-brand-line bg-brand-cream">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="font-heading text-2xl font-semibold mb-4">
+          <h2 className="mb-4 font-heading text-2xl font-semibold">
             Not sure where to start?
           </h2>
-          <p className="text-brand-gray mb-8 max-w-xl mx-auto">
+          <p className="mx-auto mb-8 max-w-xl text-brand-gray">
             Tell us your date, city, and budget, and we&rsquo;ll take it from
             there — matching, pricing, and payments handled by one team.
           </p>
           <Link
             href="/book"
-            className="px-6 py-3 rounded-full bg-brand-button text-brand-black font-semibold hover:bg-brand-button-dark transition-colors"
+            className="rounded-full bg-brand-button px-6 py-3 font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
           >
-            Plan Your Wedding
+            Plan Your Occasion
           </Link>
         </div>
       </section>
