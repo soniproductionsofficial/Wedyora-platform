@@ -8,6 +8,7 @@ import { getVendorPlan, planTotalPayable } from "@/lib/vendor-plans";
 const DETAIL_FIELDS = [
   "full_name",
   "phone",
+  "email",
   "business_name",
   "category_id",
   "city",
@@ -36,22 +37,39 @@ function collectDetailFields(formData: FormData): Record<string, string> {
   return out;
 }
 
-/** Resume incomplete vendors at the correct onboarding step. */
+/** Resume incomplete vendors at the correct onboarding step.
+ *  Order: plan (tier) → details (application) → fees (Razorpay) → done.
+ */
 export async function resolveVendorOnboardingPhase(userId: string): Promise<string> {
   const admin = createAdminClient();
   const { data: vendor } = await admin
     .from("vendor_profiles")
-    .select("id, plan, status, category_id, city, agreed_to_vendor_terms_at")
+    .select(
+      "id, plan, status, category_id, city, agreed_to_vendor_terms_at, pan_document_path, aadhaar_document_path, bank_account_number, bio, equipment_details"
+    )
     .eq("id", userId)
     .maybeSingle();
 
-  if (!vendor || !vendor.agreed_to_vendor_terms_at || !vendor.category_id || !vendor.city) {
-    return "details";
+  if (!vendor) {
+    return "plan";
   }
-  // Location is shown once immediately after details submit; on resume skip
-  // straight to plan selection if they haven't chosen one yet.
   if (!vendor.plan) {
     return "plan";
+  }
+
+  const detailsComplete = Boolean(
+    vendor.agreed_to_vendor_terms_at &&
+      vendor.category_id &&
+      vendor.city &&
+      vendor.pan_document_path &&
+      vendor.aadhaar_document_path &&
+      vendor.bank_account_number &&
+      vendor.bio &&
+      vendor.equipment_details
+  );
+
+  if (!detailsComplete) {
+    return "details";
   }
   if (vendor.status === "pending_payment") {
     return "fees";
@@ -172,18 +190,19 @@ export async function verifyVendorOtpAction(formData: FormData) {
   redirect(`/vendor/apply?phase=${phase}`);
 }
 
-// --- Step 2: full application details (after OTP login) ---
+// --- Step 2: full application details (after tier chosen) ---
 
 export async function submitVendorDetailsAction(formData: FormData) {
   const fields = collectDetailFields(formData);
 
-  if (
-    !fields.full_name ||
-    !fields.phone ||
-    !fields.business_name ||
-    !fields.category_id ||
-    !fields.city
-  ) {
+  const missingText = DETAIL_FIELDS.filter((key) => {
+    if (key === "agree_vendor_terms" || key === "agree_cancellation_policy") {
+      return false;
+    }
+    return !fields[key];
+  });
+
+  if (missingText.length > 0) {
     redirect(
       "/vendor/apply?phase=details&error=" +
         encodeURIComponent("Please fill in all required fields.")
@@ -209,16 +228,45 @@ export async function submitVendorDetailsAction(formData: FormData) {
   const experienceYears = Number(fields.experience_years) || null;
   const teamSize = Number(fields.team_size) || null;
   const serviceAreas = fields.service_areas
-    ? fields.service_areas.split(",").map((s) => s.trim()).filter(Boolean)
-    : [];
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
   const agreedAt = new Date().toISOString();
   const admin = createAdminClient();
+
+  const { data: existingVendor } = await admin
+    .from("vendor_profiles")
+    .select("id, plan, pan_document_path, aadhaar_document_path")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!existingVendor?.plan) {
+    redirect(
+      "/vendor/apply?phase=plan&error=" +
+        encodeURIComponent("Please choose your vendor tier before submitting details.")
+    );
+  }
+
+  const plan = getVendorPlan(existingVendor.plan);
+  if (!plan) {
+    redirect(
+      "/vendor/apply?phase=plan&error=" +
+        encodeURIComponent("Please choose a valid vendor tier.")
+    );
+  }
 
   async function uploadKycDoc(
     file: FormDataEntryValue | null,
     kind: "pan" | "aadhaar",
-  ): Promise<string | null> {
-    if (!(file instanceof File) || file.size === 0) return null;
+    existingPath: string | null | undefined
+  ): Promise<string> {
+    if (!(file instanceof File) || file.size === 0) {
+      if (existingPath) return existingPath;
+      redirect(
+        "/vendor/apply?phase=details&error=" +
+          encodeURIComponent(`Please upload your ${kind.toUpperCase()} document.`)
+      );
+    }
 
     const allowed = new Set([
       "image/jpeg",
@@ -253,16 +301,23 @@ export async function submitVendorDetailsAction(formData: FormData) {
     if (uploadError) {
       redirect(
         "/vendor/apply?phase=details&error=" +
-          encodeURIComponent(`Could not upload ${kind.toUpperCase()} document: ${uploadError.message}`)
+          encodeURIComponent(
+            `Could not upload ${kind.toUpperCase()} document: ${uploadError.message}`
+          )
       );
     }
     return path;
   }
 
-  const panDocumentPath = await uploadKycDoc(formData.get("pan_document"), "pan");
+  const panDocumentPath = await uploadKycDoc(
+    formData.get("pan_document"),
+    "pan",
+    existingVendor.pan_document_path
+  );
   const aadhaarDocumentPath = await uploadKycDoc(
     formData.get("aadhaar_document"),
     "aadhaar",
+    existingVendor.aadhaar_document_path
   );
 
   await admin
@@ -270,6 +325,7 @@ export async function submitVendorDetailsAction(formData: FormData) {
     .update({
       full_name: fields.full_name,
       phone,
+      email: fields.email,
       city: fields.city,
       role: "vendor",
     })
@@ -279,107 +335,36 @@ export async function submitVendorDetailsAction(formData: FormData) {
     business_name: fields.business_name,
     category_id: fields.category_id,
     city: fields.city,
-    bio: fields.bio || null,
+    bio: fields.bio,
     experience_years: experienceYears,
-    equipment_details: fields.equipment_details || null,
+    equipment_details: fields.equipment_details,
     team_size: teamSize,
     service_areas: serviceAreas,
-    available_from: fields.available_from || null,
-    pan_number: fields.pan_number || null,
-    aadhaar_number: fields.aadhaar_number || null,
-    gst_number: fields.gst_number || null,
-    bank_name: fields.bank_name || null,
-    bank_account_holder_name: fields.bank_account_holder_name || null,
-    bank_account_number: fields.bank_account_number || null,
-    bank_ifsc: fields.bank_ifsc || null,
-    ...(panDocumentPath ? { pan_document_path: panDocumentPath } : {}),
-    ...(aadhaarDocumentPath ? { aadhaar_document_path: aadhaarDocumentPath } : {}),
+    available_from: fields.available_from,
+    pan_number: fields.pan_number,
+    aadhaar_number: fields.aadhaar_number,
+    gst_number: fields.gst_number,
+    bank_name: fields.bank_name,
+    bank_account_holder_name: fields.bank_account_holder_name,
+    bank_account_number: fields.bank_account_number,
+    bank_ifsc: fields.bank_ifsc,
+    pan_document_path: panDocumentPath,
+    aadhaar_document_path: aadhaarDocumentPath,
     agreed_to_vendor_terms_at: agreedAt,
     agreed_to_cancellation_policy_at: agreedAt,
     status: "pending_payment" as const,
+    plan: plan.key,
+    security_deposit_amount: plan.securityDeposit,
   };
 
   const { error: vendorError } = await admin.from("vendor_profiles").upsert(
     { id: user.id, ...vendorPayload },
-    { onConflict: "id" },
+    { onConflict: "id" }
   );
 
   if (vendorError) {
     redirect(
       "/vendor/apply?phase=details&error=" + encodeURIComponent(vendorError.message)
-    );
-  }
-
-  redirect("/vendor/apply?phase=location");
-}
-
-// --- Step 3: location permission ---
-
-export async function submitVendorLocationAction(
-  lat: number | null,
-  lng: number | null,
-) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/vendor/login");
-
-  if (lat != null && lng != null) {
-    await supabase
-      .from("profiles")
-      .update({ location_lat: lat, location_lng: lng })
-      .eq("id", user.id);
-  }
-
-  redirect("/vendor/apply?phase=plan");
-}
-
-// --- Step 4: registration plan ---
-
-export async function selectVendorPlanAction(formData: FormData) {
-  const planKey = String(formData.get("plan") ?? "").trim();
-  const plan = getVendorPlan(planKey);
-
-  if (!plan) {
-    redirect(
-      "/vendor/apply?phase=plan&error=" +
-        encodeURIComponent("Please choose a registration plan.")
-    );
-  }
-
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/vendor/login");
-
-  const admin = createAdminClient();
-  const { data: vendor } = await admin
-    .from("vendor_profiles")
-    .select("id, plan")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (!vendor) {
-    redirect(
-      "/vendor/apply?phase=details&error=" +
-        encodeURIComponent("Please complete your vendor application first.")
-    );
-  }
-
-  const { error: updateError } = await admin
-    .from("vendor_profiles")
-    .update({
-      plan: plan.key,
-      security_deposit_amount: plan.securityDeposit,
-      status: "pending_payment",
-    })
-    .eq("id", user.id);
-
-  if (updateError) {
-    redirect(
-      "/vendor/apply?phase=plan&error=" + encodeURIComponent(updateError.message)
     );
   }
 
@@ -423,6 +408,85 @@ export async function selectVendorPlanAction(formData: FormData) {
   await admin.from("vendor_payments").insert(paymentRows);
 
   redirect("/vendor/apply?phase=fees");
+}
+
+// --- Location (optional helper; main signup skips this) ---
+
+export async function submitVendorLocationAction(
+  lat: number | null,
+  lng: number | null
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/vendor/login");
+
+  if (lat != null && lng != null) {
+    await supabase
+      .from("profiles")
+      .update({ location_lat: lat, location_lng: lng })
+      .eq("id", user.id);
+  }
+
+  redirect("/vendor/apply?phase=fees");
+}
+
+// --- Step: registration plan (after OTP, before details) ---
+
+export async function selectVendorPlanAction(formData: FormData) {
+  const planKey = String(formData.get("plan") ?? "").trim();
+  const plan = getVendorPlan(planKey);
+
+  if (!plan) {
+    redirect(
+      "/vendor/apply?phase=plan&error=" +
+        encodeURIComponent("Please choose a registration plan.")
+    );
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/vendor/login");
+
+  const admin = createAdminClient();
+  const { data: vendor } = await admin
+    .from("vendor_profiles")
+    .select("id, plan")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!vendor) {
+    await admin.from("vendor_profiles").upsert(
+      {
+        id: user.id,
+        business_name: "My Business",
+        status: "pending_payment",
+        plan: plan.key,
+        security_deposit_amount: plan.securityDeposit,
+      },
+      { onConflict: "id" }
+    );
+  } else {
+    const { error: updateError } = await admin
+      .from("vendor_profiles")
+      .update({
+        plan: plan.key,
+        security_deposit_amount: plan.securityDeposit,
+        status: "pending_payment",
+      })
+      .eq("id", user.id);
+
+    if (updateError) {
+      redirect(
+        "/vendor/apply?phase=plan&error=" + encodeURIComponent(updateError.message)
+      );
+    }
+  }
+
+  redirect("/vendor/apply?phase=details");
 }
 
 // --- Portfolio (optional, kept for later dashboard use) ---
