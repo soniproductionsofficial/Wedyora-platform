@@ -89,3 +89,7 @@ You can remove Twilio credentials from the Phone provider after the SMS hook wor
 | Hook 401/500 | `SEND_*_HOOK_SECRET` mismatch (use full `v1,whsec_…` value) |
 | MSG91 template error | Flow ID / variable name (`otp`) must match DLT template |
 | Email not sending | Domain not verified in MSG91 Email; `MSG91_EMAIL_FROM` must be on that domain |
+
+## Related docs
+
+- Payments: [RAZORPAY_SETUP.md](./RAZORPAY_SETUP.md)
