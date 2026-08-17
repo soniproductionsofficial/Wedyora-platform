@@ -172,7 +172,7 @@ export default function VendorPlanFlowPicker() {
         type="submit"
         className="w-full rounded-full bg-brand-black py-3 font-semibold text-white transition-colors hover:bg-brand-charcoal"
       >
-        Continue to Payment
+        Continue to Application
       </button>
     </form>
   );
