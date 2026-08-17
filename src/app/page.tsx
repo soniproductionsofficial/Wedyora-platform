@@ -259,21 +259,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Photography in Minutes */}
-      <section className="relative min-h-[min(72vh,680px)] overflow-hidden text-white">
+      {/* Photography in Minutes — full-bleed collage, no letterbox sides */}
+      <section className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-[#f7f4f0] text-white">
         <Image
           src="/images/minutes/photography-in-minutes.jpg"
           alt=""
           fill
+          priority
           sizes="100vw"
-          className="object-cover object-[center_40%]"
+          className="object-cover object-center"
           aria-hidden
         />
+        {/* Soft bottom wash only — keeps sides of the collage clear */}
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/15"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/55 via-black/20 to-transparent"
           aria-hidden
         />
-        <div className="relative z-10 mx-auto flex min-h-[min(72vh,680px)] max-w-6xl flex-col justify-end px-6 py-14 sm:justify-center sm:py-16">
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-end px-6 pb-12 pt-24 sm:pb-16 md:pb-20">
           <div className="max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold-bright">
               Wedyora Minutes
@@ -281,7 +283,7 @@ export default function Home() {
             <h2 className="mt-3 font-wedding-display text-3xl font-semibold leading-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.55)] md:text-4xl lg:text-[2.75rem]">
               Photography in Minutes
             </h2>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-white/90 [text-shadow:0_1px_14px_rgba(0,0,0,0.65)] md:text-base">
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-white/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.65)] md:text-base">
               Our in-house photography team — book on Wedyora, get a Minutes
               shooter assigned, and receive quality delivery from one place.
             </p>
