@@ -6,10 +6,9 @@ import {
   requestVendorOtpAction,
   verifyVendorOtpAction,
   submitVendorDetailsAction,
-  selectVendorPlanAction,
   resolveVendorOnboardingPhase,
 } from "@/lib/actions/vendor";
-import { VENDOR_PLANS } from "@/lib/vendor-plans";
+import VendorPlanFlowPicker from "@/components/vendor-plan-flow-picker";
 import PayVendorFeesButton from "@/components/pay-vendor-fees-button";
 import VendorLocationStep from "@/components/vendor-location-step";
 
@@ -108,7 +107,7 @@ export default async function VendorApplyPage({
           aria-modal="true"
           aria-labelledby="vendor-plan-title"
         >
-          <div className="max-h-[min(90vh,40rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-brand-line bg-white p-5 shadow-2xl sm:p-7">
+          <div className="max-h-[min(92vh,48rem)] w-full max-w-xl overflow-y-auto rounded-2xl border border-brand-line bg-white p-5 shadow-2xl sm:p-7">
             <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">
               Next step
             </p>
@@ -116,10 +115,11 @@ export default async function VendorApplyPage({
               id="vendor-plan-title"
               className="mt-2 text-center font-heading text-2xl font-semibold"
             >
-              Choose your registration plan
+              Choose your vendor tier
             </h2>
-            <p className="mt-2 mb-6 text-center text-sm text-brand-gray">
-              Select a plan to continue to payment.
+            <p className="mt-2 mb-5 text-center text-sm text-brand-gray">
+              Follow the flow from Basic → Elite. Expand a step to see exactly
+              what you get, then continue to payment.
             </p>
 
             {error && (
@@ -128,46 +128,7 @@ export default async function VendorApplyPage({
               </p>
             )}
 
-            <form action={selectVendorPlanAction} className="flex flex-col gap-4">
-              <fieldset className="flex flex-col gap-3">
-                <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
-                  Registration Plan <span className="text-brand-orange">*</span>
-                </legend>
-                {VENDOR_PLANS.map((p, i) => (
-                  <label
-                    key={p.key}
-                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-brand-line px-4 py-3 text-sm transition-colors hover:border-brand-orange has-[:checked]:border-brand-orange has-[:checked]:bg-brand-orange/5"
-                  >
-                    <input
-                      type="radio"
-                      name="plan"
-                      value={p.key}
-                      required
-                      defaultChecked={i === 2}
-                      className="mt-1 accent-brand-orange"
-                    />
-                    <span>
-                      <span className="font-medium">{p.label}</span>{" "}
-                      <span className="text-xs text-brand-gray">
-                        — best for {p.targetVendor}
-                      </span>
-                      <br />
-                      <span className="text-xs text-brand-gray">
-                        ₹{p.registrationFee.toLocaleString("en-IN")} registration &middot; ₹
-                        {p.annualRenewal.toLocaleString("en-IN")}/yr renewal &middot; ₹
-                        {p.securityDeposit.toLocaleString("en-IN")} refundable deposit
-                      </span>
-                    </span>
-                  </label>
-                ))}
-              </fieldset>
-              <button
-                type="submit"
-                className="mt-1 w-full rounded-full bg-brand-black py-3 font-semibold text-white transition-colors hover:bg-brand-charcoal"
-              >
-                Continue to Payment
-              </button>
-            </form>
+            <VendorPlanFlowPicker />
           </div>
         </div>
       )}
@@ -237,7 +198,7 @@ export default async function VendorApplyPage({
               "Help us place you in the right city for nearby bookings."}
             {phase === "plan" && "Choose a registration plan to continue."}
             {phase === "fees" &&
-              "Pay the registration fee and refundable security deposit to finish."}
+              "Pay the registration fee (including 18% GST) to finish."}
             {phase === "done" && "You’re all set — we’ll review your application shortly."}
           </p>
 
@@ -481,7 +442,7 @@ export default async function VendorApplyPage({
                       ₹{feesTotal.toLocaleString("en-IN")}
                     </p>
                     <p className="mt-1 text-xs text-brand-gray">
-                      Registration fee (one-time) + refundable security deposit
+                      Registration fee including 18% GST · 12 months validity
                     </p>
                   </div>
                   <PayVendorFeesButton

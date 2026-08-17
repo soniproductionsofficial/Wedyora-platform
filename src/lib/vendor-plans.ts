@@ -1,7 +1,5 @@
-// Registration Plans, from the Vendor Pricing & Quote Structure poster.
-// These are business constants, not admin-editable rows, the same way the
-// signup wizard's BUDGET_RANGES/LANGUAGES are — they match a printed rate
-// card, not something that changes per-vendor.
+// Vendor Registration Fee Model — registration fee excl. GST + 18% GST.
+// Keys stay stable for existing vendor_profiles.plan values in the DB.
 
 export type VendorPlanKey =
   | "basic_verified"
@@ -9,58 +7,196 @@ export type VendorPlanKey =
   | "premium_partner"
   | "studio_partner";
 
+export const GST_RATE = 0.18;
+
 export interface VendorPlan {
   key: VendorPlanKey;
   label: string;
+  /** Registration fee excluding GST (INR). */
   registrationFee: number;
+  /** Kept for legacy profile display; annual renewal matches 12-month validity. */
   annualRenewal: number;
-  // The poster's Security Deposit table is keyed by vendor CATEGORY
-  // (Photographer/Videographer 10,000; Drone Operator 15,000; "Premium
-  // Studio Partner" 25,000), which doesn't cleanly map 1:1 onto either
-  // "category" or "plan" alone — the last row names a plan tier, not a
-  // category. We key the deposit off the chosen PLAN instead, since that's
-  // what the vendor actually picks at signup: Studio Partner carries the
-  // poster's top 25,000 deposit, Premium Partner the mid-tier 15,000 (its
-  // closest fit, Drone Operator), and the two entry tiers the base 10,000.
+  /** Months of plan validity after payment. */
+  validityMonths: number;
+  /** Security deposit — 0 under the current registration fee model. */
   securityDeposit: number;
   targetVendor: string;
+  recommended?: boolean;
 }
 
 export const VENDOR_PLANS: VendorPlan[] = [
   {
     key: "basic_verified",
-    label: "Basic Verified",
-    registrationFee: 4999,
-    annualRenewal: 2000,
-    securityDeposit: 10000,
-    targetVendor: "New Photographers",
+    label: "Basic Vendor",
+    registrationFee: 999,
+    annualRenewal: 999,
+    validityMonths: 12,
+    securityDeposit: 0,
+    targetVendor: "New / Small Vendors",
   },
   {
     key: "professional_partner",
-    label: "Professional Partner",
-    registrationFee: 9999,
-    annualRenewal: 3999,
-    securityDeposit: 10000,
-    targetVendor: "Established Vendors",
+    label: "Verified Vendor",
+    registrationFee: 1999,
+    annualRenewal: 1999,
+    validityMonths: 12,
+    securityDeposit: 0,
+    targetVendor: "Professional Vendors",
+    recommended: true,
   },
   {
     key: "premium_partner",
-    label: "Premium Partner",
-    registrationFee: 14999,
+    label: "Premium Vendor",
+    registrationFee: 4999,
     annualRenewal: 4999,
-    securityDeposit: 15000,
-    targetVendor: "Top Rated Vendors / Studios",
+    validityMonths: 12,
+    securityDeposit: 0,
+    targetVendor: "Established Vendors",
   },
   {
     key: "studio_partner",
-    label: "Studio Partner",
-    registrationFee: 19999,
-    annualRenewal: 6999,
-    securityDeposit: 25000,
-    targetVendor: "Studios & Agencies",
+    label: "Elite Vendor",
+    registrationFee: 9999,
+    annualRenewal: 9999,
+    validityMonths: 12,
+    securityDeposit: 0,
+    targetVendor: "High-Volume Vendors",
   },
 ];
 
+export function planGstAmount(feeExclGst: number): number {
+  return Math.round(feeExclGst * GST_RATE * 100) / 100;
+}
+
+/** Total payable rounded to nearest rupee (Razorpay-friendly whole INR). */
+export function planTotalPayable(feeExclGst: number): number {
+  return Math.round(feeExclGst * (1 + GST_RATE));
+}
+
 export function getVendorPlan(key: string | null | undefined): VendorPlan | null {
   return VENDOR_PLANS.find((p) => p.key === key) ?? null;
+}
+
+/** Feature matrix — “What you get in each plan”. */
+export type PlanFeatureValue = true | false | string;
+
+export const VENDOR_PLAN_FEATURES: {
+  label: string;
+  values: Record<VendorPlanKey, PlanFeatureValue>;
+}[] = [
+  {
+    label: "Business Profile & Listing",
+    values: {
+      basic_verified: true,
+      professional_partner: true,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "KYC & Document Verification",
+    values: {
+      basic_verified: false,
+      professional_partner: true,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Portfolio Upload",
+    values: {
+      basic_verified: "Up to 20 photos",
+      professional_partner: "Up to 75 photos & 5 reels",
+      premium_partner: "Up to 150 photos & 15 reels",
+      studio_partner: "Unlimited photos & reels",
+    },
+  },
+  {
+    label: "Google Rating Verification",
+    values: {
+      basic_verified: false,
+      professional_partner: true,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Verified Badge",
+    values: {
+      basic_verified: false,
+      professional_partner: true,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Priority Enquiries",
+    values: {
+      basic_verified: false,
+      professional_partner: true,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Top Search Ranking",
+    values: {
+      basic_verified: false,
+      professional_partner: true,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Featured Placement",
+    values: {
+      basic_verified: false,
+      professional_partner: false,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Dedicated Account Manager",
+    values: {
+      basic_verified: false,
+      professional_partner: false,
+      premium_partner: false,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Social Media Promotion",
+    values: {
+      basic_verified: false,
+      professional_partner: false,
+      premium_partner: true,
+      studio_partner: true,
+    },
+  },
+  {
+    label: "Performance Analytics",
+    values: {
+      basic_verified: "Basic",
+      professional_partner: "Basic",
+      premium_partner: "Advanced",
+      studio_partner: "Advanced + Business Review",
+    },
+  },
+  {
+    label: "Priority Support",
+    values: {
+      basic_verified: false,
+      professional_partner: "Email / Chat",
+      premium_partner: "Priority Support",
+      studio_partner: "24/7 Dedicated Support",
+    },
+  },
+];
+
+export function featuresForPlan(key: VendorPlanKey) {
+  return VENDOR_PLAN_FEATURES.map((row) => ({
+    label: row.label,
+    value: row.values[key],
+  }));
 }
