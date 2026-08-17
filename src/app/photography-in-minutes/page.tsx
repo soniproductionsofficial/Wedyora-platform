@@ -54,8 +54,8 @@ export default function PhotographyInMinutesPage() {
       `}</style>
 
       {/* Hero */}
-      <section className="relative z-0 min-h-[min(78vh,720px)] overflow-hidden text-white md:min-h-[82vh]">
-        <div className="absolute inset-0 bg-brand-black">
+      <section className="relative z-0 h-[100svh] min-h-[560px] w-full overflow-hidden bg-[#f7f4f0] text-white">
+        <div className="absolute inset-0">
           <Image
             src="/images/minutes/photography-in-minutes.jpg"
             alt=""
@@ -66,12 +66,12 @@ export default function PhotographyInMinutesPage() {
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/55 via-black/20 to-transparent"
             aria-hidden
           />
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-[min(78vh,720px)] max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-16 md:min-h-[82vh] md:justify-center md:pb-24">
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-16 md:pb-24">
           <div className="minutes-hero-copy max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold-bright">
               Wedyora Minutes
