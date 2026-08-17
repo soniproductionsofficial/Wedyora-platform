@@ -14,7 +14,6 @@ const SERVICES = [
     description:
       "Mandap, stage, and floral artistry that sets the tone before guests arrive — tailored to your palette and budget.",
     image: "/images/services/decoration.jpg",
-    accent: "from-wedding-coral/90 to-wedding-red/90",
   },
   {
     title: "Photography",
@@ -22,7 +21,6 @@ const SERVICES = [
     description:
       "Candid glances, pheras, and baraat energy captured by photographers who know how an Indian wedding unfolds.",
     image: "/images/services/photography.jpg",
-    accent: "from-wedding-purple/90 to-wedding-deep/90",
   },
   {
     title: "Catering",
@@ -30,7 +28,6 @@ const SERVICES = [
     description:
       "Multi-course spreads and intimate family lunches, timed and coordinated so every guest eats well.",
     image: "/images/services/catering.jpg",
-    accent: "from-wedding-green/90 to-wedding-deep/90",
   },
   {
     title: "Music",
@@ -38,7 +35,6 @@ const SERVICES = [
     description:
       "Live bands, DJs, and classical sets that read the room — from ceremony stillness to reception energy.",
     image: "/images/services/music.jpg",
-    accent: "from-wedding-gold/90 to-wedding-coral/90",
   },
 ] as const;
 
@@ -293,10 +289,9 @@ export default function Home() {
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((service) => (
-              <Link
+              <article
                 key={service.slug}
-                href="/book"
-                className="service-card group relative overflow-hidden rounded-2xl border border-wedding-gold/20 bg-white shadow-[0_18px_50px_rgba(74,28,107,0.08)] transition-all duration-500 hover:-translate-y-2 hover:border-wedding-gold/50 hover:shadow-[0_24px_60px_rgba(196,25,42,0.16)]"
+                className="service-card group overflow-hidden rounded-2xl border border-wedding-gold/20 bg-white shadow-[0_18px_50px_rgba(74,28,107,0.08)] transition-all duration-500 hover:-translate-y-2 hover:border-wedding-gold/50 hover:shadow-[0_24px_60px_rgba(196,25,42,0.16)]"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <Image
@@ -306,28 +301,26 @@ export default function Home() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-t ${service.accent} opacity-70 transition-opacity duration-500 group-hover:opacity-55`}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                    <h3 className="font-wedding-display text-2xl font-semibold tracking-wide">
-                      {service.title}
-                    </h3>
-                  </div>
                 </div>
                 <div className="p-5">
-                  <p className="text-sm leading-relaxed text-brand-gray">
+                  <h3 className="font-wedding-display text-xl font-semibold text-brand-magenta">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-brand-gray">
                     {service.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center text-sm font-semibold text-brand-magenta transition-colors duration-300 group-hover:text-brand-magenta-deep">
-                    Book this service
-                    <span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </span>
                 </div>
-              </Link>
+              </article>
             ))}
+          </div>
+
+          <div className="mt-10 text-center md:mt-12">
+            <Link
+              href="/services"
+              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:text-base"
+            >
+              Explore more
+            </Link>
           </div>
         </div>
       </section>
