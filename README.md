@@ -70,6 +70,10 @@ update public.profiles set role = 'admin'
 where id = (select id from auth.users where phone = '919876543210');
 ```
 
+**Phone OTP / email delivery uses MSG91 (not Twilio):** Supabase Auth still
+generates and verifies codes; MSG91 sends the SMS/email via Auth Hooks.
+See **[docs/MSG91_SETUP.md](./docs/MSG91_SETUP.md)**.
+
 **Payments use Razorpay:** booking advances and vendor registration fees. See
 **[docs/RAZORPAY_SETUP.md](./docs/RAZORPAY_SETUP.md)** for Vercel env keys and test checkout.
 
