@@ -56,7 +56,7 @@ export default async function BookPage({
           </h1>
           <p className="text-white/70 text-sm max-w-xl mx-auto">
             {fromMinutes
-              ? "Request Wedyora Minutes — our in-house photography team. We’ll confirm package, date, and advance before anything is charged."
+              ? "Request Wedyora Minutes — our in-house photography team. We will confirm package, date, and advance before anything is charged."
               : "Tell us what you need — Wedyora will match you with a verified vendor and confirm the details before anything is charged."}
           </p>
         </div>
