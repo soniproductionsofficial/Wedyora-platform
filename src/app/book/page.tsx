@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { CalendarCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createBookingAction } from "@/lib/actions/booking";
+import BookingCartSummary from "@/components/booking-cart-summary";
 
 export default async function BookPage({
   searchParams,
@@ -32,7 +33,7 @@ export default async function BookPage({
             <CalendarCheck className="h-5 w-5" />
           </span>
           <h1 className="font-heading text-3xl font-bold mb-2">
-            Plan Your Wedding
+            Plan Your Occasion
           </h1>
           <p className="text-white/70 text-sm max-w-xl mx-auto">
             Tell us what you need — Wedyora will match you with a verified
@@ -50,8 +51,10 @@ export default async function BookPage({
           )}
 
           <form action={createBookingAction} className="flex flex-col gap-4">
+            <BookingCartSummary />
+
             <label className="flex flex-col gap-1.5 text-sm font-medium">
-              Service Needed <span className="text-brand-orange">*</span>
+              Primary service needed <span className="text-brand-orange">*</span>
               <select
                 name="category_id"
                 required
