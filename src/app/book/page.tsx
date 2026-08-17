@@ -11,9 +11,17 @@ export default async function BookPage({
     error?: string;
     source?: string;
     package?: string;
+    city?: string;
+    date?: string;
   }>;
 }) {
-  const { error, source, package: packageName } = await searchParams;
+  const {
+    error,
+    source,
+    package: packageName,
+    city,
+    date,
+  } = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -23,6 +31,8 @@ export default async function BookPage({
     const qs = new URLSearchParams();
     if (source) qs.set("source", source);
     if (packageName) qs.set("package", packageName);
+    if (city) qs.set("city", city);
+    if (date) qs.set("date", date);
     const bookPath = qs.size > 0 ? `/book?${qs.toString()}` : "/book";
     redirect(`/login?redirectTo=${encodeURIComponent(bookPath)}`);
   }
@@ -32,6 +42,8 @@ export default async function BookPage({
     ? [
         "Photography in Minutes (Wedyora Minutes) booking request.",
         packageName ? `Preferred package: ${packageName}.` : null,
+        city ? `Preferred city: ${city}.` : null,
+        date ? `Preferred event date: ${date}.` : null,
         "Please assign the in-house Minutes photography team.",
       ]
         .filter(Boolean)
@@ -78,6 +90,13 @@ export default async function BookPage({
               <select
                 name="category_id"
                 required
+                defaultValue={
+                  fromMinutes
+                    ? categories?.find((c) =>
+                        c.name.toLowerCase().includes("photo")
+                      )?.id ?? ""
+                    : ""
+                }
                 className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
               >
                 <option value="">Select a service</option>
@@ -95,6 +114,7 @@ export default async function BookPage({
                 type="date"
                 name="event_date"
                 required
+                defaultValue={date ?? ""}
                 className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
               />
             </label>
@@ -104,6 +124,7 @@ export default async function BookPage({
               <input
                 name="city"
                 required
+                defaultValue={city ?? ""}
                 className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
               />
             </label>
