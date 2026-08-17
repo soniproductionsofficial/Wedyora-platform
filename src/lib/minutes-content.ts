@@ -2,233 +2,274 @@ import { formatInr } from "@/lib/shop-packages";
 
 export { formatInr };
 
-export const MINUTES_OFFERINGS = [
+/** Phase 1 occasion categories — wedding is intentionally Phase 2. */
+export const MINUTES_CATEGORIES = [
   {
-    id: "candid",
-    title: "Candid Photography",
-    body: "Documentary coverage that catches glances, laughter, and ritual detail as they happen.",
+    id: "pooja",
+    title: "Pooja & Religious",
+    body: "Varamahalakshmi, Ganesh, Satyanarayana, naming, temple events, festivals and homa.",
+    startingPrice: 1999,
   },
   {
-    id: "cinematic",
-    title: "Cinematic Films",
-    body: "Story-led wedding films with colour grade, sound design, and a polished final cut.",
+    id: "maternity",
+    title: "Maternity",
+    body: "Maternity, couple maternity, baby bump, home/outdoor shoots and maternity reels.",
+    startingPrice: 1999,
   },
   {
-    id: "prewedding",
-    title: "Pre-Wedding Shoot",
-    body: "Styled couple sessions outdoors or in-studio — gallery-ready edits included.",
+    id: "baby",
+    title: "Baby",
+    body: "Baby portraits, milestone shoots, cake smash and family baby sessions.",
+    startingPrice: 1999,
+  },
+  {
+    id: "newborn",
+    title: "Newborn",
+    body: "Newborn photography and home sessions with trained photographers.",
+    startingPrice: 2999,
+  },
+  {
+    id: "kids",
+    title: "Toddler / Kids",
+    body: "Toddler portraits, kids shoots and family sessions.",
+    startingPrice: 1999,
+  },
+  {
+    id: "housewarming",
+    title: "Housewarming",
+    body: "Griha Pravesh, housewarming and family ceremony coverage.",
+    startingPrice: 1999,
+  },
+  {
+    id: "birthday",
+    title: "Birthdays",
+    body: "Birthday parties, surprise parties and birthday reels.",
+    startingPrice: 1999,
+  },
+  {
+    id: "small-events",
+    title: "Small Events",
+    body: "Anniversary, graduation, farewell, private events and family functions.",
+    startingPrice: 1999,
+  },
+  {
+    id: "friends-party",
+    title: "Friends Party",
+    body: "Friends get-together, casual parties and social content.",
+    startingPrice: 1999,
+  },
+  {
+    id: "vehicle",
+    title: "Vehicle Delivery",
+    body: "Car, bike, luxury vehicle and showroom delivery moments.",
+    startingPrice: 1999,
+  },
+  {
+    id: "product",
+    title: "Product / Business",
+    body: "Product, food, catalogue, store, restaurant, corporate and social content.",
+    startingPrice: 1999,
   },
   {
     id: "reels",
-    title: "Reels / Short Videos",
-    body: "Vertical highlights for WhatsApp and Instagram, delivered fast after the event.",
-  },
-  {
-    id: "traditional",
-    title: "Traditional Photography",
-    body: "Classic family groups and posed portraits framed for your album.",
-  },
-  {
-    id: "same-day",
-    title: "Same-Day Edit",
-    body: "A short highlight film ready to screen at the reception the same evening.",
-  },
-  {
-    id: "album",
-    title: "Album Design",
-    body: "Designed coffee-table albums with curated spreads from your shoot.",
-  },
-  {
-    id: "drone",
-    title: "Drone Photography",
-    body: "Aerial stills and video of venue, baraat, and outdoor sequences (where permitted).",
+    title: "Instant Reels",
+    body: "Short-form reels for personal, event and business occasions.",
+    startingPrice: 1999,
   },
 ] as const;
 
+/** Core photography packages (report §6) — Standard is Most Popular. */
 export const MINUTES_PACKAGES = [
   {
-    id: "minutes-essential",
-    name: "Essential Day",
-    tagline: "Candid coverage for one function",
-    price: 18000,
+    id: "minutes-basic",
+    name: "Basic",
+    tagline: "1 photographer · 1.5 hours",
+    price: 1999,
     includes: [
-      "1 photographer",
-      "4–6 hours coverage",
-      "100+ edited photos",
-      "Online gallery in 10 days",
+      "1 photographer · 1.5 hours",
+      "20 edited photos",
+      "Up to 100 raw photos",
+      "Online gallery delivery",
     ],
   },
   {
-    id: "minutes-cinematic",
-    name: "Cinematic Duo",
-    tagline: "Photo + highlight film",
-    price: 32000,
-    includes: [
-      "1 photographer + 1 videographer",
-      "Full-day coverage",
-      "Edited photo gallery",
-      "3–5 min cinematic film",
-    ],
+    id: "minutes-standard",
+    name: "Standard",
+    tagline: "Most popular · 2.5 hours",
+    price: 2999,
     featured: true,
+    includes: [
+      "1 photographer · 2.5 hours",
+      "40 edited photos",
+      "Unlimited raw photos",
+      "Online gallery delivery",
+    ],
   },
   {
     id: "minutes-premium",
-    name: "Minutes Premium",
-    tagline: "End-to-end wedding storytelling",
-    price: 55000,
+    name: "Premium",
+    tagline: "Longer coverage + 1 reel",
+    price: 4999,
     includes: [
-      "2 photographers + 1 videographer",
-      "Same-day edit option",
-      "Reels + full gallery",
-      "Album design credit",
+      "1 photographer · 4 hours",
+      "100 edited photos",
+      "Unlimited raw photos",
+      "1 reel included",
     ],
   },
   {
-    id: "minutes-prewedding",
-    name: "Pre-Wedding + Reels",
-    tagline: "Couple shoot with social cuts",
-    price: 22000,
+    id: "minutes-combo",
+    name: "Starter Combo",
+    tagline: "Photo + reel bundle",
+    price: 2999,
     includes: [
-      "Half-day outdoor or studio",
-      "50+ edited stills",
-      "2 vertical reels",
-      "Delivery in 7 days",
+      "1 hour photography",
+      "75 edited photos",
+      "1 reel",
+      "Ideal for parties & poojas",
+    ],
+  },
+  {
+    id: "minutes-now",
+    name: "Photographer Now",
+    tagline: "Urgent / same-day when available",
+    price: 2499,
+    includes: [
+      "Express assignment when supply allows",
+      "Location → service → duration → pay",
+      "Verified photographer in radius",
+      "Express pricing shown before payment",
     ],
   },
 ] as const;
+
+/** Alias used by older page sections — maps to Phase 1 categories. */
+export const MINUTES_OFFERINGS = MINUTES_CATEGORIES.map((c) => ({
+  id: c.id,
+  title: c.title,
+  body: c.body,
+}));
 
 export const MINUTES_FLOW = [
   {
     step: 1,
-    title: "Select Photography",
-    body: "Open Photography in Minutes and pick the coverage you need.",
+    title: "Select the occasion",
+    body: "Open Photography in Minutes and choose your service category.",
   },
   {
     step: 2,
-    title: "Choose Package",
-    body: "Compare Essential, Cinematic, Premium, or Pre-Wedding packages.",
+    title: "Enter location & time",
+    body: "Share city, preferred date and time for availability.",
   },
   {
     step: 3,
-    title: "Select Date & Location",
-    body: "Share your city and event date so we can schedule the team.",
+    title: "Choose a package",
+    body: "Pick Basic ₹1,999, Standard ₹2,999, Premium ₹4,999 or a combo.",
   },
   {
     step: 4,
-    title: "Choose / Match Photographer",
-    body: "Wedyora Minutes assigns a photographer from our in-house roster.",
+    title: "Review & pay",
+    body: "See inclusions, extras and cancellation terms, then pay securely.",
   },
   {
     step: 5,
-    title: "Pay Advance",
-    body: "Secure your booking with a tracked deposit through Wedyora.",
+    title: "Photographer assigned",
+    body: "Wedyora matches a verified photographer and sends confirmation.",
   },
   {
     step: 6,
-    title: "Booking Confirmed",
-    body: "You get confirmation, shoot-day plan, and a single point of contact.",
+    title: "Shoot & delivery",
+    body: "Job completed, photos/reels delivered, then rate the service.",
   },
 ] as const;
 
 export const MINUTES_PIPELINE = [
   {
-    title: "Shoot Assignment",
-    body: "Photographer assigned and shoot scheduled.",
+    title: "Payment verified",
+    body: "Booking confirmed only after gateway webhook success.",
   },
   {
-    title: "Shoot Day",
-    body: "Photos and videos captured on location.",
+    title: "Vendor matching",
+    body: "Eligible photographers scored on availability, rating and distance.",
   },
   {
-    title: "File Upload",
-    body: "Raw files uploaded into the Minutes pipeline.",
+    title: "Assignment & accept",
+    body: "Photographer accepts the job and receives event details.",
   },
   {
-    title: "Editing",
-    body: "Culling, colour, film cut, and album selects.",
+    title: "Job day",
+    body: "Arrival window tracked; shoot start and completion marked.",
   },
   {
-    title: "Quality Check",
-    body: "QC score minimum 95% before release.",
+    title: "QC & delivery",
+    body: "Edits checked against package inclusions and SLA.",
   },
   {
-    title: "Delivery",
-    body: "Gallery, film, and files delivered to the customer.",
+    title: "Settlement & review",
+    body: "Finance reconciles payout; customer rates the service.",
   },
 ] as const;
 
 export const MINUTES_MODULES = [
   {
-    id: "service",
-    title: "Photography",
-    body: "Service page",
-    href: "#top",
+    id: "categories",
+    title: "Occasions",
+    body: "Phase 1 categories",
+    href: "#occasions",
   },
   {
     id: "packages",
-    title: "Packages & Pricing",
-    body: "Transparent starting rates",
+    title: "Packages",
+    body: "From ₹1,999",
     href: "#packages",
   },
   {
-    id: "photographers",
-    title: "Photographers",
-    body: "In-house profiles",
-    href: "#photographers",
+    id: "now",
+    title: "Photographer Now",
+    body: "Urgent booking",
+    href: "#packages",
   },
   {
     id: "availability",
-    title: "Check Availability",
-    body: "Date & city search",
+    title: "Check availability",
+    body: "Location & date",
     href: "#availability",
   },
   {
     id: "book",
     title: "Book Now",
-    body: "Booking & payment",
+    body: "Checkout & pay",
     href: "/book?source=minutes",
   },
   {
     id: "my-booking",
-    title: "My Booking",
-    body: "Customer dashboard",
+    title: "My bookings",
+    body: "Status & delivery",
     href: "/account",
   },
   {
-    id: "status",
-    title: "Shoot Status",
-    body: "Live tracking",
+    id: "pipeline",
+    title: "How it works",
+    body: "Ops pipeline",
     href: "#pipeline",
   },
   {
     id: "gallery",
     title: "Gallery",
-    body: "Portfolio",
+    body: "Sample work",
     href: "#gallery",
   },
   {
-    id: "my-photos",
-    title: "My Photos",
-    body: "Delivered files",
-    href: "/account",
-  },
-  {
     id: "support",
-    title: "Support & Help",
-    body: "One point of contact",
+    title: "Support",
+    body: "Help & contact",
     href: "/contact",
   },
   {
     id: "reviews",
-    title: "Reviews & Ratings",
-    body: "Customer feedback",
+    title: "Reviews",
+    body: "Customer ratings",
     href: "#reviews",
-  },
-  {
-    id: "offers",
-    title: "Offers & Discounts",
-    body: "Seasonal packages",
-    href: "#packages",
   },
 ] as const;
 
@@ -236,125 +277,145 @@ export const MINUTES_PHOTOGRAPHERS = [
   {
     id: "arjun",
     name: "Arjun Mehta",
-    role: "Lead Candid Photographer",
-    focus: "Weddings · Documentary · Family rituals",
-    cities: "Bengaluru · Hyderabad · Chennai",
+    role: "Verified event photographer",
+    focus: "Pooja · Housewarming · Small events",
+    cities: "Bengaluru · Mysuru",
   },
   {
     id: "neha",
     name: "Neha Kapoor",
-    role: "Cinematic Filmmaker",
-    focus: "Highlight films · Same-day edits · Reels",
-    cities: "Mumbai · Pune · Goa",
+    role: "Maternity & family specialist",
+    focus: "Maternity · Baby · Kids · Reels",
+    cities: "Bengaluru · Hyderabad",
   },
   {
     id: "vikram",
     name: "Vikram Singh",
-    role: "Traditional & Portrait Lead",
-    focus: "Posed groups · Pre-wedding · Albums",
-    cities: "Delhi NCR · Jaipur · Chandigarh",
+    role: "Product & business content",
+    focus: "Catalogue · Food · Store shoots",
+    cities: "Bengaluru · Chennai",
   },
   {
     id: "ananya",
     name: "Ananya Rao",
-    role: "Drone & Coverage Specialist",
-    focus: "Aerial · Reception · Multi-cam days",
-    cities: "Bengaluru · Kochi · Hyderabad",
+    role: "Instant reels creator",
+    focus: "Parties · Birthdays · Social reels",
+    cities: "Bengaluru · Kochi",
   },
 ] as const;
 
 export const MINUTES_GALLERY = [
   {
     src: "/images/services/photography.jpg",
-    label: "Wedding candid",
+    label: "Family ceremony",
   },
   {
     src: "/images/services/videography.jpg",
-    label: "Cinematic film",
+    label: "Instant reels",
   },
   {
     src: "/images/services/mehendi.jpg",
-    label: "Mehendi details",
+    label: "Home celebration",
   },
   {
     src: "/images/services/drone.jpg",
-    label: "Drone coverage",
+    label: "Outdoor coverage",
   },
   {
     src: "/images/services/album.jpg",
-    label: "Album design",
+    label: "Edited gallery",
   },
   {
     src: "/images/hero/wedding-celebration.png",
-    label: "Celebration moments",
+    label: "Party moments",
   },
 ] as const;
 
 export const MINUTES_REVIEWS = [
   {
-    name: "Priya & Rohan",
+    name: "Lakshmi R.",
     city: "Bengaluru",
     quote:
-      "Minutes handled our full wedding day end to end. Gallery landed on time and the film felt like us.",
+      "Booked a Satyanarayana pooja package in minutes. Photographer arrived on time and gallery was ready as promised.",
   },
   {
-    name: "Anjali S.",
+    name: "Ananya & Kiran",
     city: "Hyderabad",
     quote:
-      "One booking on Wedyora, one team on ground. No chasing freelancers on WhatsApp.",
+      "Maternity Standard package was clear on price — no vendor hunting on WhatsApp. Loved the reels option.",
   },
   {
-    name: "Karthik M.",
+    name: "Rahul M.",
     city: "Chennai",
     quote:
-      "Same-day edit played at the reception — guests loved it. Clear advance and clear delivery.",
+      "Used Photographer Now for a same-day vehicle delivery. Paid online, got confirmation, done.",
   },
 ] as const;
 
 export const MINUTES_PHASES = [
   {
-    name: "Phase 1 — Website Integration",
+    name: "Phase 1 — Photography in Minutes",
     items: [
-      "Photography page",
-      "Packages & pricing",
-      "Photographer profiles",
-      "Booking form",
-      "Payment",
-      "Customer dashboard",
-      "Check availability",
-      "Gallery portfolio",
+      "Occasion categories live",
+      "Packages from ₹1,999",
+      "OTP + booking + Razorpay",
+      "Verified vendor assignment",
+      "MSG91 SMS / WhatsApp",
+      "Admin ops dashboard",
+      "Delivery SLA tracking",
+      "Pilot bookings before scale ads",
     ],
   },
   {
-    name: "Phase 2 — Operations",
+    name: "Phase 2 — Weddings & marketplace",
     items: [
-      "Photographer assignment",
-      "Shoot scheduling",
-      "Live shoot status",
-      "File upload",
-      "Editing workflow",
-      "QC (min 95%)",
-      "Delivery to customer",
+      "Wedding photography & film",
+      "Pre-wedding shoots",
+      "Makeup, décor, catering",
+      "AI matching after data",
+      "Native apps if PWA proves demand",
+      "Vendor subscriptions",
+      "Pan-India expansion",
     ],
   },
   {
     name: "Phase 3 — Automation",
     items: [
-      "WhatsApp notifications",
-      "Auto matching",
-      "CRM",
-      "Vendor / finance dashboards",
-      "AI-based matching",
+      "Auto matching refinement",
+      "CRM & referrals",
+      "Finance dashboards",
+      "Featured vendor listings",
+      "Loyalty programmes",
     ],
   },
 ] as const;
 
 export const MINUTES_BENEFITS = [
-  "One platform, multiple services",
-  "Smooth customer experience",
-  "Managed bookings, higher trust",
-  "Better operations & tracking",
-  "Quality delivery every time",
+  "Starting price of ₹1,999",
+  "Book by occasion, not freelancer search",
+  "Verified photographer network",
+  "Availability-based assignment",
+  "Photography + reels on one platform",
+  "Same-day / urgent when supply allows",
+] as const;
+
+export const MINUTES_USPS = [
+  {
+    title: "Transparent pricing",
+    body: "Basic ₹1,999 · Standard ₹2,999 · Premium ₹4,999 — shown before you pay.",
+  },
+  {
+    title: "Verified network",
+    body: "KYC, portfolio review and performance tracking before activation.",
+  },
+  {
+    title: "Fast booking",
+    body: "Occasion → location → package → payment → photographer assigned.",
+  },
+  {
+    title: "Central support",
+    body: "Wedyora handles assignment, escalations, delivery SLA and settlement.",
+  },
 ] as const;
 
 export const MINUTES_CITIES = [
@@ -366,16 +427,18 @@ export const MINUTES_CITIES = [
   "Delhi NCR",
   "Jaipur",
   "Kochi",
-  "Goa",
+  "Mysuru",
 ] as const;
 
 export function minutesBookingHref(opts?: {
   packageName?: string;
+  categoryId?: string;
   city?: string;
   date?: string;
 }) {
   const params = new URLSearchParams({ source: "minutes" });
   if (opts?.packageName) params.set("package", opts.packageName);
+  if (opts?.categoryId) params.set("category", opts.categoryId);
   if (opts?.city) params.set("city", opts.city);
   if (opts?.date) params.set("date", opts.date);
   return `/book?${params.toString()}`;

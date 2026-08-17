@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createBookingAction } from "@/lib/actions/booking";
 import BookingCartSummary from "@/components/booking-cart-summary";
 import MinutesBookingSummary from "@/components/minutes-booking-summary";
+import { MINUTES_CATEGORIES } from "@/lib/minutes-content";
 
 export default async function BookPage({
   searchParams,
@@ -12,6 +13,7 @@ export default async function BookPage({
     error?: string;
     source?: string;
     package?: string;
+    category?: string;
     city?: string;
     date?: string;
   }>;
@@ -20,6 +22,7 @@ export default async function BookPage({
     error,
     source,
     package: packageName,
+    category: categoryId,
     city,
     date,
   } = await searchParams;
@@ -32,6 +35,7 @@ export default async function BookPage({
     const qs = new URLSearchParams();
     if (source) qs.set("source", source);
     if (packageName) qs.set("package", packageName);
+    if (categoryId) qs.set("category", categoryId);
     if (city) qs.set("city", city);
     if (date) qs.set("date", date);
     const bookPath = qs.size > 0 ? `/book?${qs.toString()}` : "/book";
@@ -39,13 +43,16 @@ export default async function BookPage({
   }
 
   const fromMinutes = source === "minutes";
+  const categoryLabel =
+    MINUTES_CATEGORIES.find((c) => c.id === categoryId)?.title ?? categoryId;
   const specialDefault = fromMinutes
     ? [
-        "Photography in Minutes (Wedyora Minutes) booking request.",
+        "Photography in Minutes booking request.",
+        categoryLabel ? `Occasion: ${categoryLabel}.` : null,
         packageName ? `Preferred package: ${packageName}.` : null,
         city ? `Preferred city: ${city}.` : null,
         date ? `Preferred event date: ${date}.` : null,
-        "Please assign the in-house Minutes photography team.",
+        "Please assign a verified Minutes photographer for this occasion.",
         "Do not attach items from the Wedyora services cart to this request.",
       ]
         .filter(Boolean)
@@ -72,7 +79,7 @@ export default async function BookPage({
           </h1>
           <p className="mx-auto max-w-xl text-sm text-white/70">
             {fromMinutes
-              ? "Request Wedyora Minutes — our in-house photography team. This booking is separate from your Wedyora services cart."
+              ? "Occasion photography from ₹1,999 — verified photographer assignment. Separate from your Wedyora services cart."
               : "Tell us what you need — Wedyora will match you with a verified vendor and confirm the details before anything is charged."}
           </p>
         </div>

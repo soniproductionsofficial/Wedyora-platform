@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
 import {
+  MINUTES_CATEGORIES,
   MINUTES_CITIES,
   MINUTES_PACKAGES,
   minutesBookingHref,
@@ -14,9 +15,13 @@ export default function MinutesSearchBar({
   variant?: "hero" | "panel";
 }) {
   const router = useRouter();
+  const [categoryId, setCategoryId] = useState<string>(MINUTES_CATEGORIES[0].id);
   const [city, setCity] = useState("Bengaluru");
   const [date, setDate] = useState("");
-  const [packageId, setPackageId] = useState<string>(MINUTES_PACKAGES[1].id);
+  const [packageId, setPackageId] = useState<string>(
+    MINUTES_PACKAGES.find((p) => "featured" in p && p.featured)?.id ??
+      MINUTES_PACKAGES[1].id
+  );
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -24,6 +29,7 @@ export default function MinutesSearchBar({
     router.push(
       minutesBookingHref({
         packageName: pkg?.name,
+        categoryId,
         city,
         date: date || undefined,
       })
@@ -35,8 +41,7 @@ export default function MinutesSearchBar({
       ? "rounded-2xl border border-white/25 bg-black/45 p-3 shadow-xl backdrop-blur-md sm:p-4"
       : "rounded-2xl border border-brand-line bg-white p-4 shadow-sm sm:p-5";
 
-  const label =
-    variant === "hero" ? "text-white/80" : "text-brand-gray";
+  const label = variant === "hero" ? "text-white/80" : "text-brand-gray";
   const field =
     variant === "hero"
       ? "rounded-xl border border-white/20 bg-white/95 px-3 py-2.5 text-sm text-brand-black outline-none focus:ring-2 focus:ring-brand-gold-bright/50"
@@ -46,9 +51,17 @@ export default function MinutesSearchBar({
     <form onSubmit={onSubmit} className={shell}>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
         <label className={`flex flex-col gap-1.5 text-xs font-semibold ${label}`}>
-          Service type
-          <select className={field} value="photography" disabled>
-            <option value="photography">Photography (Minutes)</option>
+          Occasion
+          <select
+            className={field}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
+            {MINUTES_CATEGORIES.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
           </select>
         </label>
         <label className={`flex flex-col gap-1.5 text-xs font-semibold ${label}`}>
@@ -84,7 +97,7 @@ export default function MinutesSearchBar({
           >
             {MINUTES_PACKAGES.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name}
+                {p.name} · ₹{p.price.toLocaleString("en-IN")}
               </option>
             ))}
           </select>
@@ -94,7 +107,7 @@ export default function MinutesSearchBar({
         type="submit"
         className="mt-3 w-full rounded-full bg-brand-button px-6 py-3 text-sm font-semibold text-brand-black transition-colors hover:bg-brand-button-dark sm:mt-4"
       >
-        Search &amp; book
+        Book a photographer
       </button>
     </form>
   );

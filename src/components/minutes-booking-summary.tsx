@@ -61,8 +61,9 @@ export default function MinutesBookingSummary({
       ) : null}
       <input type="hidden" name="booking_source" value="minutes" />
       <p className="text-[11px] text-brand-gray">
-        This request is for the in-house Minutes photography team only. Catering,
-        mehendi, and other packages in your services cart are not included here.
+        This request is for Photography in Minutes only — occasion packages from
+        ₹1,999. Catering, mehendi, and other Wedyora services cart items are not
+        included here.
       </p>
     </div>
   );
