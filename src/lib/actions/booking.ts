@@ -22,12 +22,22 @@ export async function createBookingAction(formData: FormData) {
   const specialRequirementsRaw = String(formData.get("special_requirements") ?? "");
   const cartSummary = String(formData.get("cart_summary") ?? "").trim();
   const cartTotal = String(formData.get("cart_total") ?? "").trim();
+  const bookingSource = String(formData.get("booking_source") ?? "").trim();
+  const isMinutes = bookingSource === "minutes";
 
   const specialRequirements = [
     cartSummary
-      ? `Selected packages (indicative):\n${cartSummary}${
-          cartTotal ? `\nEstimated cart total: ₹${Number(cartTotal).toLocaleString("en-IN")}` : ""
-        }`
+      ? isMinutes
+        ? `Minutes package (indicative):\n${cartSummary}${
+            cartTotal
+              ? `\nEstimated Minutes total: ₹${Number(cartTotal).toLocaleString("en-IN")}`
+              : ""
+          }`
+        : `Selected packages (indicative):\n${cartSummary}${
+            cartTotal
+              ? `\nEstimated cart total: ₹${Number(cartTotal).toLocaleString("en-IN")}`
+              : ""
+          }`
       : "",
     specialRequirementsRaw,
   ]
@@ -35,7 +45,10 @@ export async function createBookingAction(formData: FormData) {
     .join("\n\n");
 
   if (!categoryId || !eventDate || !city) {
-    redirect("/book?error=" + encodeURIComponent("Please fill in all required fields."));
+    const errQs = isMinutes
+      ? "/book?source=minutes&error="
+      : "/book?error=";
+    redirect(errQs + encodeURIComponent("Please fill in all required fields."));
   }
 
   const { error } = await supabase.from("bookings").insert({
@@ -50,13 +63,18 @@ export async function createBookingAction(formData: FormData) {
   });
 
   if (error) {
-    redirect("/book?error=" + encodeURIComponent(error.message));
+    const errQs = isMinutes
+      ? "/book?source=minutes&error="
+      : "/book?error=";
+    redirect(errQs + encodeURIComponent(error.message));
   }
 
   redirect(
     "/account?message=" +
       encodeURIComponent(
-        "Booking request submitted! We'll match you with a verified vendor shortly."
+        isMinutes
+          ? "Minutes booking request submitted! We'll assign a Wedyora Minutes photographer shortly."
+          : "Booking request submitted! We'll match you with a verified vendor shortly."
       )
   );
 }

@@ -7,7 +7,8 @@ import {
   type CartItem,
 } from "@/lib/shop-packages";
 
-/** Shows selected service packages from /services cart on the booking form. */
+/** Shows selected service packages from /services cart on the booking form.
+ *  Never used for Photography in Minutes bookings. */
 export default function BookingCartSummary() {
   const [items, setItems] = useState<CartItem[]>([]);
 

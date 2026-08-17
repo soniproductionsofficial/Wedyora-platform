@@ -3,6 +3,7 @@ import { CalendarCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createBookingAction } from "@/lib/actions/booking";
 import BookingCartSummary from "@/components/booking-cart-summary";
+import MinutesBookingSummary from "@/components/minutes-booking-summary";
 
 export default async function BookPage({
   searchParams,
@@ -45,6 +46,7 @@ export default async function BookPage({
         city ? `Preferred city: ${city}.` : null,
         date ? `Preferred event date: ${date}.` : null,
         "Please assign the in-house Minutes photography team.",
+        "Do not attach items from the Wedyora services cart to this request.",
       ]
         .filter(Boolean)
         .join(" ")
@@ -55,57 +57,73 @@ export default async function BookPage({
     .select("id, name")
     .order("name");
 
+  const photographyCategoryId =
+    categories?.find((c) => c.name.toLowerCase().includes("photo"))?.id ?? "";
+
   return (
     <div>
-      {/* Page header */}
       <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-6xl px-6 py-14 text-center">
           <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold-bright/15 text-brand-gold-bright">
             <CalendarCheck className="h-5 w-5" />
           </span>
-          <h1 className="font-heading text-3xl font-bold mb-2">
+          <h1 className="font-heading mb-2 text-3xl font-bold">
             {fromMinutes ? "Book Photography in Minutes" : "Plan Your Occasion"}
           </h1>
-          <p className="text-white/70 text-sm max-w-xl mx-auto">
+          <p className="mx-auto max-w-xl text-sm text-white/70">
             {fromMinutes
-              ? "Request Wedyora Minutes — our in-house photography team. We will confirm package, date, and advance before anything is charged."
+              ? "Request Wedyora Minutes — our in-house photography team. This booking is separate from your Wedyora services cart."
               : "Tell us what you need — Wedyora will match you with a verified vendor and confirm the details before anything is charged."}
           </p>
         </div>
       </section>
 
-      <div className="mx-auto max-w-xl px-6 py-12 -mt-10">
-        <div className="bg-white border border-brand-line rounded-2xl shadow-sm p-6 md:p-8">
+      <div className="mx-auto -mt-10 max-w-xl px-6 py-12">
+        <div className="rounded-2xl border border-brand-line bg-white p-6 shadow-sm md:p-8">
           {error && (
-            <p className="mb-6 rounded-lg bg-red-50 text-brand-orange-dark text-sm px-4 py-3">
+            <p className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-brand-orange-dark">
               {error}
             </p>
           )}
 
           <form action={createBookingAction} className="flex flex-col gap-4">
-            <BookingCartSummary />
+            {fromMinutes ? (
+              <MinutesBookingSummary packageName={packageName} />
+            ) : (
+              <BookingCartSummary />
+            )}
 
             <label className="flex flex-col gap-1.5 text-sm font-medium">
               Primary service needed <span className="text-brand-orange">*</span>
-              <select
-                name="category_id"
-                required
-                defaultValue={
-                  fromMinutes
-                    ? categories?.find((c) =>
-                        c.name.toLowerCase().includes("photo")
-                      )?.id ?? ""
-                    : ""
-                }
-                className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
-              >
-                <option value="">Select a service</option>
-                {categories?.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              {fromMinutes ? (
+                <>
+                  <input
+                    type="hidden"
+                    name="category_id"
+                    value={photographyCategoryId}
+                  />
+                  <input
+                    type="text"
+                    readOnly
+                    value="Photography (Wedyora Minutes)"
+                    className="rounded-lg border border-brand-line bg-brand-cream/60 px-4 py-2.5 text-sm font-normal text-brand-black"
+                  />
+                </>
+              ) : (
+                <select
+                  name="category_id"
+                  required
+                  defaultValue=""
+                  className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                >
+                  <option value="">Select a service</option>
+                  {categories?.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </label>
 
             <label className="flex flex-col gap-1.5 text-sm font-medium">
@@ -129,36 +147,40 @@ export default async function BookPage({
               />
             </label>
 
-            <label className="flex flex-col gap-1.5 text-sm font-medium">
-              Guest Count
-              <input
-                type="number"
-                name="guest_count"
-                min={1}
-                className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
-              />
-            </label>
+            {!fromMinutes ? (
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
+                Guest Count
+                <input
+                  type="number"
+                  name="guest_count"
+                  min={1}
+                  className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                />
+              </label>
+            ) : null}
 
-            <div className="grid grid-cols-2 gap-4">
-              <label className="flex flex-col gap-1.5 text-sm font-medium">
-                Budget Min (₹)
-                <input
-                  type="number"
-                  name="budget_min"
-                  min={0}
-                  className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
-                />
-              </label>
-              <label className="flex flex-col gap-1.5 text-sm font-medium">
-                Budget Max (₹)
-                <input
-                  type="number"
-                  name="budget_max"
-                  min={0}
-                  className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
-                />
-              </label>
-            </div>
+            {!fromMinutes ? (
+              <div className="grid grid-cols-2 gap-4">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
+                  Budget Min (₹)
+                  <input
+                    type="number"
+                    name="budget_min"
+                    min={0}
+                    className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                  />
+                </label>
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
+                  Budget Max (₹)
+                  <input
+                    type="number"
+                    name="budget_max"
+                    min={0}
+                    className="rounded-lg border border-brand-line px-4 py-2.5 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                  />
+                </label>
+              </div>
+            ) : null}
 
             <label className="flex flex-col gap-1.5 text-sm font-medium">
               Special Requirements
@@ -172,9 +194,11 @@ export default async function BookPage({
 
             <button
               type="submit"
-              className="mt-2 w-full rounded-full bg-brand-button text-brand-black font-semibold py-3 hover:bg-brand-button-dark transition-colors"
+              className="mt-2 w-full rounded-full bg-brand-button py-3 font-semibold text-brand-black transition-colors hover:bg-brand-button-dark"
             >
-              Submit Booking Request
+              {fromMinutes
+                ? "Submit Minutes Booking Request"
+                : "Submit Booking Request"}
             </button>
           </form>
         </div>
