@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { normalizePhone } from "@/lib/phone";
-import { getVendorPlan } from "@/lib/vendor-plans";
+import { getVendorPlan, planTotalPayable } from "@/lib/vendor-plans";
 
 const DETAIL_FIELDS = [
   "full_name",
@@ -390,24 +390,37 @@ export async function selectVendorPlanAction(formData: FormData) {
     .eq("status", "pending")
     .in("type", ["registration_fee", "security_deposit"]);
 
-  await admin.from("vendor_payments").insert([
+  const totalPayable = planTotalPayable(plan.registrationFee);
+  const paymentRows: {
+    vendor_id: string;
+    type: "registration_fee" | "security_deposit";
+    direction: "debit";
+    amount: number;
+    status: "pending";
+    reason: string;
+  }[] = [
     {
       vendor_id: user.id,
       type: "registration_fee",
       direction: "debit",
-      amount: plan.registrationFee,
+      amount: totalPayable,
       status: "pending",
-      reason: `${plan.label} plan registration fee`,
+      reason: `${plan.label} registration fee (incl. 18% GST)`,
     },
-    {
+  ];
+
+  if (plan.securityDeposit > 0) {
+    paymentRows.push({
       vendor_id: user.id,
       type: "security_deposit",
       direction: "debit",
       amount: plan.securityDeposit,
       status: "pending",
       reason: `${plan.label} plan security deposit (refundable)`,
-    },
-  ]);
+    });
+  }
+
+  await admin.from("vendor_payments").insert(paymentRows);
 
   redirect("/vendor/apply?phase=fees");
 }

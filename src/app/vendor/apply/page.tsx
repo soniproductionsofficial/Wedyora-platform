@@ -9,7 +9,7 @@ import {
   selectVendorPlanAction,
   resolveVendorOnboardingPhase,
 } from "@/lib/actions/vendor";
-import { VENDOR_PLANS } from "@/lib/vendor-plans";
+import { VENDOR_PLANS, planGstAmount, planTotalPayable } from "@/lib/vendor-plans";
 import PayVendorFeesButton from "@/components/pay-vendor-fees-button";
 import VendorLocationStep from "@/components/vendor-location-step";
 
@@ -116,10 +116,10 @@ export default async function VendorApplyPage({
               id="vendor-plan-title"
               className="mt-2 text-center font-heading text-2xl font-semibold"
             >
-              Choose your registration plan
+              Vendor registration fee model
             </h2>
             <p className="mt-2 mb-6 text-center text-sm text-brand-gray">
-              Select a plan to continue to payment.
+              Simple registration · Verified vendors · More bookings · More growth
             </p>
 
             {error && (
@@ -133,33 +133,57 @@ export default async function VendorApplyPage({
                 <legend className="mb-1 text-xs font-semibold uppercase tracking-wide text-brand-gray">
                   Registration Plan <span className="text-brand-orange">*</span>
                 </legend>
-                {VENDOR_PLANS.map((p, i) => (
-                  <label
-                    key={p.key}
-                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-brand-line px-4 py-3 text-sm transition-colors hover:border-brand-orange has-[:checked]:border-brand-orange has-[:checked]:bg-brand-orange/5"
-                  >
-                    <input
-                      type="radio"
-                      name="plan"
-                      value={p.key}
-                      required
-                      defaultChecked={i === 2}
-                      className="mt-1 accent-brand-orange"
-                    />
-                    <span>
-                      <span className="font-medium">{p.label}</span>{" "}
-                      <span className="text-xs text-brand-gray">
-                        — best for {p.targetVendor}
+                {VENDOR_PLANS.map((p) => {
+                  const gst = planGstAmount(p.registrationFee);
+                  const total = planTotalPayable(p.registrationFee);
+                  return (
+                    <label
+                      key={p.key}
+                      className="flex cursor-pointer items-start gap-3 rounded-xl border border-brand-line px-4 py-3 text-sm transition-colors hover:border-brand-magenta has-[:checked]:border-brand-magenta has-[:checked]:bg-brand-magenta/5"
+                    >
+                      <input
+                        type="radio"
+                        name="plan"
+                        value={p.key}
+                        required
+                        defaultChecked={Boolean(p.recommended)}
+                        className="mt-1 accent-brand-magenta"
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="flex flex-wrap items-center gap-2">
+                          <span className="font-semibold text-brand-black">
+                            {p.label}
+                          </span>
+                          {p.recommended ? (
+                            <span className="rounded-full bg-brand-button px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-black">
+                              Recommended
+                            </span>
+                          ) : null}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-brand-gray">
+                          Best for {p.targetVendor} · {p.validityMonths} months
+                          validity
+                        </span>
+                        <span className="mt-2 block space-y-0.5 text-xs text-brand-gray">
+                          <span className="block">
+                            Registration fee (excl. GST): ₹
+                            {p.registrationFee.toLocaleString("en-IN")}
+                          </span>
+                          <span className="block">
+                            GST @ 18%: ₹
+                            {gst.toLocaleString("en-IN", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </span>
+                          <span className="mt-1 inline-block rounded-full bg-brand-magenta px-2.5 py-0.5 text-xs font-semibold text-white">
+                            Total payable ₹{total.toLocaleString("en-IN")}
+                          </span>
+                        </span>
                       </span>
-                      <br />
-                      <span className="text-xs text-brand-gray">
-                        ₹{p.registrationFee.toLocaleString("en-IN")} registration &middot; ₹
-                        {p.annualRenewal.toLocaleString("en-IN")}/yr renewal &middot; ₹
-                        {p.securityDeposit.toLocaleString("en-IN")} refundable deposit
-                      </span>
-                    </span>
-                  </label>
-                ))}
+                    </label>
+                  );
+                })}
               </fieldset>
               <button
                 type="submit"
@@ -237,7 +261,7 @@ export default async function VendorApplyPage({
               "Help us place you in the right city for nearby bookings."}
             {phase === "plan" && "Choose a registration plan to continue."}
             {phase === "fees" &&
-              "Pay the registration fee and refundable security deposit to finish."}
+              "Pay the registration fee (including 18% GST) to finish."}
             {phase === "done" && "You’re all set — we’ll review your application shortly."}
           </p>
 
@@ -481,7 +505,7 @@ export default async function VendorApplyPage({
                       ₹{feesTotal.toLocaleString("en-IN")}
                     </p>
                     <p className="mt-1 text-xs text-brand-gray">
-                      Registration fee (one-time) + refundable security deposit
+                      Registration fee including 18% GST · 12 months validity
                     </p>
                   </div>
                   <PayVendorFeesButton
