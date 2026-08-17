@@ -360,17 +360,15 @@ export default async function VendorProfilePage({
         </p>
         <div className="grid sm:grid-cols-2 gap-4 text-sm">
           <ReadOnlyField label="Category" value={vendorProfile.service_categories?.name} />
-          <ReadOnlyField label="PAN" value={vendorProfile.pan_number} />
-          <ReadOnlyField
-            label="PAN Document"
-            value={panDocUrl ? "Uploaded" : null}
-            href={panDocUrl}
-          />
-          <ReadOnlyField label="Aadhaar" value={vendorProfile.aadhaar_number} />
           <ReadOnlyField
             label="Aadhaar Document"
             value={aadhaarDocUrl ? "Uploaded" : null}
             href={aadhaarDocUrl}
+          />
+          <ReadOnlyField
+            label="PAN Document"
+            value={panDocUrl ? "Uploaded" : null}
+            href={panDocUrl}
           />
           <ReadOnlyField label="GST" value={vendorProfile.gst_number} />
           <ReadOnlyField label="Bank Name" value={vendorProfile.bank_name} />

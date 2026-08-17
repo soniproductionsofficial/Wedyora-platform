@@ -380,22 +380,16 @@ export default async function VendorApplyPage({
                   publicly, only visible to you and the Wedyora team.
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="flex flex-col gap-3">
-                    <Field label="PAN Number" name="pan_number" />
-                    <FileField
-                      label="Upload PAN document"
-                      name="pan_document"
-                      hint="JPG, PNG, WEBP, or PDF · max 10 MB"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Field label="Aadhaar Number" name="aadhaar_number" />
-                    <FileField
-                      label="Upload Aadhaar document"
-                      name="aadhaar_document"
-                      hint="JPG, PNG, WEBP, or PDF · max 10 MB"
-                    />
-                  </div>
+                  <FileField
+                    label="Upload Aadhaar document"
+                    name="aadhaar_document"
+                    hint="JPG, PNG, WEBP, or PDF · max 10 MB"
+                  />
+                  <FileField
+                    label="Upload PAN document"
+                    name="pan_document"
+                    hint="JPG, PNG, WEBP, or PDF · max 10 MB"
+                  />
                 </div>
                 <Field label="GST Number (if registered)" name="gst_number" />
               </fieldset>
