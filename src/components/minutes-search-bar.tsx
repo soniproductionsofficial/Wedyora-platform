@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, FormEvent } from "react";
+import { useEffect, useMemo, useState, FormEvent } from "react";
 import {
   MINUTES_CATEGORIES,
   MINUTES_CITIES,
-  MINUTES_PACKAGES,
+  getMinutesCategory,
   minutesBookingHref,
 } from "@/lib/minutes-content";
 
@@ -15,21 +15,31 @@ export default function MinutesSearchBar({
   variant?: "hero" | "panel";
 }) {
   const router = useRouter();
-  const [categoryId, setCategoryId] = useState<string>(MINUTES_CATEGORIES[0].id);
+  const [categoryId, setCategoryId] = useState(MINUTES_CATEGORIES[0].id);
   const [city, setCity] = useState("Bengaluru");
   const [date, setDate] = useState("");
-  const [packageId, setPackageId] = useState<string>(
-    MINUTES_PACKAGES.find((p) => "featured" in p && p.featured)?.id ??
-      MINUTES_PACKAGES[1].id
+  const [packageId, setPackageId] = useState("");
+
+  const category = useMemo(
+    () => getMinutesCategory(categoryId),
+    [categoryId]
   );
+
+  useEffect(() => {
+    const featured =
+      category.packages.find((p) => p.featured)?.id ?? category.packages[0]?.id;
+    setPackageId(featured ?? "");
+  }, [category]);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const pkg = MINUTES_PACKAGES.find((p) => p.id === packageId);
+    const pkg = category.packages.find((p) => p.id === packageId);
     router.push(
       minutesBookingHref({
-        packageName: pkg?.name,
-        categoryId,
+        packageName: pkg
+          ? `${category.title}: ${pkg.name}`
+          : undefined,
+        categoryId: category.id,
         city,
         date: date || undefined,
       })
@@ -55,7 +65,7 @@ export default function MinutesSearchBar({
           <select
             className={field}
             value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+            onChange={(e) => setCategoryId(e.target.value as typeof categoryId)}
           >
             {MINUTES_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>
@@ -95,9 +105,10 @@ export default function MinutesSearchBar({
             value={packageId}
             onChange={(e) => setPackageId(e.target.value)}
           >
-            {MINUTES_PACKAGES.map((p) => (
+            {category.packages.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name} · ₹{p.price.toLocaleString("en-IN")}
+                {"priceNote" in p && p.priceNote === "+" ? "+" : ""}
               </option>
             ))}
           </select>
