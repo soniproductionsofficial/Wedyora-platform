@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, startTransition } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import Link from "next/link";
 import { ChevronDown, ShoppingBag, Check, Plus, X } from "lucide-react";
 import {
@@ -39,23 +39,46 @@ function CateringPackageRow({
   const vegLine = getLine(vegId);
   const nonVegLine = getLine(nonVegId);
 
-  const [guests, setGuests] = useState<number>(
-    vegLine?.guestCount ?? nonVegLine?.guestCount ?? min
-  );
+  const initial =
+    vegLine?.guestCount ?? nonVegLine?.guestCount ?? min;
+  // Keep a string so customers can clear the field and type freely.
+  const [guestDraft, setGuestDraft] = useState(String(initial));
 
   const vegUnit = cateringUnitPrice(pkg, "veg");
   const nonVegUnit = cateringUnitPrice(pkg, "non-veg");
-  const safeGuests = Math.max(min, guests || min);
 
-  function setGuestCount(next: number) {
-    const value = Math.max(min, Number.isFinite(next) ? Math.floor(next) : min);
-    setGuests(value);
+  const parsedGuests = Number.parseInt(guestDraft, 10);
+  const hasValidGuests =
+    guestDraft.trim() !== "" &&
+    Number.isFinite(parsedGuests) &&
+    parsedGuests >= 1;
+  const previewGuests = hasValidGuests ? parsedGuests : min;
+
+  function commitGuests(raw: string) {
+    const n = Number.parseInt(raw, 10);
+    const value =
+      Number.isFinite(n) && n >= 1 ? Math.floor(n) : min;
+    setGuestDraft(String(value));
     if (hasPackage(vegId)) updateCateringGuests(vegId, value);
     if (hasPackage(nonVegId)) updateCateringGuests(nonVegId, value);
+    return value;
+  }
+
+  function onGuestChange(raw: string) {
+    // Allow empty / partial typing; do not force min while editing.
+    if (raw === "" || /^\d+$/.test(raw)) {
+      setGuestDraft(raw);
+      const n = Number.parseInt(raw, 10);
+      if (Number.isFinite(n) && n >= 1) {
+        if (hasPackage(vegId)) updateCateringGuests(vegId, n);
+        if (hasPackage(nonVegId)) updateCateringGuests(nonVegId, n);
+      }
+    }
   }
 
   function addDiet(diet: DietOption) {
-    addCateringPackage(service, pkg, diet, safeGuests);
+    const guests = commitGuests(guestDraft);
+    addCateringPackage(service, pkg, diet, guests);
     onAdded();
   }
 
@@ -74,24 +97,28 @@ function CateringPackageRow({
           </p>
         </div>
 
-        <label className="flex w-full flex-col gap-1 text-xs font-medium sm:w-36">
+        <label className="flex w-full flex-col gap-1 text-xs font-medium sm:w-40">
           Guest count
           <input
-            type="number"
-            min={min}
-            step={1}
-            value={safeGuests}
-            onChange={(e) => setGuestCount(Number(e.target.value))}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={guestDraft}
+            placeholder={String(min)}
+            onChange={(e) => onGuestChange(e.target.value)}
+            onBlur={() => commitGuests(guestDraft)}
             className="rounded-lg border border-brand-line px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
           />
-          <span className="font-normal text-brand-gray">Min {min}</span>
+          <span className="font-normal text-brand-gray">
+            Suggested min {min} · enter any quantity
+          </span>
         </label>
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
         <div className="rounded-lg border border-brand-line bg-brand-cream/40 p-3">
           <p className="text-xs text-brand-gray">Veg total</p>
-          <p className="font-semibold">{formatInr(vegUnit * safeGuests)}</p>
+          <p className="font-semibold">{formatInr(vegUnit * previewGuests)}</p>
           {hasPackage(vegId) ? (
             <button
               type="button"
@@ -115,7 +142,7 @@ function CateringPackageRow({
 
         <div className="rounded-lg border border-brand-line bg-brand-cream/40 p-3">
           <p className="text-xs text-brand-gray">Non-Veg total</p>
-          <p className="font-semibold">{formatInr(nonVegUnit * safeGuests)}</p>
+          <p className="font-semibold">{formatInr(nonVegUnit * previewGuests)}</p>
           {hasPackage(nonVegId) ? (
             <button
               type="button"
@@ -138,6 +165,58 @@ function CateringPackageRow({
         </div>
       </div>
     </li>
+  );
+}
+
+function CartGuestInput({
+  lineId,
+  guestCount,
+  onCommit,
+}: {
+  lineId: string;
+  guestCount: number;
+  onCommit: (lineId: string, guests: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(guestCount));
+  const lastCommitted = useRef(guestCount);
+
+  useEffect(() => {
+    if (guestCount !== lastCommitted.current) {
+      lastCommitted.current = guestCount;
+      setDraft(String(guestCount));
+    }
+  }, [guestCount]);
+
+  return (
+    <label className="mt-3 flex items-center gap-2 text-xs font-medium">
+      Guests
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={draft}
+        onChange={(e) => {
+          const raw = e.target.value;
+          if (raw === "" || /^\d+$/.test(raw)) {
+            setDraft(raw);
+            const n = Number.parseInt(raw, 10);
+            if (Number.isFinite(n) && n >= 1) {
+              lastCommitted.current = n;
+              onCommit(lineId, n);
+            }
+          }
+        }}
+        onBlur={() => {
+          const n = Number.parseInt(draft, 10);
+          const value = Number.isFinite(n) && n >= 1 ? n : Math.max(1, guestCount);
+          lastCommitted.current = value;
+          setDraft(String(value));
+          onCommit(lineId, value);
+        }}
+        className="w-24 rounded-lg border border-brand-line px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+        aria-label="Guest count"
+      />
+    </label>
   );
 }
 
@@ -370,21 +449,11 @@ export default function ServicesShop() {
                         </button>
                       </div>
                       {item.guestCount != null && item.unitPrice != null ? (
-                        <label className="mt-3 flex items-center gap-2 text-xs font-medium">
-                          Guests
-                          <input
-                            type="number"
-                            min={1}
-                            value={item.guestCount}
-                            onChange={(e) =>
-                              updateCateringGuests(
-                                item.packageId,
-                                Number(e.target.value)
-                              )
-                            }
-                            className="w-24 rounded-lg border border-brand-line px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
-                          />
-                        </label>
+                        <CartGuestInput
+                          lineId={item.packageId}
+                          guestCount={item.guestCount}
+                          onCommit={updateCateringGuests}
+                        />
                       ) : null}
                     </li>
                   ))}

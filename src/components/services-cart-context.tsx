@@ -99,8 +99,8 @@ export function ServicesCartProvider({ children }: { children: ReactNode }) {
       diet: DietOption,
       guestCount: number
     ) => {
-      const min = pkg.minGuests ?? DEFAULT_CATERING_GUESTS;
-      const guests = clampGuests(guestCount, min);
+      // Package minGuests is a suggestion in the UI; customers may enter any quantity ≥ 1.
+      const guests = clampGuests(guestCount, 1);
       const unit = cateringUnitPrice(pkg, diet);
       const lineId = cateringLineId(pkg.id, diet);
       const dietLabel = diet === "veg" ? "Veg" : "Non-Veg";
