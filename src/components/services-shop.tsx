@@ -117,8 +117,10 @@ export default function ServicesShop() {
         </div>
 
         <p className="mt-8 text-center text-xs text-brand-gray">
-          GST, travel, and peak-date premiums may apply. Looking for Catering,
-          Decoration, or Makeup rate cards?{" "}
+          GST, travel, peak-date premiums, and minimum guest counts may apply.
+          Catering prices are typically per person; décor is per event. Final
+          quotes are confirmed with your matched vendor. Looking for full Makeup
+          rate cards?{" "}
           <a href="#legacy-catalogs" className="text-brand-orange underline">
             See detailed catalogs below
           </a>

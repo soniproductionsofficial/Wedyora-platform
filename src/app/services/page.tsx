@@ -16,9 +16,9 @@ export default function ServicesPage() {
             Pick services. Add packages. Book.
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-white/70 md:text-base">
-            Browse Photography, Videography, Drone, Venue, Mehendi, Music,
-            Priest, and Transportation — open each dropdown, add packages to
-            your cart, then request a booking.
+            Browse Photography, Catering, Decoration, Videography, Drone, Venue,
+            Mehendi, Music, Priest, and Transportation — open each dropdown, add
+            packages to your cart, then request a booking.
           </p>
         </div>
       </section>
