@@ -37,7 +37,6 @@ import {
   MINUTES_MATCHING,
   MINUTES_NOW_PACKAGE,
   MINUTES_PHASES,
-  MINUTES_PHOTOGRAPHERS,
   MINUTES_PIPELINE,
   MINUTES_REVIEWS,
   MINUTES_TRUST_POINTS,
@@ -640,47 +639,6 @@ export default function PhotographyInMinutesPage() {
               </MinutesReveal>
             ))}
           </ol>
-        </div>
-      </section>
-
-      {/* Photographers */}
-      <section className="bg-brand-cream/60 py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <MinutesReveal>
-            <div className="mx-auto mb-10 max-w-2xl text-center">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-                Verified network
-              </p>
-              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
-                Photographers for your job
-              </h2>
-            </div>
-          </MinutesReveal>
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {MINUTES_PHOTOGRAPHERS.map((p, i) => (
-              <MinutesReveal key={p.id} delayMs={(i % 4) * 100}>
-                <li className="minutes-lift h-full rounded-2xl border border-brand-line bg-white p-5">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-magenta text-sm font-bold text-white">
-                    {p.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </div>
-                  <h3 className="font-heading text-base font-semibold text-brand-magenta-deep">
-                    {p.name}
-                  </h3>
-                  <p className="mt-1 text-xs font-semibold text-brand-magenta">
-                    {p.role}
-                  </p>
-                  <p className="mt-2 text-xs text-brand-gray">{p.focus}</p>
-                  <p className="mt-3 flex items-start gap-1.5 text-[11px] text-brand-gray">
-                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
-                    {p.cities}
-                  </p>
-                </li>
-              </MinutesReveal>
-            ))}
-          </ul>
         </div>
       </section>
 

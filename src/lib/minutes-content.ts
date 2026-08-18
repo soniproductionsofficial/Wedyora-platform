@@ -660,37 +660,6 @@ export const MINUTES_MODULES = [
   { id: "account", title: "My bookings", body: "Status & delivery", href: "/account" },
 ] as const;
 
-export const MINUTES_PHOTOGRAPHERS = [
-  {
-    id: "arjun",
-    name: "Arjun Mehta",
-    role: "Verified event photographer",
-    focus: "Pooja · Housewarming · Small events",
-    cities: "Bengaluru · Mysuru",
-  },
-  {
-    id: "neha",
-    name: "Neha Kapoor",
-    role: "Maternity & family specialist",
-    focus: "Maternity · Baby · Kids · Reels",
-    cities: "Bengaluru · Hyderabad",
-  },
-  {
-    id: "vikram",
-    name: "Vikram Singh",
-    role: "Product & business content",
-    focus: "Catalogue · Food · Store shoots",
-    cities: "Bengaluru · Chennai",
-  },
-  {
-    id: "ananya",
-    name: "Ananya Rao",
-    role: "Instant reels creator",
-    focus: "Parties · Birthdays · Social reels",
-    cities: "Bengaluru · Kochi",
-  },
-] as const;
-
 export const MINUTES_GALLERY = [
   { src: "/images/services/photography.jpg", label: "Family ceremony" },
   { src: "/images/services/videography.jpg", label: "Instant reels" },
