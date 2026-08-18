@@ -21,6 +21,8 @@ import MinutesFloatingNav from "@/components/minutes-floating-nav";
 import MinutesCarousel from "@/components/minutes-carousel";
 import MinutesFaq from "@/components/minutes-faq";
 import MinutesAppPreview from "@/components/minutes-app-preview";
+import ScaleReveal from "@/components/motion/scale-reveal";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-grid";
 import {
   MinutesMarquee,
   MinutesReveal,
@@ -109,7 +111,7 @@ export default function PhotographyInMinutesPage() {
             </p>
             <h1 className="minutes-hero-in minutes-hero-in-2 mt-5 font-wedding-display text-[1.7rem] font-semibold leading-[1.15] text-brand-magenta-deep sm:text-4xl md:text-[2.65rem]">
               Book a photographer in minutes — from{" "}
-              <span className="text-brand-magenta">₹1,999</span>
+              <span className="text-gradient-brand">₹1,999</span>
             </h1>
             <p className="minutes-hero-in minutes-hero-in-3 mt-4 max-w-lg text-sm leading-relaxed text-brand-gray sm:text-base">
               Whatever the occasion: pooja, maternity, birthdays, reels,
@@ -120,7 +122,7 @@ export default function PhotographyInMinutesPage() {
             <div className="minutes-hero-in minutes-hero-in-4 mt-7 flex flex-wrap gap-3">
               <Link
                 href="#availability"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(216,27,96,0.9)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
+                className="btn-cta inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(216,27,96,0.9)] transition hover:bg-brand-magenta-deep"
               >
                 Book Now
                 <ArrowRight className="h-4 w-4" />
@@ -305,9 +307,9 @@ export default function PhotographyInMinutesPage() {
             </div>
           </MinutesReveal>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            {MINUTES_CORE_PACKAGES.map((pkg, i) => (
-              <MinutesReveal key={pkg.id} delayMs={i * 100}>
+          <StaggerContainer className="grid gap-5 md:grid-cols-3">
+            {MINUTES_CORE_PACKAGES.map((pkg) => (
+              <StaggerItem key={pkg.id}>
                 <article
                   className={`minutes-lift flex h-full flex-col rounded-2xl border bg-white p-6 ${
                     pkg.featured
@@ -325,7 +327,7 @@ export default function PhotographyInMinutesPage() {
                   <h3 className="font-wedding-display text-2xl font-semibold text-brand-magenta-deep">
                     {pkg.name}
                   </h3>
-                  <p className="mt-3 font-heading text-3xl font-bold text-brand-magenta">
+                  <p className="mt-3 font-heading text-3xl font-bold text-gradient-brand">
                     {formatMinutesPrice(pkg)}
                   </p>
                   <ul className="mt-5 flex flex-1 flex-col gap-2">
@@ -341,7 +343,7 @@ export default function PhotographyInMinutesPage() {
                   </ul>
                   <Link
                     href={minutesBookingHref({ packageName: pkg.name })}
-                    className={`mt-6 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+                    className={`btn-cta mt-6 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
                       pkg.featured
                         ? "bg-brand-magenta text-white hover:bg-brand-magenta-deep"
                         : "border border-brand-magenta/30 text-brand-magenta hover:bg-brand-magenta hover:text-white"
@@ -351,9 +353,9 @@ export default function PhotographyInMinutesPage() {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </article>
-              </MinutesReveal>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
@@ -408,7 +410,7 @@ export default function PhotographyInMinutesPage() {
                   <h3 className="font-heading text-base font-semibold text-brand-magenta-deep">
                     {pkg.name}
                   </h3>
-                  <p className="mt-2 font-heading text-xl font-bold text-brand-magenta">
+                  <p className="mt-2 font-heading text-xl font-bold text-gradient-brand">
                     {formatMinutesPrice(pkg)}
                   </p>
                   <ul className="mt-4 flex flex-1 flex-col gap-2">
@@ -424,7 +426,7 @@ export default function PhotographyInMinutesPage() {
                   </ul>
                   <Link
                     href={minutesBookingHref({ packageName: pkg.name })}
-                    className="mt-5 inline-flex items-center justify-center gap-1 rounded-full bg-brand-magenta px-3 py-2 text-xs font-semibold text-white hover:bg-brand-magenta-deep"
+                    className="btn-cta mt-5 inline-flex items-center justify-center gap-1 rounded-full bg-brand-magenta px-3 py-2 text-xs font-semibold text-white hover:bg-brand-magenta-deep"
                   >
                     Book combo
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -474,7 +476,7 @@ export default function PhotographyInMinutesPage() {
               href={minutesBookingHref({
                 packageName: MINUTES_NOW_PACKAGE.name,
               })}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_-16px_rgba(216,27,96,0.85)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
+              className="btn-cta mt-8 inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_-16px_rgba(216,27,96,0.85)] transition hover:bg-brand-magenta-deep"
             >
               <Zap className="h-4 w-4" />
               Book Photographer Now
@@ -548,9 +550,9 @@ export default function PhotographyInMinutesPage() {
                 </p>
               </div>
             </MinutesReveal>
-            <MinutesReveal delayMs={100}>
+            <ScaleReveal>
               <MinutesAppPreview />
-            </MinutesReveal>
+            </ScaleReveal>
           </div>
         </div>
       </section>
@@ -838,13 +840,13 @@ export default function PhotographyInMinutesPage() {
               Ready when you are
             </p>
             <h2 className="mt-3 font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
-              Whatever the occasion, Wedyora can get you a photographer from
-              ₹1,999
+              Whatever the occasion, Wedyora can get you a photographer from{" "}
+              <span className="text-gradient-brand">₹1,999</span>
             </h2>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href={minutesBookingHref({ packageName: "Standard" })}
-                className="inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_-16px_rgba(216,27,96,0.85)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
+                className="btn-cta inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_-16px_rgba(216,27,96,0.85)]"
               >
                 Book Standard · {formatInr(2999)}
                 <ArrowRight className="h-4 w-4" />
@@ -866,42 +868,9 @@ export default function PhotographyInMinutesPage() {
           --minutes-pink: #d81b60;
         }
 
-        /* Scroll reveals — fast, ease-out entrances */
-        .minutes-reveal {
-          opacity: 0;
-          transform: translateY(16px);
-          transition:
-            opacity 0.4s ease-out,
-            transform 0.4s ease-out;
-        }
-        .minutes-reveal.is-visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* Marquee */
-        .minutes-marquee {
-          overflow: hidden;
-          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-        }
-        .minutes-marquee-track {
-          display: flex;
-          width: max-content;
-          animation: minutes-marquee var(--minutes-marquee-duration, 40s) linear infinite;
-          animation-direction: var(--minutes-marquee-direction, normal);
-        }
-        .minutes-marquee-group {
-          display: flex;
-          align-items: center;
-          flex-shrink: 0;
-        }
-        .minutes-marquee:hover .minutes-marquee-track {
-          animation-play-state: paused;
-        }
-        @keyframes minutes-marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
+        /* Note: scroll reveals and the USP/review marquees on this page are
+           powered by the shared Framer Motion components (Reveal, Marquee
+           in src/components/motion/) — no page-local CSS needed for them. */
 
         /* Hero — sequential fade-in */
         .minutes-hero-in {
@@ -1001,59 +970,9 @@ export default function PhotographyInMinutesPage() {
           transform: translate(-50%, 2px);
         }
 
-        /* Carousel */
-        .minutes-carousel-track {
-          scrollbar-width: none;
-        }
-        .minutes-carousel-track::-webkit-scrollbar {
-          display: none;
-        }
-        .minutes-carousel-arrow {
-          position: absolute;
-          display: none;
-          height: 2.5rem;
-          width: 2.5rem;
-          align-items: center;
-          justify-content: center;
-          border-radius: 9999px;
-          border: 1px solid var(--brand-line);
-          background: #fff;
-          color: var(--brand-magenta);
-          box-shadow: 0 12px 28px -16px rgba(216, 27, 96, 0.5);
-          transition: transform 0.2s ease-out, background 0.2s ease-out;
-        }
-        @media (min-width: 640px) {
-          .minutes-carousel-arrow {
-            display: flex;
-          }
-        }
-        .minutes-carousel-arrow:hover {
-          background: var(--brand-magenta);
-          color: #fff;
-          transform: translateY(-50%) scale(1.06);
-        }
-
-        /* FAQ accordion */
-        .minutes-faq-chevron {
-          transform-origin: center;
-        }
-        .minutes-faq-panel {
-          display: grid;
-          grid-template-rows: 0fr;
-          overflow: hidden;
-          transition: grid-template-rows 0.3s ease-out;
-        }
-        .minutes-faq-item.is-open .minutes-faq-panel {
-          grid-template-rows: 1fr;
-        }
-        .minutes-faq-panel-inner {
-          min-height: 0;
-          opacity: 0;
-          transition: opacity 0.25s ease-out;
-        }
-        .minutes-faq-item.is-open .minutes-faq-panel-inner {
-          opacity: 1;
-        }
+        /* Note: the carousel arrows/track and FAQ accordion are also
+           shared Framer Motion / global-CSS components (Carousel,
+           Accordion) — no page-local CSS needed for them either. */
 
         /* Trust badge — orbiting dashed rings */
         .minutes-orbit-wrap {
@@ -1090,37 +1009,24 @@ export default function PhotographyInMinutesPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .minutes-reveal,
           .minutes-hero-in,
           .minutes-hero-visual,
           .minutes-badge,
           .minutes-float,
           .minutes-lift,
-          .minutes-marquee-track,
           .minutes-glow,
           .minutes-sweep-line,
           .minutes-orbit-ring,
           .minutes-floating-nav,
-          .minutes-carousel-arrow,
-          .minutes-faq-panel,
-          .minutes-faq-panel-inner,
           .minutes-nav-tooltip {
             animation: none !important;
             transition: none !important;
           }
-          .minutes-reveal,
           .minutes-hero-in,
           .minutes-hero-visual,
           .minutes-badge {
             opacity: 1 !important;
             transform: none !important;
-          }
-          .minutes-faq-panel.is-open,
-          .minutes-faq-item.is-open .minutes-faq-panel {
-            grid-template-rows: 1fr !important;
-          }
-          .minutes-faq-item.is-open .minutes-faq-panel-inner {
-            opacity: 1 !important;
           }
         }
       `}</style>

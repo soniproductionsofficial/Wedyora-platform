@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { EASE_OUT } from "@/lib/motion";
 
 export type AccordionEntry = {
   question: string;
@@ -9,8 +11,9 @@ export type AccordionEntry = {
 };
 
 /**
- * FAQ-style accordion — smooth height + opacity expand/collapse, chevron
- * rotates 180°, and the active question switches to the accent color.
+ * FAQ-style accordion — panel expands with a smooth height animation
+ * (Framer Motion AnimatePresence, height: auto), the chevron rotates
+ * 180° over 200ms, and content fades in slightly after height settles.
  */
 export default function Accordion({
   items,
@@ -18,7 +21,7 @@ export default function Accordion({
   defaultOpenIndex = 0,
   className = "",
 }: {
-  items: AccordionEntry[];
+  items: readonly AccordionEntry[];
   accentClassName?: string;
   defaultOpenIndex?: number | null;
   className?: string;
@@ -32,7 +35,7 @@ export default function Accordion({
       {items.map((item, i) => {
         const open = openIndex === i;
         return (
-          <div key={item.question} className={`accordion-item ${open ? "is-open" : ""}`}>
+          <div key={item.question}>
             <button
               type="button"
               aria-expanded={open}
@@ -46,19 +49,35 @@ export default function Accordion({
               >
                 {item.question}
               </span>
-              <ChevronDown
-                className={`accordion-chevron h-4 w-4 shrink-0 ${
-                  open ? accentClassName : "text-brand-gray"
-                }`}
-              />
+              <motion.span
+                animate={{ rotate: open ? 180 : 0 }}
+                transition={{ duration: 0.2, ease: EASE_OUT }}
+                className={`shrink-0 ${open ? accentClassName : "text-brand-gray"}`}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </motion.span>
             </button>
-            <div className="accordion-panel">
-              <div className="accordion-panel-inner px-5 pb-4">
-                <p className="text-sm leading-relaxed text-brand-gray">
-                  {item.answer}
-                </p>
-              </div>
-            </div>
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.div
+                  key="content"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: { duration: 0.3, ease: EASE_OUT },
+                    opacity: { duration: 0.2, delay: 0.1 },
+                  }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <div className="px-5 pb-4">
+                    <p className="text-sm leading-relaxed text-brand-gray">
+                      {item.answer}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       })}

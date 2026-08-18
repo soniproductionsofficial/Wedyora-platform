@@ -72,7 +72,7 @@ export default function MinutesCategoryPricing() {
             <h4 className="font-heading text-lg font-semibold text-brand-black">
               {pkg.name}
             </h4>
-            <p className="mt-2 font-heading text-2xl font-bold text-brand-magenta">
+            <p className="mt-2 font-heading text-2xl font-bold text-gradient-brand">
               {formatMinutesPrice(pkg)}
             </p>
             <ul className="mt-4 flex flex-1 flex-col gap-2">
@@ -91,7 +91,7 @@ export default function MinutesCategoryPricing() {
                 categoryId: category.id,
                 packageName: `${category.title}: ${pkg.name}`,
               })}
-              className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-magenta px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-magenta-deep"
+              className="btn-cta mt-5 inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-magenta px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-magenta-deep"
             >
               Book {pkg.name}
               <ArrowRight className="h-4 w-4" />

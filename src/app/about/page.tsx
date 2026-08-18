@@ -1,7 +1,8 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ShieldCheck, Heart, Users } from "lucide-react";
 import Reveal from "@/components/motion/reveal";
-import { staggerDelay } from "@/components/motion/stagger";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-grid";
 import { GOLD_SWEEP_STYLE } from "@/components/motion/constants";
 
 // Starter copy — replace with your own founding story, team details, and
@@ -57,35 +58,43 @@ export default function AboutPage() {
               What We Stand For
             </h2>
           </Reveal>
-          <div className="grid sm:grid-cols-3 gap-6">
+          <StaggerContainer className="grid sm:grid-cols-3 gap-6">
             {[
               {
                 icon: ShieldCheck,
                 title: "Verified, Always",
                 body: "Every vendor on Wedyora is reviewed by our team before they can take a booking.",
+                alwaysOn: true,
               },
               {
                 icon: Heart,
                 title: "Care Over Volume",
                 body: "We'd rather do fewer weddings well than chase every booking that comes our way.",
+                alwaysOn: false,
               },
               {
                 icon: Users,
                 title: "One Team, One Number",
                 body: "You're never left coordinating with a stranger — Wedyora stays your single point of contact.",
+                alwaysOn: false,
               },
-            ].map(({ icon: Icon, title, body }, i) => (
-              <Reveal key={title} delayMs={staggerDelay(i, 3)}>
+            ].map(({ icon: Icon, title, body, alwaysOn }) => (
+              <StaggerItem key={title}>
                 <div className="lift h-full rounded-2xl bg-white border border-brand-line p-6 text-center">
-                  <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange">
+                  <span
+                    className={`mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange ${
+                      alwaysOn ? "spin-ring" : ""
+                    }`}
+                    style={alwaysOn ? ({ "--orbit-color": "rgba(153, 92, 0, 0.35)" } as CSSProperties) : undefined}
+                  >
                     <Icon className="h-5 w-5" />
                   </span>
                   <h3 className="font-heading text-sm font-semibold mb-2">{title}</h3>
                   <p className="text-brand-gray text-xs leading-relaxed">{body}</p>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 

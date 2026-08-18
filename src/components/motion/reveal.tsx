@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import { EASE_OUT, fadeUp, VIEWPORT_ONCE } from "@/lib/motion";
 
 /**
- * Scroll-triggered fade + slide-up entrance. The core primitive of the
- * site-wide animation system — wrap any card, section, or list item to
- * have it animate in once as it enters the viewport.
+ * Scroll-triggered fade + slide-up entrance — the site-wide default.
+ * Wrap any card, section, or list item to animate it in once as it
+ * enters the viewport (opacity 0/y:24 -> opacity 1/y:0, ~0.5s ease-out).
  */
 export default function Reveal({
   children,
@@ -16,32 +18,16 @@ export default function Reveal({
   className?: string;
   delayMs?: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <div
-      ref={ref}
-      className={`reveal ${visible ? "is-visible" : ""} ${className}`}
-      style={{ transitionDelay: `${delayMs}ms` }}
+    <motion.div
+      className={className}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT_ONCE}
+      transition={{ duration: 0.5, ease: EASE_OUT, delay: delayMs / 1000 }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
