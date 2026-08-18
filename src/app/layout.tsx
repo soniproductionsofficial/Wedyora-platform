@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MotionConfig } from "framer-motion";
 import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
@@ -43,9 +44,14 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-brand-cream text-brand-black">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        {/* reducedMotion="user" makes every Framer Motion animation site-wide
+            automatically fall back to opacity-only fades (no translate/scale)
+            when the visitor has prefers-reduced-motion enabled. */}
+        <MotionConfig reducedMotion="user">
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </MotionConfig>
       </body>
     </html>
   );

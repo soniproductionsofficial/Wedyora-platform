@@ -15,6 +15,8 @@ import {
   type ShopService,
 } from "@/lib/shop-packages";
 import { useServicesCart } from "@/components/services-cart-context";
+import Reveal from "@/components/motion/reveal";
+import { staggerDelay } from "@/components/motion/stagger";
 
 function CateringPackageRow({
   service,
@@ -237,7 +239,7 @@ export default function ServicesShop() {
   return (
     <div className="relative pb-28">
       <div className="mx-auto max-w-3xl px-6 py-10 md:py-14">
-        <div className="mb-8 text-center">
+        <Reveal className="mb-8 text-center">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">
             Build your occasion
           </p>
@@ -249,15 +251,16 @@ export default function ServicesShop() {
             For catering, set guest count and add Veg or Non-Veg separately —
             totals update automatically.
           </p>
-        </div>
+        </Reveal>
 
         <div className="flex flex-col gap-3">
-          {SHOP_SERVICES.map((service) => {
+          {SHOP_SERVICES.map((service, serviceIndex) => {
             const open = openId === service.id;
             return (
-              <div
+              <Reveal
                 key={service.id}
-                className="overflow-hidden rounded-2xl border border-brand-line bg-white"
+                delayMs={staggerDelay(serviceIndex, 4, 60)}
+                className="lift overflow-hidden rounded-2xl border border-brand-line bg-white"
               >
                 <button
                   type="button"
@@ -310,8 +313,11 @@ export default function ServicesShop() {
                               <p className="mt-1 text-xs text-brand-gray">
                                 {pkg.description}
                               </p>
-                              <p className="mt-2 text-sm font-semibold text-brand-black">
-                                From {formatInr(pkg.price)}
+                              <p className="mt-2 text-sm font-semibold">
+                                From{" "}
+                                <span className="text-gradient-brand">
+                                  {formatInr(pkg.price)}
+                                </span>
                               </p>
                             </div>
                             {inCart ? (
@@ -330,7 +336,7 @@ export default function ServicesShop() {
                                   addPackage(service, pkg);
                                   setCartOpen(true);
                                 }}
-                                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-black px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-charcoal"
+                                className="btn-cta inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-black px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-charcoal"
                               >
                                 <Plus className="h-3.5 w-3.5" />
                                 Add to cart
@@ -342,7 +348,7 @@ export default function ServicesShop() {
                     </ul>
                   </div>
                 ) : null}
-              </div>
+              </Reveal>
             );
           })}
         </div>
@@ -383,7 +389,7 @@ export default function ServicesShop() {
             }}
             className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
               count > 0
-                ? "bg-brand-button text-brand-black hover:bg-brand-button-dark"
+                ? "btn-cta bg-brand-button text-brand-black hover:bg-brand-button-dark"
                 : "cursor-not-allowed bg-brand-line text-brand-gray"
             }`}
           >
@@ -482,7 +488,7 @@ export default function ServicesShop() {
                   }}
                   className={`flex-1 rounded-full py-2.5 text-center text-sm font-semibold ${
                     items.length > 0
-                      ? "bg-brand-black text-white hover:bg-brand-charcoal"
+                      ? "btn-cta bg-brand-black text-white hover:bg-brand-charcoal"
                       : "cursor-not-allowed bg-brand-line text-brand-gray"
                   }`}
                 >

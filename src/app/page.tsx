@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import {
   ShieldCheck,
   CreditCard,
   Headset,
   CalendarCheck,
+  Check,
 } from "lucide-react";
+import Reveal from "@/components/motion/reveal";
+import Marquee from "@/components/motion/marquee";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-grid";
+import { HeroStagger, HeroItem } from "@/components/motion/hero-stagger";
 
 const SERVICES = [
   {
@@ -89,6 +95,15 @@ const WHY_WEDYORA = [
   },
 ];
 
+const TRUST_TICKER = [
+  "Verified vendors only",
+  "Secure Razorpay payments",
+  "One team, start to finish",
+  "Real support, not just an app",
+  "Decoration · Photography · Catering · Music",
+  "Transparent pricing before you pay",
+];
+
 export default function Home() {
   return (
     <div className="wedding-home font-wedding-sans">
@@ -127,17 +142,6 @@ export default function Home() {
           }
         }
 
-        @keyframes cardRise {
-          from {
-            opacity: 0;
-            transform: translateY(36px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
         @keyframes goldShimmer {
           0%,
           100% {
@@ -147,14 +151,6 @@ export default function Home() {
             background-position: 100% 50%;
           }
         }
-
-        .wedding-home .hero-copy > * {
-          animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-        .wedding-home .hero-copy > *:nth-child(1) { animation-delay: 0.15s; }
-        .wedding-home .hero-copy > *:nth-child(2) { animation-delay: 0.32s; }
-        .wedding-home .hero-copy > *:nth-child(3) { animation-delay: 0.48s; }
-        .wedding-home .hero-copy > *:nth-child(4) { animation-delay: 0.64s; }
 
         .wedding-home .hero-media {
           animation: heroKenBurns 18s ease-out forwards;
@@ -171,24 +167,14 @@ export default function Home() {
           pointer-events: none;
         }
 
-        .wedding-home .service-card {
-          animation: cardRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-        .wedding-home .service-card:nth-child(1) { animation-delay: 0.08s; }
-        .wedding-home .service-card:nth-child(2) { animation-delay: 0.18s; }
-        .wedding-home .service-card:nth-child(3) { animation-delay: 0.28s; }
-        .wedding-home .service-card:nth-child(4) { animation-delay: 0.38s; }
-
         .wedding-home .cta-shimmer {
           background-size: 200% 200%;
           animation: goldShimmer 4s ease infinite;
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .wedding-home .hero-copy > *,
           .wedding-home .hero-media,
           .wedding-home .petal,
-          .wedding-home .service-card,
           .wedding-home .cta-shimmer {
             animation: none !important;
             opacity: 1 !important;
@@ -232,19 +218,19 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 mx-auto flex min-h-[min(88vh,820px)] max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-16 sm:pt-24 md:min-h-[92vh] md:justify-center md:pb-24 md:pt-20">
-          <div className="hero-copy max-w-3xl">
-            <h1 className="font-wedding-display text-[1.85rem] font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] sm:text-3xl md:text-5xl lg:text-[3.35rem]">
+          <HeroStagger className="max-w-3xl">
+            <HeroItem as="h1" className="font-wedding-display text-[1.85rem] font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] sm:text-3xl md:text-5xl lg:text-[3.35rem]">
               Perfect Planners for Your Special Occasions
-            </h1>
-            <p className="mt-4 max-w-xl text-[0.95rem] leading-relaxed text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] sm:mt-5 sm:text-base md:text-lg">
+            </HeroItem>
+            <HeroItem as="p" className="mt-4 max-w-xl text-[0.95rem] leading-relaxed text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] sm:mt-5 sm:text-base md:text-lg">
               Weddings, engagements, birthdays, and more — verified vendors for
               decoration, photography, catering, and music, coordinated end to
               end so every celebration feels effortless.
-            </p>
-            <div className="mt-7 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            </HeroItem>
+            <HeroItem className="mt-7 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Link
                 href="/book"
-                className="cta-shimmer inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-wedding-gold via-wedding-gold-bright to-wedding-gold px-6 py-3.5 text-sm font-semibold text-wedding-deep shadow-[0_10px_40px_rgba(212,175,55,0.35)] transition-transform duration-300 hover:scale-[1.03] sm:w-auto sm:px-8 md:text-base"
+                className="btn-cta cta-shimmer inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-wedding-gold via-wedding-gold-bright to-wedding-gold px-6 py-3.5 text-sm font-semibold text-wedding-deep shadow-[0_10px_40px_rgba(212,175,55,0.35)] sm:w-auto sm:px-8 md:text-base"
               >
                 Start Planning Your Occasion
               </Link>
@@ -254,9 +240,24 @@ export default function Home() {
               >
                 Explore Services
               </Link>
-            </div>
-          </div>
+            </HeroItem>
+          </HeroStagger>
         </div>
+      </section>
+
+      {/* Trust ticker — Flashoot-style marquee right under the hero */}
+      <section className="border-b border-wedding-gold/20 bg-white py-3.5">
+        <Marquee speed={30}>
+          {TRUST_TICKER.map((item) => (
+            <span
+              key={item}
+              className="mx-3 inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-brand-magenta/15 bg-brand-cream px-4 py-2 text-xs font-semibold text-brand-magenta-deep sm:mx-4 sm:text-sm"
+            >
+              <Check className="h-3.5 w-3.5 text-brand-magenta" />
+              {item}
+            </span>
+          ))}
+        </Marquee>
       </section>
 
       {/* Services grid */}
@@ -265,11 +266,18 @@ export default function Home() {
         className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-[#fff8f5] via-[#f7f0fa] to-[#f3faf6] py-20 md:py-28"
       >
         <div
-          className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-wedding-coral/15 blur-3xl"
+          className="glow pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full"
+          style={{ "--glow-color": "rgba(232, 90, 79, 0.32)" } as CSSProperties}
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -right-16 bottom-8 h-80 w-80 rounded-full bg-wedding-green/15 blur-3xl"
+          className="glow pointer-events-none absolute -right-16 bottom-8 h-80 w-80 rounded-full"
+          style={
+            {
+              "--glow-color": "rgba(26, 122, 92, 0.28)",
+              animationDelay: "0.6s",
+            } as CSSProperties
+          }
           aria-hidden
         />
 
@@ -278,8 +286,8 @@ export default function Home() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
               Our Services
             </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-5xl">
-              Everything for a joyful celebration
+            <h2 className="font-wedding-display text-3xl font-semibold md:text-5xl">
+              Everything for a <span className="text-gradient-brand">joyful celebration</span>
             </h2>
             <p className="mt-4 text-brand-gray md:text-lg">
               Four pillars of every special occasion, each matched with a
@@ -287,37 +295,36 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((service) => (
-              <article
-                key={service.slug}
-                className="service-card group overflow-hidden rounded-2xl border border-wedding-gold/20 bg-white shadow-[0_18px_50px_rgba(74,28,107,0.08)] transition-all duration-500 hover:-translate-y-2 hover:border-wedding-gold/50 hover:shadow-[0_24px_60px_rgba(196,25,42,0.16)]"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="font-wedding-display text-xl font-semibold text-brand-magenta">
-                    {service.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-brand-gray">
-                    {service.description}
-                  </p>
-                </div>
-              </article>
+              <StaggerItem key={service.slug}>
+                <article className="group h-full overflow-hidden rounded-2xl border border-wedding-gold/20 bg-white shadow-[0_18px_50px_rgba(74,28,107,0.08)] transition-all duration-500 hover:-translate-y-2 hover:border-wedding-gold/50 hover:shadow-[0_24px_60px_rgba(196,25,42,0.16)]">
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    <Image
+                      src={service.image}
+                      alt={service.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-wedding-display text-xl font-semibold text-brand-magenta">
+                      {service.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-brand-gray">
+                      {service.description}
+                    </p>
+                  </div>
+                </article>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
           <div className="mt-10 text-center md:mt-12">
             <Link
               href="/services"
-              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:text-base"
+              className="btn-cta inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-3.5 text-sm font-semibold text-white shadow-lg md:text-base"
             >
               Explore more
             </Link>
@@ -340,9 +347,9 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-5 md:gap-4">
+          <StaggerContainer className="grid gap-8 md:grid-cols-5 md:gap-4">
             {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.title} className="text-center">
+              <StaggerItem key={step.title} className="text-center">
                 <div className="mb-4 text-4xl" aria-hidden>
                   {step.icon}
                 </div>
@@ -355,14 +362,14 @@ export default function Home() {
                 <p className="mt-2 text-xs leading-relaxed text-brand-gray md:text-sm">
                   {step.body}
                 </p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
           <div className="mt-12 text-center">
             <Link
               href="/book"
-              className="inline-block rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="btn-cta inline-block rounded-full bg-gradient-to-r from-brand-magenta-deep via-brand-magenta to-brand-magenta-bright px-8 py-4 font-semibold text-white shadow-lg"
             >
               Start Planning Your Occasion →
             </Link>
@@ -376,30 +383,33 @@ export default function Home() {
           <h2 className="mb-12 text-center font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
             Why People Choose Wedyora
           </h2>
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
-            {WHY_WEDYORA.map(({ icon: Icon, title, body }) => (
-              <div
-                key={title}
-                className="rounded-2xl border border-wedding-gold/20 bg-white p-6 transition-shadow duration-300 hover:shadow-lg"
-              >
-                <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-magenta/10 text-brand-magenta">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mb-2 font-wedding-display text-lg font-semibold text-brand-magenta">
-                  {title}
-                </h3>
-                <p className="text-xs leading-relaxed text-brand-gray md:text-sm">
-                  {body}
-                </p>
-              </div>
+          <StaggerContainer className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+            {WHY_WEDYORA.map(({ icon: Icon, title, body }, i) => (
+              <StaggerItem key={title}>
+                <div className="lift h-full rounded-2xl border border-wedding-gold/20 bg-white p-6">
+                  <span
+                    className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-magenta/10 text-brand-magenta ${
+                      i === 0 ? "spin-ring" : ""
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mb-2 font-wedding-display text-lg font-semibold text-brand-magenta">
+                    {title}
+                  </h3>
+                  <p className="text-xs leading-relaxed text-brand-gray md:text-sm">
+                    {body}
+                  </p>
+                </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Vendor CTA */}
       <section className="bg-brand-chrome text-white">
-        <div className="mx-auto max-w-6xl px-6 py-16 text-center">
+        <Reveal className="mx-auto max-w-6xl px-6 py-16 text-center">
           <h2 className="font-wedding-display text-3xl font-semibold md:text-4xl">
             Are you an event vendor?
           </h2>
@@ -409,11 +419,11 @@ export default function Home() {
           </p>
           <Link
             href="/vendor/apply"
-            className="inline-block rounded-full bg-wedding-gold px-6 py-3 font-semibold text-wedding-deep transition-colors duration-300 hover:bg-wedding-gold-bright"
+            className="btn-cta inline-block rounded-full bg-wedding-gold px-6 py-3 font-semibold text-wedding-deep transition-colors duration-300 hover:bg-wedding-gold-bright"
           >
             Apply as a Vendor
           </Link>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

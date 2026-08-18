@@ -1,35 +1,34 @@
 import { FAQS } from "@/lib/faqs";
+import Accordion from "@/components/motion/accordion";
+import Reveal from "@/components/motion/reveal";
+import { GOLD_SWEEP_STYLE } from "@/components/motion/constants";
 
 export default function FaqPage() {
   return (
     <div>
       <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="hero-in hero-in-1 text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             FAQ
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold">
+          <h1 className="hero-in hero-in-2 font-heading text-3xl md:text-4xl font-bold">
             Frequently Asked Questions
           </h1>
+          <div className="hero-in hero-in-3 mx-auto mt-8 max-w-xs">
+            <div className="sweep-line rounded-full" style={GOLD_SWEEP_STYLE} />
+          </div>
         </div>
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-16 flex flex-col gap-3">
-          {FAQS.map((item) => (
-            <details
-              key={item.question}
-              className="group rounded-2xl border border-brand-line bg-white p-5"
-            >
-              <summary className="font-heading font-semibold text-sm cursor-pointer list-none flex items-center justify-between gap-4">
-                {item.question}
-                <span className="text-brand-orange group-open:rotate-45 transition-transform text-lg leading-none">
-                  +
-                </span>
-              </summary>
-              <p className="text-brand-gray text-sm mt-3 leading-relaxed">{item.answer}</p>
-            </details>
-          ))}
+        <div className="mx-auto max-w-3xl px-6 py-16">
+          <Reveal>
+            <Accordion
+              items={FAQS}
+              accentClassName="text-brand-orange"
+              defaultOpenIndex={null}
+            />
+          </Reveal>
         </div>
       </section>
     </div>

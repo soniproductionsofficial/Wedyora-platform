@@ -1,9 +1,10 @@
 import Link from "next/link";
+import Reveal from "@/components/motion/reveal";
 
 export default function SiteFooter() {
   return (
     <footer className="bg-brand-chrome mt-0 border-t border-white/15 text-white/60">
-      <div className="mx-auto max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-3 text-sm">
+      <Reveal className="mx-auto max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-3 text-sm">
         <div>
           <Link href="/" className="inline-flex items-center mb-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -53,7 +54,7 @@ export default function SiteFooter() {
             </li>
           </ul>
         </div>
-      </div>
+      </Reveal>
 
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-6">

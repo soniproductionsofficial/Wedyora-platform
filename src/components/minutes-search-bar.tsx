@@ -112,7 +112,7 @@ export default function MinutesSearchBar({
       </div>
       <button
         type="submit"
-        className="mt-3 w-full rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-magenta-deep hover:scale-[1.01] active:scale-[0.99] sm:mt-4"
+        className="btn-cta mt-3 w-full rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-magenta-deep sm:mt-4"
       >
         Book a photographer
       </button>

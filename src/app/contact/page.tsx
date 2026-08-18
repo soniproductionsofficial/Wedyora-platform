@@ -1,5 +1,7 @@
 import { Mail, Phone } from "lucide-react";
 import { submitContactMessageAction } from "@/lib/actions/contact";
+import Reveal from "@/components/motion/reveal";
+import { GOLD_SWEEP_STYLE } from "@/components/motion/constants";
 
 export default async function ContactPage({
   searchParams,
@@ -12,22 +14,25 @@ export default async function ContactPage({
     <div>
       <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="hero-in hero-in-1 text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             Contact Us
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+          <h1 className="hero-in hero-in-2 font-heading text-3xl md:text-4xl font-bold mb-6">
             We&rsquo;re Here to Help
           </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+          <p className="hero-in hero-in-3 text-white/70 max-w-2xl mx-auto">
             Questions about a booking, a vendor application, or anything
             else — send us a message and our team will get back to you.
           </p>
+          <div className="hero-in hero-in-4 mx-auto mt-8 max-w-xs">
+            <div className="sweep-line rounded-full" style={GOLD_SWEEP_STYLE} />
+          </div>
         </div>
       </section>
 
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-6 py-16 grid md:grid-cols-2 gap-10">
-          <div>
+          <Reveal>
             <h2 className="font-heading text-xl font-semibold mb-4">Send a Message</h2>
 
             {success && (
@@ -87,12 +92,12 @@ export default async function ContactPage({
                 Send Message
               </button>
             </form>
-          </div>
+          </Reveal>
 
-          <div>
+          <Reveal delayMs={100}>
             <h2 className="font-heading text-xl font-semibold mb-4">Other Ways to Reach Us</h2>
             <div className="flex flex-col gap-4 text-sm">
-              <div className="flex items-center gap-3">
+              <div className="lift flex items-center gap-3 rounded-xl p-2">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-cream">
                   <Mail className="h-4 w-4 text-brand-orange" />
                 </span>
@@ -106,7 +111,7 @@ export default async function ContactPage({
                   </a>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="lift flex items-center gap-3 rounded-xl p-2">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-cream">
                   <Phone className="h-4 w-4 text-brand-orange" />
                 </span>
@@ -121,7 +126,7 @@ export default async function ContactPage({
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
     </div>
