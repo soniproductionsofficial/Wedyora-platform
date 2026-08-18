@@ -30,10 +30,10 @@ export default function MinutesCategoryPricing() {
               key={c.id}
               type="button"
               onClick={() => setActiveId(c.id)}
-              className={`shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition-colors ${
+              className={`shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition-all ${
                 selected
-                  ? "bg-brand-magenta text-white"
-                  : "border border-brand-line bg-white text-brand-black hover:border-brand-magenta/40"
+                  ? "bg-brand-magenta text-white shadow-[0_10px_24px_-12px_rgba(216,27,96,0.8)]"
+                  : "border border-brand-line bg-white text-brand-black hover:border-brand-magenta/40 hover:text-brand-magenta"
               }`}
             >
               {c.title}
@@ -43,7 +43,7 @@ export default function MinutesCategoryPricing() {
       </div>
 
       <div className="mb-6 max-w-2xl">
-        <h3 className="font-wedding-display text-2xl font-semibold text-brand-magenta">
+        <h3 className="font-wedding-display text-2xl font-semibold text-brand-magenta-deep">
           {category.title}
         </h3>
         <p className="mt-2 text-sm text-brand-gray">{category.body}</p>
@@ -56,18 +56,18 @@ export default function MinutesCategoryPricing() {
         {category.packages.map((pkg) => (
           <article
             key={pkg.id}
-            className={`flex flex-col border-t-2 bg-white p-5 ${
+            className={`minutes-lift flex flex-col rounded-2xl border bg-white p-5 ${
               pkg.featured
-                ? "border-brand-gold-bright"
-                : "border-brand-magenta/35"
+                ? "border-brand-magenta shadow-[0_18px_40px_-28px_rgba(216,27,96,0.55)]"
+                : "border-brand-line"
             }`}
           >
             {pkg.featured ? (
-              <span className="mb-2 text-[10px] font-bold uppercase tracking-wider text-brand-orange-dark">
+              <span className="mb-2 w-fit rounded-full bg-brand-magenta/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
                 Most popular
               </span>
             ) : (
-              <span className="mb-2 h-4" aria-hidden />
+              <span className="mb-2 h-5" aria-hidden />
             )}
             <h4 className="font-heading text-lg font-semibold text-brand-black">
               {pkg.name}
@@ -91,7 +91,7 @@ export default function MinutesCategoryPricing() {
                 categoryId: category.id,
                 packageName: `${category.title}: ${pkg.name}`,
               })}
-              className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-black px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-charcoal"
+              className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-magenta px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-magenta-deep"
             >
               Book {pkg.name}
               <ArrowRight className="h-4 w-4" />

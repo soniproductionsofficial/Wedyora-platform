@@ -12,9 +12,20 @@ import {
   BadgeCheck,
   Sparkles,
   Clock,
+  Star,
+  ShieldCheck,
 } from "lucide-react";
 import MinutesSearchBar from "@/components/minutes-search-bar";
 import MinutesCategoryPricing from "@/components/minutes-category-pricing";
+import MinutesFloatingNav from "@/components/minutes-floating-nav";
+import MinutesCarousel from "@/components/minutes-carousel";
+import MinutesFaq from "@/components/minutes-faq";
+import MinutesAppPreview from "@/components/minutes-app-preview";
+import {
+  MinutesMarquee,
+  MinutesReveal,
+  MinutesStat,
+} from "@/components/minutes-motion";
 import {
   MINUTES_AUDIENCES,
   MINUTES_BLUEPRINT,
@@ -24,12 +35,12 @@ import {
   MINUTES_FLOW,
   MINUTES_GALLERY,
   MINUTES_MATCHING,
-  MINUTES_MODULES,
   MINUTES_NOW_PACKAGE,
   MINUTES_PHASES,
   MINUTES_PHOTOGRAPHERS,
   MINUTES_PIPELINE,
   MINUTES_REVIEWS,
+  MINUTES_TRUST_POINTS,
   MINUTES_USPS,
   formatInr,
   formatMinutesPrice,
@@ -39,7 +50,7 @@ import {
 export const metadata = {
   title: "Photography in Minutes | Wedyora",
   description:
-    "Whatever the occasion, book a photographer from ₹1,999. Instant photography, reels, family, religious functions, small events and business content. Weddings in Phase 2.",
+    "Whatever the occasion, book a photographer from ₹1,999. Instant photography, reels, family, religious functions, small events and business content.",
 };
 
 const FLOW_ICONS = [
@@ -58,608 +69,650 @@ const FLOW_ICONS = [
 
 export default function PhotographyInMinutesPage() {
   return (
-    <div id="top" className="font-wedding-sans">
-      {/* Hero — report cover message */}
-      <section className="relative z-0 min-h-[min(92vh,860px)] w-full overflow-hidden bg-[#1a0a12] text-white">
-        <Image
-          src="/images/minutes/photography-in-minutes.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center animate-[minutes-hero-zoom_18s_ease-out_forwards]"
+    <div id="top" className="minutes-page bg-white font-wedding-sans text-brand-black">
+      <MinutesFloatingNav />
+
+      {/* Hero — white / pink, Flashoot-inspired */}
+      <section className="relative overflow-hidden bg-white">
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(180deg, #fff 0%, #fff 42%, #fdf5f8 100%)",
+          }}
+        />
+
+        {/* Soft pink glow blobs — breathing pulse */}
+        <div
+          className="minutes-glow minutes-glow-1 pointer-events-none absolute -left-24 -top-24 h-[26rem] w-[26rem] rounded-full"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30"
+          className="minutes-glow minutes-glow-2 pointer-events-none absolute -right-16 top-10 h-[22rem] w-[22rem] rounded-full"
+          aria-hidden
+        />
+        <div
+          className="minutes-glow minutes-glow-3 pointer-events-none absolute bottom-[-6rem] left-1/3 h-[20rem] w-[20rem] rounded-full"
           aria-hidden
         />
 
-        <div className="relative z-10 mx-auto flex min-h-[min(92vh,860px)] max-w-6xl flex-col justify-end gap-8 px-4 pb-10 pt-24 sm:px-6 sm:pb-14 md:justify-center md:pb-16">
-          <div className="max-w-3xl animate-[minutes-fade-up_0.8s_ease-out_both]">
-            <p className="font-wedding-display text-3xl font-semibold tracking-tight text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] sm:text-4xl md:text-5xl">
+        {/* Animated gradient sweep accent line */}
+        <div className="minutes-sweep-line" aria-hidden />
+
+        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pb-10 pt-20 sm:px-6 md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-12 md:pb-14 md:pt-24">
+          <div>
+            <p className="minutes-hero-in minutes-hero-in-1 font-wedding-display text-4xl font-semibold tracking-tight text-brand-magenta-deep sm:text-5xl md:text-6xl">
               Wedyora
             </p>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold-bright">
-              Photography in Minutes · Phase 1
+            <p className="minutes-hero-in minutes-hero-in-1 mt-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+              Photography in Minutes
             </p>
-            <p className="mt-3 text-[11px] font-medium uppercase tracking-[0.14em] text-white/75 sm:text-xs">
-              Instant Photography · Reels · Family · Religious Functions · Small
-              Events · Business Content
-            </p>
-            <h1 className="mt-4 font-wedding-display text-[1.55rem] font-semibold leading-[1.15] text-white [text-shadow:0_2px_28px_rgba(0,0,0,0.65)] sm:text-3xl md:text-4xl">
-              Whatever the occasion, book a photographer from{" "}
-              <span className="text-brand-gold-bright">₹1,999</span>
+            <h1 className="minutes-hero-in minutes-hero-in-2 mt-5 font-wedding-display text-[1.7rem] font-semibold leading-[1.15] text-brand-magenta-deep sm:text-4xl md:text-[2.65rem]">
+              Book a photographer in minutes — from{" "}
+              <span className="text-brand-magenta">₹1,999</span>
             </h1>
-            <p className="mt-4 max-w-xl text-[0.95rem] leading-relaxed text-white/90 [text-shadow:0_1px_16px_rgba(0,0,0,0.7)] sm:text-base">
-              Choose an occasion, location, date/time and package. Wedyora
-              confirms availability, collects payment and assigns a verified
-              photographer. Wedding services launch in Phase 2.
+            <p className="minutes-hero-in minutes-hero-in-3 mt-4 max-w-lg text-sm leading-relaxed text-brand-gray sm:text-base">
+              Whatever the occasion: pooja, maternity, birthdays, reels,
+              business content. Pay securely — we assign a verified
+              photographer. Weddings in Phase 2.
             </p>
-          </div>
 
-          <div className="w-full max-w-4xl animate-[minutes-fade-up_0.9s_ease-out_0.12s_both]">
-            <MinutesSearchBar variant="hero" />
-          </div>
-
-          <div className="flex flex-wrap gap-2 animate-[minutes-fade-up_1s_ease-out_0.2s_both]">
-            <Link
-              href="#occasions"
-              className="rounded-full bg-brand-button px-3.5 py-1.5 text-xs font-semibold text-brand-black"
-            >
-              Book Now
-            </Link>
-            <Link
-              href="#photographer-now"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/20"
-            >
-              <Zap className="h-3.5 w-3.5" />
-              Photographer Now · from ₹2,499
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Executive summary strip */}
-      <section className="border-b border-brand-line bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-8 md:py-10">
-          <p className="text-center font-wedding-display text-lg font-semibold text-brand-magenta md:text-2xl">
-            Book a photographer in minutes — photography + instant reels
-          </p>
-          <p className="mx-auto mt-3 max-w-3xl text-center text-sm leading-relaxed text-brand-gray">
-            Phase 1 makes photography and short-form reels bookable as a
-            standardized service, not a traditional freelancer marketplace.
-            Entry price ₹1,999. Core packages Basic ₹1,999 · Standard ₹2,999 ·
-            Premium ₹4,999.
-          </p>
-        </div>
-      </section>
-
-      {/* USPs — report §5 */}
-      <section className="border-b border-brand-line bg-brand-cream py-14 md:py-16">
-        <div className="mx-auto max-w-6xl px-6">
-          <p className="mb-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-            Why Wedyora Minutes
-          </p>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {MINUTES_USPS.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-2 border-t border-brand-magenta/25 pt-3 text-sm text-brand-gray"
+            <div className="minutes-hero-in minutes-hero-in-4 mt-7 flex flex-wrap gap-3">
+              <Link
+                href="#availability"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(216,27,96,0.9)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
               >
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-magenta" />
-                {item}
-              </li>
-            ))}
-          </ul>
+                Book Now
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="#photographer-now"
+                className="inline-flex items-center gap-1.5 rounded-full border border-brand-magenta/30 bg-white px-5 py-3 text-sm font-semibold text-brand-magenta transition hover:border-brand-magenta hover:bg-brand-magenta/5"
+              >
+                <Zap className="h-4 w-4" />
+                Photographer Now
+              </Link>
+            </div>
+
+            <div className="minutes-hero-in minutes-hero-in-5 mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-brand-line pt-6">
+              <MinutesStat value="₹1,999" label="Starting" />
+              <MinutesStat value="12" label="Occasions" />
+              <MinutesStat value="4.9★" label="Trust goal" />
+            </div>
+          </div>
+
+          <div className="minutes-hero-visual relative">
+            <div className="minutes-float relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-brand-line shadow-[0_30px_80px_-36px_rgba(216,27,96,0.55)]">
+              <Image
+                src="/images/minutes/photography-in-minutes-hero.jpg"
+                alt="Wedyora photographer covering a family birthday celebration"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 46vw"
+                className="object-cover object-center"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-brand-magenta/15 via-transparent to-white/10"
+                aria-hidden
+              />
+            </div>
+            <div className="minutes-badge absolute -bottom-4 left-4 right-4 rounded-2xl border border-brand-line bg-white/95 px-4 py-3 shadow-lg backdrop-blur sm:left-6 sm:right-auto sm:max-w-xs">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
+                Shoot · Edit · Deliver
+              </p>
+              <p className="mt-1 text-sm font-semibold text-brand-magenta-deep">
+                Verified photographers, transparent packages
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative mx-auto mt-8 max-w-6xl px-4 sm:px-6 md:mt-14">
+          <MinutesSearchBar variant="hero" />
         </div>
       </section>
 
-      {/* Target customers — report §4 */}
-      <section className="border-b border-brand-line bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Who it&apos;s for
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Target customers
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[36rem] text-left text-sm">
-              <thead>
-                <tr className="border-b border-brand-line text-xs uppercase tracking-wide text-brand-gray">
-                  <th className="py-3 pr-4 font-semibold">Customer</th>
-                  <th className="py-3 pr-4 font-semibold">Primary need</th>
-                  <th className="py-3 font-semibold">Wedyora proposition</th>
-                </tr>
-              </thead>
-              <tbody>
-                {MINUTES_AUDIENCES.map((row) => (
-                  <tr key={row.group} className="border-b border-brand-line/70">
-                    <td className="py-3 pr-4 font-semibold text-brand-black">
-                      {row.group}
-                    </td>
-                    <td className="py-3 pr-4 text-brand-gray">{row.need}</td>
-                    <td className="py-3 text-brand-gray">{row.proposition}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {/* USP marquee — Flashoot “why choose us” motion */}
+      <section className="border-y border-brand-line bg-brand-cream/80 py-4">
+        <MinutesMarquee speed={32}>
+          {MINUTES_USPS.map((item) => (
+            <span
+              key={item}
+              className="mx-3 inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-brand-magenta/15 bg-white px-4 py-2 text-xs font-semibold text-brand-magenta-deep sm:mx-4 sm:text-sm"
+            >
+              <Check className="h-3.5 w-3.5 text-brand-magenta" />
+              {item}
+            </span>
+          ))}
+        </MinutesMarquee>
       </section>
 
-      {/* Occasions overview — report §3 */}
-      <section
-        id="occasions"
-        className="scroll-mt-24 border-b border-brand-line bg-brand-cream py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Phase 1 service scope
+      {/* Promise */}
+      <section className="bg-white py-14 md:py-16">
+        <MinutesReveal>
+          <div className="mx-auto max-w-3xl px-6 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+              World&apos;s quick photography service
             </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Occasions we cover now
+            <h2 className="mt-3 font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+              Not just fast booking — verified photographers at transparent
+              prices
             </h2>
-            <p className="mt-3 text-sm text-brand-gray">
-              Wedding photography is intentionally excluded from Phase 1 and
-              will launch after the operating model is stable.
+            <p className="mt-4 text-sm leading-relaxed text-brand-gray">
+              Phase 1 makes photography and short-form reels bookable as a
+              standardized service. Entry price ₹1,999. Core packages Basic ·
+              Standard · Premium.
             </p>
           </div>
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {MINUTES_CATEGORIES.map((item) => (
-              <li key={item.id} className="border-t border-brand-magenta/25 pt-4">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-heading text-sm font-semibold text-brand-black">
-                    {item.title}
+        </MinutesReveal>
+      </section>
+
+      {/* Audiences */}
+      <section className="bg-brand-cream/60 py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Who it&apos;s for
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Built for every occasion
+              </h2>
+            </div>
+          </MinutesReveal>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {MINUTES_AUDIENCES.map((row, i) => (
+              <MinutesReveal key={row.group} delayMs={(i % 3) * 100}>
+                <div className="minutes-lift h-full rounded-2xl border border-brand-line bg-white p-5">
+                  <h3 className="font-heading text-sm font-semibold text-brand-magenta">
+                    {row.group}
                   </h3>
-                  <p className="shrink-0 text-xs font-semibold text-brand-magenta">
-                    from {formatInr(item.startingPrice)}
+                  <p className="mt-2 text-xs text-brand-gray">{row.need}</p>
+                  <p className="mt-3 text-sm font-medium text-brand-magenta-deep">
+                    {row.proposition}
                   </p>
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-brand-gray md:text-sm">
-                  {item.body}
-                </p>
-                <Link
-                  href="#category-pricing"
-                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-brand-magenta hover:underline"
-                >
-                  See packages
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </li>
+              </MinutesReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Occasions */}
+      <section id="occasions" className="scroll-mt-24 bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Phase 1 service scope
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Occasions we cover now
+              </h2>
+              <p className="mt-3 text-sm text-brand-gray">
+                Wedding photography launches in Phase 2 after the operating
+                model is stable.
+              </p>
+            </div>
+          </MinutesReveal>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {MINUTES_CATEGORIES.map((item, i) => (
+              <MinutesReveal key={item.id} delayMs={(i % 3) * 100}>
+                <li className="minutes-lift h-full rounded-2xl border border-brand-line bg-brand-cream/40 p-5">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-heading text-sm font-semibold text-brand-magenta-deep">
+                      {item.title}
+                    </h3>
+                    <p className="shrink-0 text-xs font-semibold text-brand-magenta">
+                      from {formatInr(item.startingPrice)}
+                    </p>
+                  </div>
+                  <p className="mt-2 text-xs leading-relaxed text-brand-gray md:text-sm">
+                    {item.body}
+                  </p>
+                  <Link
+                    href="#category-pricing"
+                    className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-brand-magenta hover:underline"
+                  >
+                    See packages
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </li>
+              </MinutesReveal>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* Core packages — report §6 */}
+      {/* Core packages */}
       <section
         id="core-packages"
-        className="scroll-mt-24 border-b border-brand-line bg-white py-16 md:py-20"
+        className="scroll-mt-24 bg-brand-cream/70 py-16 md:py-20"
       >
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Standard photography packages
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Basic · Standard · Premium
-            </h2>
-            <p className="mt-3 text-sm text-brand-gray">
-              Basic is the acquisition offer. Standard ₹2,999 is Most Popular.
-              Premium upgrades coverage and adds a reel.
-            </p>
-          </div>
-
-          <div className="mb-8 overflow-x-auto">
-            <table className="w-full min-w-[40rem] text-left text-sm">
-              <thead>
-                <tr className="border-b border-brand-line text-xs uppercase tracking-wide text-brand-gray">
-                  <th className="py-3 pr-3 font-semibold">Package</th>
-                  <th className="py-3 pr-3 font-semibold">Price</th>
-                  <th className="py-3 pr-3 font-semibold">Coverage</th>
-                  <th className="py-3 pr-3 font-semibold">Edited</th>
-                  <th className="py-3 pr-3 font-semibold">Raw</th>
-                  <th className="py-3 font-semibold">Reel</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-brand-line/70">
-                  <td className="py-3 pr-3 font-semibold">Basic</td>
-                  <td className="py-3 pr-3">{formatInr(1999)}</td>
-                  <td className="py-3 pr-3 text-brand-gray">
-                    1 photographer · 1.5 hours
-                  </td>
-                  <td className="py-3 pr-3">20</td>
-                  <td className="py-3 pr-3">Up to 100</td>
-                  <td className="py-3">—</td>
-                </tr>
-                <tr className="border-b border-brand-line/70 bg-brand-cream/40">
-                  <td className="py-3 pr-3 font-semibold">
-                    Standard{" "}
-                    <span className="text-[10px] font-bold uppercase text-brand-orange-dark">
-                      Most popular
-                    </span>
-                  </td>
-                  <td className="py-3 pr-3 font-semibold">{formatInr(2999)}</td>
-                  <td className="py-3 pr-3 text-brand-gray">
-                    1 photographer · 2.5 hours
-                  </td>
-                  <td className="py-3 pr-3">40</td>
-                  <td className="py-3 pr-3">Unlimited</td>
-                  <td className="py-3">—</td>
-                </tr>
-                <tr className="border-b border-brand-line/70">
-                  <td className="py-3 pr-3 font-semibold">Premium</td>
-                  <td className="py-3 pr-3">{formatInr(4999)}</td>
-                  <td className="py-3 pr-3 text-brand-gray">
-                    1 photographer · 4 hours
-                  </td>
-                  <td className="py-3 pr-3">100</td>
-                  <td className="py-3 pr-3">Unlimited</td>
-                  <td className="py-3">1 Reel</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Bestsellers
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Basic · Standard · Premium
+              </h2>
+              <p className="mt-3 text-sm text-brand-gray">
+                Standard ₹2,999 is Most Popular. Basic wins customers. Premium
+                adds coverage and a reel.
+              </p>
+            </div>
+          </MinutesReveal>
 
           <div className="grid gap-5 md:grid-cols-3">
-            {MINUTES_CORE_PACKAGES.map((pkg) => (
-              <article
-                key={pkg.id}
-                className={`flex flex-col border-t-2 p-5 ${
-                  pkg.featured
-                    ? "border-brand-gold-bright bg-brand-cream/40"
-                    : "border-brand-magenta/35"
-                }`}
-              >
-                <h3 className="font-wedding-display text-xl font-semibold text-brand-magenta">
-                  {pkg.name}
-                </h3>
-                <p className="mt-2 font-heading text-2xl font-bold text-brand-black">
-                  {formatMinutesPrice(pkg)}
+            {MINUTES_CORE_PACKAGES.map((pkg, i) => (
+              <MinutesReveal key={pkg.id} delayMs={i * 100}>
+                <article
+                  className={`minutes-lift flex h-full flex-col rounded-2xl border bg-white p-6 ${
+                    pkg.featured
+                      ? "border-brand-magenta shadow-[0_22px_50px_-30px_rgba(216,27,96,0.65)]"
+                      : "border-brand-line"
+                  }`}
+                >
+                  {pkg.featured ? (
+                    <span className="mb-3 w-fit rounded-full bg-brand-magenta px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                      Most popular
+                    </span>
+                  ) : (
+                    <span className="mb-3 h-5" aria-hidden />
+                  )}
+                  <h3 className="font-wedding-display text-2xl font-semibold text-brand-magenta-deep">
+                    {pkg.name}
+                  </h3>
+                  <p className="mt-3 font-heading text-3xl font-bold text-brand-magenta">
+                    {formatMinutesPrice(pkg)}
+                  </p>
+                  <ul className="mt-5 flex flex-1 flex-col gap-2">
+                    {pkg.includes.map((line) => (
+                      <li
+                        key={line}
+                        className="flex items-start gap-2 text-sm text-brand-gray"
+                      >
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-magenta" />
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={minutesBookingHref({ packageName: pkg.name })}
+                    className={`mt-6 inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+                      pkg.featured
+                        ? "bg-brand-magenta text-white hover:bg-brand-magenta-deep"
+                        : "border border-brand-magenta/30 text-brand-magenta hover:bg-brand-magenta hover:text-white"
+                    }`}
+                  >
+                    Book {pkg.name}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </article>
+              </MinutesReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Category pricing */}
+      <section
+        id="category-pricing"
+        className="scroll-mt-24 bg-white py-16 md:py-20"
+      >
+        <div className="mx-auto max-w-6xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Complete category pricing
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Every occasion rate card
+              </h2>
+            </div>
+          </MinutesReveal>
+          <MinutesReveal delayMs={80}>
+            <MinutesCategoryPricing />
+          </MinutesReveal>
+        </div>
+      </section>
+
+      {/* Combos */}
+      <section
+        id="combos"
+        className="scroll-mt-24 bg-brand-cream/60 py-16 md:py-20"
+      >
+        <div className="mx-auto max-w-6xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Photography + reels
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Combo packages
+              </h2>
+            </div>
+          </MinutesReveal>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {MINUTES_COMBO_PACKAGES.map((pkg, i) => (
+              <MinutesReveal key={pkg.id} delayMs={(i % 4) * 100}>
+                <article
+                  className={`minutes-lift flex h-full flex-col rounded-2xl border bg-white p-5 ${
+                    pkg.featured
+                      ? "border-brand-magenta"
+                      : "border-brand-line"
+                  }`}
+                >
+                  <h3 className="font-heading text-base font-semibold text-brand-magenta-deep">
+                    {pkg.name}
+                  </h3>
+                  <p className="mt-2 font-heading text-xl font-bold text-brand-magenta">
+                    {formatMinutesPrice(pkg)}
+                  </p>
+                  <ul className="mt-4 flex flex-1 flex-col gap-2">
+                    {pkg.includes.map((line) => (
+                      <li
+                        key={line}
+                        className="flex items-start gap-2 text-xs text-brand-gray"
+                      >
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={minutesBookingHref({ packageName: pkg.name })}
+                    className="mt-5 inline-flex items-center justify-center gap-1 rounded-full bg-brand-magenta px-3 py-2 text-xs font-semibold text-white hover:bg-brand-magenta-deep"
+                  >
+                    Book combo
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </article>
+              </MinutesReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Photographer Now */}
+      <section
+        id="photographer-now"
+        className="scroll-mt-24 relative overflow-hidden bg-white py-16 md:py-20"
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-90"
+          aria-hidden
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 80% at 50% 50%, rgba(240,98,146,0.18), transparent 70%)",
+          }}
+        />
+        <MinutesReveal>
+          <div className="relative mx-auto max-w-3xl px-6 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+              Instant booking
+            </p>
+            <h2 className="mt-3 font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+              Photographer Now
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-brand-gray">
+              Starting {formatInr(MINUTES_NOW_PACKAGE.price)} — Location →
+              Service → Duration → Pay → Photographer Assigned. Express pricing
+              shown before payment when supply allows.
+            </p>
+            <ul className="mx-auto mt-6 max-w-xl space-y-2 text-left text-sm text-brand-gray">
+              {MINUTES_NOW_PACKAGE.includes.map((line) => (
+                <li key={line} className="flex items-start gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-magenta" />
+                  {line}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={minutesBookingHref({
+                packageName: MINUTES_NOW_PACKAGE.name,
+              })}
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_-16px_rgba(216,27,96,0.85)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
+            >
+              <Zap className="h-4 w-4" />
+              Book Photographer Now
+            </Link>
+          </div>
+        </MinutesReveal>
+      </section>
+
+      {/* Journey */}
+      <section
+        id="journey"
+        className="scroll-mt-24 bg-brand-cream/70 py-16 md:py-20"
+      >
+        <div className="mx-auto max-w-6xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Customer journey
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                From open to rate
+              </h2>
+            </div>
+          </MinutesReveal>
+          <MinutesReveal delayMs={60}>
+            <MinutesCarousel>
+              {MINUTES_FLOW.map((item, i) => {
+                const Icon = FLOW_ICONS[i] ?? Camera;
+                return (
+                  <div
+                    key={item.step}
+                    className="minutes-lift flex h-full gap-4 rounded-2xl border border-brand-line bg-white p-4"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-magenta/10 text-brand-magenta">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
+                        Step {item.step}
+                      </p>
+                      <h3 className="mt-1 font-heading text-sm font-semibold text-brand-magenta-deep">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1 text-xs leading-relaxed text-brand-gray">
+                        {item.body}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </MinutesCarousel>
+          </MinutesReveal>
+        </div>
+      </section>
+
+      {/* Booking preview mockup */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid gap-10 md:grid-cols-2 md:items-center">
+            <MinutesReveal>
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                  Booking, simplified
                 </p>
-                <ul className="mt-4 flex flex-1 flex-col gap-2">
-                  {pkg.includes.map((line) => (
+                <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                  See it before you book it
+                </h2>
+                <p className="mt-4 max-w-md text-sm leading-relaxed text-brand-gray">
+                  Pick an occasion, choose a package and pay — your booking ID
+                  and photographer assignment land instantly.
+                </p>
+              </div>
+            </MinutesReveal>
+            <MinutesReveal delayMs={100}>
+              <MinutesAppPreview />
+            </MinutesReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & safety */}
+      <section className="bg-brand-cream/70 py-16 md:py-20">
+        <div className="mx-auto max-w-5xl px-6">
+          <MinutesReveal>
+            <div className="flex flex-col items-center gap-8 text-center sm:flex-row sm:items-center sm:text-left">
+              <div className="minutes-orbit-wrap">
+                <span className="minutes-orbit-ring minutes-orbit-ring-1" aria-hidden />
+                <span className="minutes-orbit-ring minutes-orbit-ring-2" aria-hidden />
+                <span className="minutes-orbit-ring minutes-orbit-ring-3" aria-hidden />
+                <span className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full bg-white text-brand-magenta shadow-md">
+                  <ShieldCheck className="h-6 w-6" />
+                </span>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                  Verified &amp; secure
+                </p>
+                <h2 className="mt-2 font-wedding-display text-2xl font-semibold text-brand-magenta-deep md:text-3xl">
+                  Your booking, protected end to end
+                </h2>
+                <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {MINUTES_TRUST_POINTS.map((point) => (
                     <li
-                      key={line}
+                      key={point}
                       className="flex items-start gap-2 text-sm text-brand-gray"
                     >
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-magenta" />
-                      {line}
+                      {point}
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={minutesBookingHref({ packageName: pkg.name })}
-                  className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-full bg-brand-black px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-charcoal"
-                >
-                  Book {pkg.name}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </article>
-            ))}
-          </div>
+              </div>
+            </div>
+          </MinutesReveal>
         </div>
       </section>
 
-      {/* Complete category pricing — report §7 */}
-      <section
-        id="category-pricing"
-        className="scroll-mt-24 border-b border-brand-line bg-brand-cream py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Complete category pricing
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Every occasion rate card
-            </h2>
-            <p className="mt-3 text-sm text-brand-gray">
-              Select a category to see the exact packages and inclusions from
-              the Phase 1 project report.
-            </p>
-          </div>
-          <MinutesCategoryPricing />
-        </div>
-      </section>
-
-      {/* Combos — report §8 */}
-      <section
-        id="combos"
-        className="scroll-mt-24 border-b border-brand-line bg-white py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Photography + reels
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Combo packages
-            </h2>
-            <p className="mt-3 text-sm text-brand-gray">
-              Designed to increase average order value by combining photography
-              and short-form video.
-            </p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {MINUTES_COMBO_PACKAGES.map((pkg) => (
-              <article
-                key={pkg.id}
-                className={`flex flex-col border-t-2 p-5 ${
-                  pkg.featured
-                    ? "border-brand-gold-bright"
-                    : "border-brand-magenta/35"
-                }`}
-              >
-                <h3 className="font-heading text-base font-semibold text-brand-black">
-                  {pkg.name}
-                </h3>
-                <p className="mt-2 font-heading text-xl font-bold text-brand-magenta">
-                  {formatMinutesPrice(pkg)}
-                </p>
-                <ul className="mt-4 flex flex-1 flex-col gap-2">
-                  {pkg.includes.map((line) => (
-                    <li
-                      key={line}
-                      className="flex items-start gap-2 text-xs text-brand-gray"
-                    >
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={minutesBookingHref({ packageName: pkg.name })}
-                  className="mt-5 inline-flex items-center justify-center gap-1 rounded-full bg-brand-black px-3 py-2 text-xs font-semibold text-white hover:bg-brand-charcoal"
-                >
-                  Book combo
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Photographer Now — report §8.1 */}
-      <section
-        id="photographer-now"
-        className="scroll-mt-24 border-b border-brand-line bg-brand-magenta py-16 text-white md:py-20"
-      >
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold-bright">
-            Instant booking
-          </p>
-          <h2 className="mt-3 font-wedding-display text-3xl font-semibold md:text-4xl">
-            Photographer Now
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-white/85">
-            Starting {formatInr(MINUTES_NOW_PACKAGE.price)} — Location → Service
-            → Duration → Pay → Photographer Assigned. Used only when a verified
-            photographer is available within the required service radius.
-            Express pricing is shown and accepted before payment.
-          </p>
-          <ul className="mx-auto mt-6 max-w-xl space-y-2 text-left text-sm text-white/85">
-            {MINUTES_NOW_PACKAGE.includes.map((line) => (
-              <li key={line} className="flex items-start gap-2">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold-bright" />
-                {line}
-              </li>
-            ))}
-          </ul>
-          <Link
-            href={minutesBookingHref({
-              packageName: MINUTES_NOW_PACKAGE.name,
-            })}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-button px-6 py-3 text-sm font-semibold text-brand-black hover:bg-brand-button-dark"
-          >
-            <Zap className="h-4 w-4" />
-            Book Photographer Now
-          </Link>
-        </div>
-      </section>
-
-      {/* Customer journey — report §9 */}
-      <section
-        id="journey"
-        className="scroll-mt-24 border-b border-brand-line bg-white py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Customer journey
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              From open to rate
-            </h2>
-          </div>
-          <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {MINUTES_FLOW.map((item, i) => {
-              const Icon = FLOW_ICONS[i] ?? Camera;
-              return (
-                <li
-                  key={item.step}
-                  className="flex gap-4 border-t border-brand-line pt-4"
-                >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-button text-brand-black">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
-                      Step {item.step}
-                    </p>
-                    <h3 className="mt-1 font-heading text-sm font-semibold text-brand-black">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-xs leading-relaxed text-brand-gray">
-                      {item.body}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
-
-      {/* Matching + ops */}
+      {/* Matching */}
       <section
         id="pipeline"
-        className="scroll-mt-24 border-b border-brand-line bg-brand-cream py-16 md:py-20"
+        className="scroll-mt-24 bg-white py-16 md:py-20"
       >
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Assignment engine
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              How photographers are matched
-            </h2>
-            <p className="mt-3 text-sm text-brand-gray">
-              Rule-based matching for launch. Eligibility checked first:
-              category, date/time, service radius, package capability and vendor
-              status.
-            </p>
-          </div>
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Assignment engine
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                How photographers are matched
+              </h2>
+            </div>
+          </MinutesReveal>
           <div className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {MINUTES_MATCHING.map((row) => (
-              <div
-                key={row.factor}
-                className="flex items-center justify-between border-t border-brand-line bg-white/70 px-4 py-3"
-              >
-                <span className="text-sm font-medium text-brand-black">
-                  {row.factor}
-                </span>
-                <span className="text-sm font-bold text-brand-magenta">
-                  {row.weight}
-                </span>
-              </div>
+            {MINUTES_MATCHING.map((row, i) => (
+              <MinutesReveal key={row.factor} delayMs={(i % 3) * 100}>
+                <div className="flex items-center justify-between rounded-xl border border-brand-line bg-brand-cream/50 px-4 py-3">
+                  <span className="text-sm font-medium text-brand-magenta-deep">
+                    {row.factor}
+                  </span>
+                  <span className="text-sm font-bold text-brand-magenta">
+                    {row.weight}
+                  </span>
+                </div>
+              </MinutesReveal>
             ))}
           </div>
           <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {MINUTES_PIPELINE.map((item, i) => (
-              <li
-                key={item.title}
-                className="flex items-start gap-3 border-t border-brand-line bg-white/70 px-4 py-4"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-magenta text-xs font-bold text-white">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-brand-black">
-                    {item.title}
-                  </p>
-                  <p className="mt-0.5 text-xs text-brand-gray">{item.body}</p>
-                </div>
-              </li>
+              <MinutesReveal key={item.title} delayMs={(i % 3) * 100}>
+                <li className="flex items-start gap-3 rounded-xl border border-brand-line bg-white px-4 py-4">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-magenta text-xs font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-brand-magenta-deep">
+                      {item.title}
+                    </p>
+                    <p className="mt-0.5 text-xs text-brand-gray">{item.body}</p>
+                  </div>
+                </li>
+              </MinutesReveal>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* Modules */}
-      <section className="border-b border-brand-line bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Product modules
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Everything connected
-            </h2>
-          </div>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {MINUTES_MODULES.map((mod) => (
-              <li key={mod.id}>
-                <Link
-                  href={mod.href}
-                  className="flex h-full flex-col border-t border-brand-magenta/30 pt-3 hover:border-brand-magenta"
-                >
-                  <span className="font-heading text-sm font-semibold text-brand-black">
-                    {mod.title}
-                  </span>
-                  <span className="mt-1 text-xs text-brand-gray">{mod.body}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* Photographers */}
-      <section className="border-b border-brand-line bg-brand-cream py-16 md:py-20">
+      <section className="bg-brand-cream/60 py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Verified network
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Photographers for your job
-            </h2>
-          </div>
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Verified network
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Photographers for your job
+              </h2>
+            </div>
+          </MinutesReveal>
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {MINUTES_PHOTOGRAPHERS.map((p) => (
-              <li key={p.id} className="border-t border-brand-line bg-white p-5">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-magenta text-sm font-bold text-white">
-                  {p.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
-                <h3 className="font-heading text-base font-semibold text-brand-black">
-                  {p.name}
-                </h3>
-                <p className="mt-1 text-xs font-semibold text-brand-magenta">
-                  {p.role}
-                </p>
-                <p className="mt-2 text-xs text-brand-gray">{p.focus}</p>
-                <p className="mt-3 flex items-start gap-1.5 text-[11px] text-brand-gray">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
-                  {p.cities}
-                </p>
-              </li>
+            {MINUTES_PHOTOGRAPHERS.map((p, i) => (
+              <MinutesReveal key={p.id} delayMs={(i % 4) * 100}>
+                <li className="minutes-lift h-full rounded-2xl border border-brand-line bg-white p-5">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-magenta text-sm font-bold text-white">
+                    {p.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                  <h3 className="font-heading text-base font-semibold text-brand-magenta-deep">
+                    {p.name}
+                  </h3>
+                  <p className="mt-1 text-xs font-semibold text-brand-magenta">
+                    {p.role}
+                  </p>
+                  <p className="mt-2 text-xs text-brand-gray">{p.focus}</p>
+                  <p className="mt-3 flex items-start gap-1.5 text-[11px] text-brand-gray">
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
+                    {p.cities}
+                  </p>
+                </li>
+              </MinutesReveal>
             ))}
           </ul>
         </div>
       </section>
 
       {/* Gallery */}
-      <section
-        id="gallery"
-        className="scroll-mt-24 border-b border-brand-line bg-white py-16 md:py-20"
-      >
+      <section id="gallery" className="scroll-mt-24 bg-white py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Gallery
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Sample Moments work
-            </h2>
-          </div>
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Gallery
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Real jobs, real delivery
+              </h2>
+            </div>
+          </MinutesReveal>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {MINUTES_GALLERY.map((shot) => (
-              <li
-                key={shot.src + shot.label}
-                className="group relative aspect-[4/3] overflow-hidden"
-              >
-                <Image
-                  src={shot.src}
-                  alt={shot.label}
-                  fill
-                  sizes="(max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                  <p className="text-sm font-medium text-white">{shot.label}</p>
-                </div>
-              </li>
+            {MINUTES_GALLERY.map((shot, i) => (
+              <MinutesReveal key={shot.src + shot.label} delayMs={(i % 3) * 100}>
+                <li className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <Image
+                    src={shot.src}
+                    alt={shot.label}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-magenta-deep/70 to-transparent p-4">
+                    <p className="text-sm font-medium text-white">{shot.label}</p>
+                  </div>
+                </li>
+              </MinutesReveal>
             ))}
           </ul>
         </div>
@@ -668,161 +721,449 @@ export default function PhotographyInMinutesPage() {
       {/* Availability */}
       <section
         id="availability"
-        className="scroll-mt-24 border-b border-brand-line bg-brand-cream py-16 md:py-20"
+        className="scroll-mt-24 bg-brand-cream/70 py-16 md:py-20"
       >
         <div className="mx-auto max-w-3xl px-6">
-          <div className="mb-8 text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Search / availability
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              Occasion → location → date → package
-            </h2>
-          </div>
-          <MinutesSearchBar variant="panel" />
+          <MinutesReveal>
+            <div className="mb-8 text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Instant booking
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Occasion → location → date → package
+              </h2>
+            </div>
+          </MinutesReveal>
+          <MinutesReveal delayMs={100}>
+            <MinutesSearchBar variant="panel" />
+          </MinutesReveal>
         </div>
       </section>
 
-      {/* Launch blueprint — report §33 */}
-      <section className="border-b border-brand-line bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
+      {/* Reviews marquee */}
+      <section id="reviews" className="scroll-mt-24 bg-white py-16 md:py-20">
+        <div className="mx-auto mb-10 max-w-2xl px-6 text-center">
+          <MinutesReveal>
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Launch blueprint
+              What customers say
             </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              How a booking runs end to end
+            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+              Loved by families &amp; brands
             </h2>
-          </div>
-          <ol className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {MINUTES_BLUEPRINT.map((item, i) => (
-              <li key={`${item.role}-${i}`} className="border-t border-brand-line pt-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
-                  {item.role}
-                </p>
-                <p className="mt-2 text-sm text-brand-gray">{item.action}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mb-10 grid gap-6 md:grid-cols-3">
-            <div className="border-t border-brand-line pt-5">
-              <h3 className="font-heading text-sm font-semibold text-brand-black">
-                Unit economics (illustrative)
-              </h3>
-              <p className="mt-3 text-2xl font-bold text-brand-magenta">
-                {formatInr(2999)}
-              </p>
-              <p className="mt-1 text-xs text-brand-gray">Example Standard booking</p>
-              <ul className="mt-4 space-y-2 text-sm text-brand-gray">
-                <li>Illustrative 20% share · {formatInr(600)}</li>
-                <li>Vendor share · {formatInr(2399)}</li>
-                <li>Final commission set after pilot jobs</li>
-              </ul>
-            </div>
-            <div className="border-t border-brand-line pt-5 md:col-span-2">
-              <h3 className="font-heading text-sm font-semibold text-brand-black">
-                Roadmap
-              </h3>
-              <div className="mt-4 grid gap-5 sm:grid-cols-2">
-                {MINUTES_PHASES.map((phase, idx) => (
-                  <div key={phase.name}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
-                      Phase {idx + 1}
-                    </p>
-                    <p className="mt-1 font-heading text-sm font-semibold text-brand-black">
-                      {phase.name.replace(/^Phase \d+ — /, "")}
-                    </p>
-                    <ul className="mt-3 space-y-1.5">
-                      {phase.items.map((item) => (
-                        <li
-                          key={item}
-                          className="flex items-start gap-2 text-xs text-brand-gray"
-                        >
-                          <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+          </MinutesReveal>
+        </div>
+        <MinutesMarquee speed={45}>
+          {MINUTES_REVIEWS.map((r) => (
+            <article
+              key={r.name}
+              className="mx-3 w-[min(22rem,80vw)] shrink-0 rounded-2xl border border-brand-line bg-brand-cream/50 p-5 sm:mx-4"
+            >
+              <div className="mb-3 flex gap-0.5 text-brand-magenta">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-3.5 w-3.5 fill-current" />
                 ))}
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Reviews */}
-      <section
-        id="reviews"
-        className="scroll-mt-24 border-b border-brand-line bg-brand-cream py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
-              Reviews
-            </p>
-            <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta md:text-4xl">
-              What customers say
-            </h2>
-          </div>
-          <ul className="grid gap-6 md:grid-cols-3">
-            {MINUTES_REVIEWS.map((r) => (
-              <li key={r.name} className="border-t border-brand-magenta/30 pt-5">
+              <p className="text-sm leading-relaxed text-brand-gray">
+                &ldquo;{r.quote}&rdquo;
+              </p>
+              <p className="mt-4 text-sm font-semibold text-brand-magenta-deep">
+                {r.name}
+              </p>
+              <p className="text-xs text-brand-gray">{r.city}</p>
+            </article>
+          ))}
+        </MinutesMarquee>
+        <div className="mt-6">
+          <MinutesMarquee speed={50} reverse>
+            {[...MINUTES_REVIEWS].reverse().map((r) => (
+              <article
+                key={`rev-${r.name}`}
+                className="mx-3 w-[min(22rem,80vw)] shrink-0 rounded-2xl border border-brand-magenta/20 bg-white p-5 sm:mx-4"
+              >
                 <p className="text-sm leading-relaxed text-brand-gray">
                   &ldquo;{r.quote}&rdquo;
                 </p>
-                <p className="mt-4 text-sm font-semibold text-brand-black">
-                  {r.name}
+                <p className="mt-4 text-sm font-semibold text-brand-magenta">
+                  {r.name} · {r.city}
                 </p>
-                <p className="text-xs text-brand-gray">{r.city}</p>
-              </li>
+              </article>
             ))}
-          </ul>
+          </MinutesMarquee>
         </div>
       </section>
 
-      {/* Final CTA — report recommended message */}
-      <section className="bg-brand-magenta py-16 text-white md:py-20">
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-gold-bright">
-            Recommended customer message
-          </p>
-          <h2 className="mt-3 font-wedding-display text-3xl font-semibold md:text-4xl">
-            Whatever the occasion, Wedyora can get you a photographer from
-            ₹1,999
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm text-white/85">
-            Standardize the job. Control the vendor. Make the price transparent.
-            Make booking fast.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={minutesBookingHref({ packageName: "Standard" })}
-              className="inline-flex items-center gap-2 rounded-full bg-brand-button px-6 py-3 text-sm font-semibold text-brand-black hover:bg-brand-button-dark"
-            >
-              Book Standard · {formatInr(2999)}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="#availability"
-              className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              <Calendar className="h-4 w-4" />
-              Check availability
-            </Link>
+      {/* Blueprint + roadmap */}
+      <section className="bg-brand-cream/60 py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Launch blueprint
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                How a booking runs end to end
+              </h2>
+            </div>
+          </MinutesReveal>
+          <ol className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {MINUTES_BLUEPRINT.map((item, i) => (
+              <MinutesReveal key={`${item.role}-${i}`} delayMs={(i % 4) * 100}>
+                <li className="rounded-2xl border border-brand-line bg-white p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
+                    {item.role}
+                  </p>
+                  <p className="mt-2 text-sm text-brand-gray">{item.action}</p>
+                </li>
+              </MinutesReveal>
+            ))}
+          </ol>
+          <div className="grid gap-6 md:grid-cols-2">
+            {MINUTES_PHASES.map((phase, idx) => (
+              <MinutesReveal key={phase.name} delayMs={idx * 100}>
+                <div className="rounded-2xl border border-brand-line bg-white p-6">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
+                    Phase {idx + 1}
+                  </p>
+                  <h3 className="mt-2 font-heading text-base font-semibold text-brand-magenta-deep">
+                    {phase.name.replace(/^Phase \d+ — /, "")}
+                  </h3>
+                  <ul className="mt-4 space-y-2">
+                    {phase.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-2 text-sm text-brand-gray"
+                      >
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-magenta" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </MinutesReveal>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="scroll-mt-24 bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-3xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Got questions?
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Frequently asked questions
+              </h2>
+            </div>
+          </MinutesReveal>
+          <MinutesReveal delayMs={80}>
+            <MinutesFaq />
+          </MinutesReveal>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="relative overflow-hidden bg-white py-16 md:py-20">
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 70% at 50% 100%, rgba(216,27,96,0.16), transparent 65%)",
+          }}
+        />
+        <MinutesReveal>
+          <div className="relative mx-auto max-w-3xl px-6 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+              Ready when you are
+            </p>
+            <h2 className="mt-3 font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+              Whatever the occasion, Wedyora can get you a photographer from
+              ₹1,999
+            </h2>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href={minutesBookingHref({ packageName: "Standard" })}
+                className="inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_-16px_rgba(216,27,96,0.85)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
+              >
+                Book Standard · {formatInr(2999)}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="#availability"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-magenta/30 px-6 py-3 text-sm font-semibold text-brand-magenta transition hover:bg-brand-magenta/5"
+              >
+                <Calendar className="h-4 w-4" />
+                Check availability
+              </Link>
+            </div>
+          </div>
+        </MinutesReveal>
+      </section>
+
       <style>{`
+        .minutes-page {
+          --minutes-pink: #d81b60;
+        }
+
+        /* Scroll reveals — fast, ease-out entrances */
+        .minutes-reveal {
+          opacity: 0;
+          transform: translateY(16px);
+          transition:
+            opacity 0.4s ease-out,
+            transform 0.4s ease-out;
+        }
+        .minutes-reveal.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Marquee */
+        .minutes-marquee {
+          overflow: hidden;
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        }
+        .minutes-marquee-track {
+          display: flex;
+          width: max-content;
+          animation: minutes-marquee var(--minutes-marquee-duration, 40s) linear infinite;
+          animation-direction: var(--minutes-marquee-direction, normal);
+        }
+        .minutes-marquee-group {
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+        }
+        .minutes-marquee:hover .minutes-marquee-track {
+          animation-play-state: paused;
+        }
+        @keyframes minutes-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+
+        /* Hero — sequential fade-in */
+        .minutes-hero-in {
+          opacity: 0;
+          transform: translateY(14px);
+          animation: minutes-fade-up 0.4s ease-out forwards;
+        }
+        .minutes-hero-in-1 { animation-delay: 0.05s; }
+        .minutes-hero-in-2 { animation-delay: 0.22s; }
+        .minutes-hero-in-3 { animation-delay: 0.38s; }
+        .minutes-hero-in-4 { animation-delay: 0.52s; }
+        .minutes-hero-in-5 { animation-delay: 0.66s; }
+        .minutes-hero-visual {
+          opacity: 0;
+          animation: minutes-fade-up 0.5s ease-out 0.3s forwards;
+        }
+        .minutes-badge {
+          opacity: 0;
+          animation: minutes-fade-up 0.4s ease-out 0.75s forwards;
+        }
         @keyframes minutes-fade-up {
-          from { opacity: 0; transform: translateY(16px); }
+          from { opacity: 0; transform: translateY(14px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes minutes-hero-zoom {
-          from { transform: scale(1.06); }
-          to { transform: scale(1); }
+        .minutes-float {
+          animation: minutes-float 5.5s ease-in-out infinite;
+        }
+        @keyframes minutes-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+
+        /* Hero pink glow blobs — breathing pulse */
+        .minutes-glow {
+          filter: blur(42px);
+          background: radial-gradient(circle, rgba(240, 98, 146, 0.55), rgba(216, 27, 96, 0.22) 55%, transparent 72%);
+          animation: minutes-glow-pulse 2s ease-in-out infinite;
+          will-change: transform, opacity;
+        }
+        .minutes-glow-1 { animation-delay: 0s; }
+        .minutes-glow-2 { animation-delay: 0.35s; background: radial-gradient(circle, rgba(216, 27, 96, 0.48), transparent 68%); }
+        .minutes-glow-3 { animation-delay: 0.7s; background: radial-gradient(circle, rgba(240, 98, 146, 0.42), transparent 68%); }
+        @keyframes minutes-glow-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.65; }
+          50% { transform: scale(1.18); opacity: 1; }
+        }
+
+        /* Hero gradient sweep accent line */
+        .minutes-sweep-line {
+          position: relative;
+          z-index: 1;
+          height: 3px;
+          width: 100%;
+          background: linear-gradient(90deg, #d81b60, #f8bbd0, #d81b60);
+          background-size: 200% 100%;
+          animation: minutes-sweep 3s linear infinite;
+        }
+        @keyframes minutes-sweep {
+          from { background-position: 0% 0%; }
+          to { background-position: 200% 0%; }
+        }
+
+        /* Card lift */
+        .minutes-lift {
+          transition:
+            transform 0.3s ease-out,
+            box-shadow 0.3s ease-out,
+            border-color 0.3s ease-out;
+        }
+        .minutes-lift:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 22px 44px -28px rgba(216, 27, 96, 0.45);
+          border-color: rgba(216, 27, 96, 0.28);
+        }
+
+        /* Floating in-page nav */
+        .minutes-floating-nav {
+          opacity: 0;
+          transform: translateY(12px);
+          transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+          pointer-events: none;
+        }
+        .minutes-floating-nav.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+        .minutes-nav-item:hover .minutes-nav-highlight {
+          background: rgba(216, 27, 96, 0.12);
+          box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.06);
+        }
+        .minutes-nav-item:hover .minutes-nav-tooltip {
+          opacity: 1;
+          transform: translate(-50%, -4px);
+        }
+        .minutes-nav-tooltip {
+          transform: translate(-50%, 2px);
+        }
+
+        /* Carousel */
+        .minutes-carousel-track {
+          scrollbar-width: none;
+        }
+        .minutes-carousel-track::-webkit-scrollbar {
+          display: none;
+        }
+        .minutes-carousel-arrow {
+          position: absolute;
+          display: none;
+          height: 2.5rem;
+          width: 2.5rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          border: 1px solid var(--brand-line);
+          background: #fff;
+          color: var(--brand-magenta);
+          box-shadow: 0 12px 28px -16px rgba(216, 27, 96, 0.5);
+          transition: transform 0.2s ease-out, background 0.2s ease-out;
+        }
+        @media (min-width: 640px) {
+          .minutes-carousel-arrow {
+            display: flex;
+          }
+        }
+        .minutes-carousel-arrow:hover {
+          background: var(--brand-magenta);
+          color: #fff;
+          transform: translateY(-50%) scale(1.06);
+        }
+
+        /* FAQ accordion */
+        .minutes-faq-chevron {
+          transform-origin: center;
+        }
+        .minutes-faq-panel {
+          display: grid;
+          grid-template-rows: 0fr;
+          overflow: hidden;
+          transition: grid-template-rows 0.3s ease-out;
+        }
+        .minutes-faq-item.is-open .minutes-faq-panel {
+          grid-template-rows: 1fr;
+        }
+        .minutes-faq-panel-inner {
+          min-height: 0;
+          opacity: 0;
+          transition: opacity 0.25s ease-out;
+        }
+        .minutes-faq-item.is-open .minutes-faq-panel-inner {
+          opacity: 1;
+        }
+
+        /* Trust badge — orbiting dashed rings */
+        .minutes-orbit-wrap {
+          position: relative;
+          height: 4.5rem;
+          width: 4.5rem;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .minutes-orbit-ring {
+          position: absolute;
+          border-radius: 9999px;
+          border: 1.5px dashed rgba(216, 27, 96, 0.45);
+        }
+        .minutes-orbit-ring-1 {
+          inset: -6px;
+          animation: minutes-orbit-spin 9s linear infinite;
+        }
+        .minutes-orbit-ring-2 {
+          inset: -16px;
+          border-color: rgba(216, 27, 96, 0.28);
+          animation: minutes-orbit-spin 14s linear infinite reverse;
+        }
+        .minutes-orbit-ring-3 {
+          inset: -26px;
+          border-color: rgba(216, 27, 96, 0.16);
+          animation: minutes-orbit-spin 20s linear infinite;
+        }
+        @keyframes minutes-orbit-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .minutes-reveal,
+          .minutes-hero-in,
+          .minutes-hero-visual,
+          .minutes-badge,
+          .minutes-float,
+          .minutes-lift,
+          .minutes-marquee-track,
+          .minutes-glow,
+          .minutes-sweep-line,
+          .minutes-orbit-ring,
+          .minutes-floating-nav,
+          .minutes-carousel-arrow,
+          .minutes-faq-panel,
+          .minutes-faq-panel-inner,
+          .minutes-nav-tooltip {
+            animation: none !important;
+            transition: none !important;
+          }
+          .minutes-reveal,
+          .minutes-hero-in,
+          .minutes-hero-visual,
+          .minutes-badge {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+          .minutes-faq-panel.is-open,
+          .minutes-faq-item.is-open .minutes-faq-panel {
+            grid-template-rows: 1fr !important;
+          }
+          .minutes-faq-item.is-open .minutes-faq-panel-inner {
+            opacity: 1 !important;
+          }
         }
       `}</style>
     </div>
