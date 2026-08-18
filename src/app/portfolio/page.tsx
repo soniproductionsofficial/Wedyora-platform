@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import Reveal from "@/components/motion/reveal";
+import { staggerDelay } from "@/components/motion/stagger";
+import { GOLD_SWEEP_STYLE } from "@/components/motion/constants";
 
 export default async function PortfolioPage() {
   const supabase = await createClient();
@@ -22,16 +25,19 @@ export default async function PortfolioPage() {
     <div>
       <section className="bg-brand-chrome text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <p className="text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
+          <p className="hero-in hero-in-1 text-brand-gold-bright uppercase tracking-[0.2em] text-xs font-semibold mb-4">
             Portfolio
           </p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+          <h1 className="hero-in hero-in-2 font-heading text-3xl md:text-4xl font-bold mb-6">
             Real Work From Our Verified Vendors
           </h1>
-          <p className="text-white/70 max-w-2xl mx-auto">
+          <p className="hero-in hero-in-3 text-white/70 max-w-2xl mx-auto">
             A look at the photography, decor, and coverage our vendors have
             delivered for real weddings.
           </p>
+          <div className="hero-in hero-in-4 mx-auto mt-8 max-w-xs">
+            <div className="sweep-line rounded-full" style={GOLD_SWEEP_STYLE} />
+          </div>
         </div>
       </section>
 
@@ -49,24 +55,25 @@ export default async function PortfolioPage() {
           ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               {photos.map((p, i) => (
-                <div
-                  key={`${p.url}-${i}`}
-                  className="rounded-2xl bg-white border border-brand-line overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- vendor-uploaded portfolio images from Supabase Storage, not a local/known-size asset next/image can optimize confidently */}
-                  <img
-                    src={p.url}
-                    alt={`${p.vendorName} portfolio work`}
-                    className="h-52 w-full object-cover bg-brand-charcoal"
-                  />
-                  <div className="p-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-gold mb-1">
-                      {p.category}
-                    </p>
-                    <p className="font-heading font-semibold text-sm">{p.vendorName}</p>
-                    <p className="text-brand-gray text-xs">{p.city}</p>
+                <Reveal key={`${p.url}-${i}`} delayMs={staggerDelay(i, 3)}>
+                  <div className="lift group h-full overflow-hidden rounded-2xl border border-brand-line bg-white">
+                    <div className="overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- vendor-uploaded portfolio images from Supabase Storage, not a local/known-size asset next/image can optimize confidently */}
+                      <img
+                        src={p.url}
+                        alt={`${p.vendorName} portfolio work`}
+                        className="h-52 w-full bg-brand-charcoal object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-brand-gold mb-1">
+                        {p.category}
+                      </p>
+                      <p className="font-heading font-semibold text-sm">{p.vendorName}</p>
+                      <p className="text-brand-gray text-xs">{p.city}</p>
+                    </div>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           )}

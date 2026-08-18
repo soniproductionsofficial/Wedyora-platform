@@ -15,6 +15,8 @@ import {
   type ShopService,
 } from "@/lib/shop-packages";
 import { useServicesCart } from "@/components/services-cart-context";
+import Reveal from "@/components/motion/reveal";
+import { staggerDelay } from "@/components/motion/stagger";
 
 function CateringPackageRow({
   service,
@@ -237,7 +239,7 @@ export default function ServicesShop() {
   return (
     <div className="relative pb-28">
       <div className="mx-auto max-w-3xl px-6 py-10 md:py-14">
-        <div className="mb-8 text-center">
+        <Reveal className="mb-8 text-center">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-orange">
             Build your occasion
           </p>
@@ -249,15 +251,16 @@ export default function ServicesShop() {
             For catering, set guest count and add Veg or Non-Veg separately —
             totals update automatically.
           </p>
-        </div>
+        </Reveal>
 
         <div className="flex flex-col gap-3">
-          {SHOP_SERVICES.map((service) => {
+          {SHOP_SERVICES.map((service, serviceIndex) => {
             const open = openId === service.id;
             return (
-              <div
+              <Reveal
                 key={service.id}
-                className="overflow-hidden rounded-2xl border border-brand-line bg-white"
+                delayMs={staggerDelay(serviceIndex, 4, 60)}
+                className="lift overflow-hidden rounded-2xl border border-brand-line bg-white"
               >
                 <button
                   type="button"
@@ -342,7 +345,7 @@ export default function ServicesShop() {
                     </ul>
                   </div>
                 ) : null}
-              </div>
+              </Reveal>
             );
           })}
         </div>
