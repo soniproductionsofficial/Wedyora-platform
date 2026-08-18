@@ -36,9 +36,7 @@ export default function MinutesSearchBar({
     const pkg = category.packages.find((p) => p.id === packageId);
     router.push(
       minutesBookingHref({
-        packageName: pkg
-          ? `${category.title}: ${pkg.name}`
-          : undefined,
+        packageName: pkg ? `${category.title}: ${pkg.name}` : undefined,
         categoryId: category.id,
         city,
         date: date || undefined,
@@ -48,14 +46,12 @@ export default function MinutesSearchBar({
 
   const shell =
     variant === "hero"
-      ? "rounded-2xl border border-white/25 bg-black/45 p-3 shadow-xl backdrop-blur-md sm:p-4"
-      : "rounded-2xl border border-brand-line bg-white p-4 shadow-sm sm:p-5";
+      ? "rounded-2xl border border-brand-line bg-white/95 p-3 shadow-[0_18px_50px_-24px_rgba(216,27,96,0.45)] backdrop-blur-sm sm:p-4"
+      : "rounded-2xl border border-brand-line bg-white p-4 shadow-[0_12px_40px_-28px_rgba(216,27,96,0.35)] sm:p-5";
 
-  const label = variant === "hero" ? "text-white/80" : "text-brand-gray";
+  const label = "text-brand-gray";
   const field =
-    variant === "hero"
-      ? "rounded-xl border border-white/20 bg-white/95 px-3 py-2.5 text-sm text-brand-black outline-none focus:ring-2 focus:ring-brand-gold-bright/50"
-      : "rounded-xl border border-brand-line bg-white px-3 py-2.5 text-sm text-brand-black outline-none focus:ring-2 focus:ring-brand-magenta/30";
+    "rounded-xl border border-brand-line bg-white px-3 py-2.5 text-sm text-brand-black outline-none transition focus:border-brand-magenta/40 focus:ring-2 focus:ring-brand-magenta/20";
 
   return (
     <form onSubmit={onSubmit} className={shell}>
@@ -116,7 +112,7 @@ export default function MinutesSearchBar({
       </div>
       <button
         type="submit"
-        className="mt-3 w-full rounded-full bg-brand-button px-6 py-3 text-sm font-semibold text-brand-black transition-colors hover:bg-brand-button-dark sm:mt-4"
+        className="mt-3 w-full rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-magenta-deep hover:scale-[1.01] active:scale-[0.99] sm:mt-4"
       >
         Book a photographer
       </button>
