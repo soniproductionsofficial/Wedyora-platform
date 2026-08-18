@@ -13,9 +13,14 @@ import {
   Sparkles,
   Clock,
   Star,
+  ShieldCheck,
 } from "lucide-react";
 import MinutesSearchBar from "@/components/minutes-search-bar";
 import MinutesCategoryPricing from "@/components/minutes-category-pricing";
+import MinutesFloatingNav from "@/components/minutes-floating-nav";
+import MinutesCarousel from "@/components/minutes-carousel";
+import MinutesFaq from "@/components/minutes-faq";
+import MinutesAppPreview from "@/components/minutes-app-preview";
 import {
   MinutesMarquee,
   MinutesReveal,
@@ -35,6 +40,7 @@ import {
   MINUTES_PHOTOGRAPHERS,
   MINUTES_PIPELINE,
   MINUTES_REVIEWS,
+  MINUTES_TRUST_POINTS,
   MINUTES_USPS,
   formatInr,
   formatMinutesPrice,
@@ -64,6 +70,8 @@ const FLOW_ICONS = [
 export default function PhotographyInMinutesPage() {
   return (
     <div id="top" className="minutes-page bg-white font-wedding-sans text-brand-black">
+      <MinutesFloatingNav />
+
       {/* Hero — white / pink, Flashoot-inspired */}
       <section className="relative overflow-hidden bg-white">
         <div
@@ -71,29 +79,46 @@ export default function PhotographyInMinutesPage() {
           aria-hidden
           style={{
             background:
-              "radial-gradient(ellipse 70% 55% at 15% 10%, rgba(240,98,146,0.22), transparent 55%), radial-gradient(ellipse 55% 45% at 90% 20%, rgba(216,27,96,0.12), transparent 50%), linear-gradient(180deg, #fff 0%, #fff 42%, #fdf5f8 100%)",
+              "linear-gradient(180deg, #fff 0%, #fff 42%, #fdf5f8 100%)",
           }}
         />
 
+        {/* Soft pink glow blobs — breathing pulse */}
+        <div
+          className="minutes-glow minutes-glow-1 pointer-events-none absolute -left-24 -top-24 h-[26rem] w-[26rem] rounded-full"
+          aria-hidden
+        />
+        <div
+          className="minutes-glow minutes-glow-2 pointer-events-none absolute -right-16 top-10 h-[22rem] w-[22rem] rounded-full"
+          aria-hidden
+        />
+        <div
+          className="minutes-glow minutes-glow-3 pointer-events-none absolute bottom-[-6rem] left-1/3 h-[20rem] w-[20rem] rounded-full"
+          aria-hidden
+        />
+
+        {/* Animated gradient sweep accent line */}
+        <div className="minutes-sweep-line" aria-hidden />
+
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pb-10 pt-20 sm:px-6 md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-12 md:pb-14 md:pt-24">
-          <div className="minutes-hero-copy">
-            <p className="font-wedding-display text-4xl font-semibold tracking-tight text-brand-magenta-deep sm:text-5xl md:text-6xl">
+          <div>
+            <p className="minutes-hero-in minutes-hero-in-1 font-wedding-display text-4xl font-semibold tracking-tight text-brand-magenta-deep sm:text-5xl md:text-6xl">
               Wedyora
             </p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+            <p className="minutes-hero-in minutes-hero-in-1 mt-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
               Photography in Minutes
             </p>
-            <h1 className="mt-5 font-wedding-display text-[1.7rem] font-semibold leading-[1.15] text-brand-magenta-deep sm:text-4xl md:text-[2.65rem]">
+            <h1 className="minutes-hero-in minutes-hero-in-2 mt-5 font-wedding-display text-[1.7rem] font-semibold leading-[1.15] text-brand-magenta-deep sm:text-4xl md:text-[2.65rem]">
               Book a photographer in minutes — from{" "}
               <span className="text-brand-magenta">₹1,999</span>
             </h1>
-            <p className="mt-4 max-w-lg text-sm leading-relaxed text-brand-gray sm:text-base">
+            <p className="minutes-hero-in minutes-hero-in-3 mt-4 max-w-lg text-sm leading-relaxed text-brand-gray sm:text-base">
               Whatever the occasion: pooja, maternity, birthdays, reels,
               business content. Pay securely — we assign a verified
               photographer. Weddings in Phase 2.
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="minutes-hero-in minutes-hero-in-4 mt-7 flex flex-wrap gap-3">
               <Link
                 href="#availability"
                 className="inline-flex items-center gap-2 rounded-full bg-brand-magenta px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(216,27,96,0.9)] transition hover:bg-brand-magenta-deep hover:scale-[1.02]"
@@ -110,7 +135,7 @@ export default function PhotographyInMinutesPage() {
               </Link>
             </div>
 
-            <div className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-brand-line pt-6">
+            <div className="minutes-hero-in minutes-hero-in-5 mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-brand-line pt-6">
               <MinutesStat value="₹1,999" label="Starting" />
               <MinutesStat value="12" label="Occasions" />
               <MinutesStat value="4.9★" label="Trust goal" />
@@ -198,7 +223,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {MINUTES_AUDIENCES.map((row, i) => (
-              <MinutesReveal key={row.group} delayMs={i * 60}>
+              <MinutesReveal key={row.group} delayMs={(i % 3) * 100}>
                 <div className="minutes-lift h-full rounded-2xl border border-brand-line bg-white p-5">
                   <h3 className="font-heading text-sm font-semibold text-brand-magenta">
                     {row.group}
@@ -233,7 +258,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {MINUTES_CATEGORIES.map((item, i) => (
-              <MinutesReveal key={item.id} delayMs={(i % 3) * 70}>
+              <MinutesReveal key={item.id} delayMs={(i % 3) * 100}>
                 <li className="minutes-lift h-full rounded-2xl border border-brand-line bg-brand-cream/40 p-5">
                   <div className="flex items-baseline justify-between gap-3">
                     <h3 className="font-heading text-sm font-semibold text-brand-magenta-deep">
@@ -283,7 +308,7 @@ export default function PhotographyInMinutesPage() {
 
           <div className="grid gap-5 md:grid-cols-3">
             {MINUTES_CORE_PACKAGES.map((pkg, i) => (
-              <MinutesReveal key={pkg.id} delayMs={i * 90}>
+              <MinutesReveal key={pkg.id} delayMs={i * 100}>
                 <article
                   className={`minutes-lift flex h-full flex-col rounded-2xl border bg-white p-6 ${
                     pkg.featured
@@ -373,7 +398,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {MINUTES_COMBO_PACKAGES.map((pkg, i) => (
-              <MinutesReveal key={pkg.id} delayMs={i * 70}>
+              <MinutesReveal key={pkg.id} delayMs={(i % 4) * 100}>
                 <article
                   className={`minutes-lift flex h-full flex-col rounded-2xl border bg-white p-5 ${
                     pkg.featured
@@ -475,12 +500,15 @@ export default function PhotographyInMinutesPage() {
               </h2>
             </div>
           </MinutesReveal>
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {MINUTES_FLOW.map((item, i) => {
-              const Icon = FLOW_ICONS[i] ?? Camera;
-              return (
-                <MinutesReveal key={item.step} delayMs={(i % 3) * 60}>
-                  <li className="minutes-lift flex h-full gap-4 rounded-2xl border border-brand-line bg-white p-4">
+          <MinutesReveal delayMs={60}>
+            <MinutesCarousel>
+              {MINUTES_FLOW.map((item, i) => {
+                const Icon = FLOW_ICONS[i] ?? Camera;
+                return (
+                  <div
+                    key={item.step}
+                    className="minutes-lift flex h-full gap-4 rounded-2xl border border-brand-line bg-white p-4"
+                  >
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-magenta/10 text-brand-magenta">
                       <Icon className="h-4 w-4" />
                     </span>
@@ -495,11 +523,73 @@ export default function PhotographyInMinutesPage() {
                         {item.body}
                       </p>
                     </div>
-                  </li>
-                </MinutesReveal>
-              );
-            })}
-          </ol>
+                  </div>
+                );
+              })}
+            </MinutesCarousel>
+          </MinutesReveal>
+        </div>
+      </section>
+
+      {/* Booking preview mockup */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid gap-10 md:grid-cols-2 md:items-center">
+            <MinutesReveal>
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                  Booking, simplified
+                </p>
+                <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                  See it before you book it
+                </h2>
+                <p className="mt-4 max-w-md text-sm leading-relaxed text-brand-gray">
+                  Pick an occasion, choose a package and pay — your booking ID
+                  and photographer assignment land instantly.
+                </p>
+              </div>
+            </MinutesReveal>
+            <MinutesReveal delayMs={100}>
+              <MinutesAppPreview />
+            </MinutesReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & safety */}
+      <section className="bg-brand-cream/70 py-16 md:py-20">
+        <div className="mx-auto max-w-5xl px-6">
+          <MinutesReveal>
+            <div className="flex flex-col items-center gap-8 text-center sm:flex-row sm:items-center sm:text-left">
+              <div className="minutes-orbit-wrap">
+                <span className="minutes-orbit-ring minutes-orbit-ring-1" aria-hidden />
+                <span className="minutes-orbit-ring minutes-orbit-ring-2" aria-hidden />
+                <span className="minutes-orbit-ring minutes-orbit-ring-3" aria-hidden />
+                <span className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full bg-white text-brand-magenta shadow-md">
+                  <ShieldCheck className="h-6 w-6" />
+                </span>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                  Verified &amp; secure
+                </p>
+                <h2 className="mt-2 font-wedding-display text-2xl font-semibold text-brand-magenta-deep md:text-3xl">
+                  Your booking, protected end to end
+                </h2>
+                <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {MINUTES_TRUST_POINTS.map((point) => (
+                    <li
+                      key={point}
+                      className="flex items-start gap-2 text-sm text-brand-gray"
+                    >
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-magenta" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </MinutesReveal>
         </div>
       </section>
 
@@ -521,7 +611,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <div className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {MINUTES_MATCHING.map((row, i) => (
-              <MinutesReveal key={row.factor} delayMs={i * 50}>
+              <MinutesReveal key={row.factor} delayMs={(i % 3) * 100}>
                 <div className="flex items-center justify-between rounded-xl border border-brand-line bg-brand-cream/50 px-4 py-3">
                   <span className="text-sm font-medium text-brand-magenta-deep">
                     {row.factor}
@@ -535,7 +625,7 @@ export default function PhotographyInMinutesPage() {
           </div>
           <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {MINUTES_PIPELINE.map((item, i) => (
-              <MinutesReveal key={item.title} delayMs={(i % 3) * 60}>
+              <MinutesReveal key={item.title} delayMs={(i % 3) * 100}>
                 <li className="flex items-start gap-3 rounded-xl border border-brand-line bg-white px-4 py-4">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-magenta text-xs font-bold text-white">
                     {i + 1}
@@ -568,7 +658,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {MINUTES_PHOTOGRAPHERS.map((p, i) => (
-              <MinutesReveal key={p.id} delayMs={i * 70}>
+              <MinutesReveal key={p.id} delayMs={(i % 4) * 100}>
                 <li className="minutes-lift h-full rounded-2xl border border-brand-line bg-white p-5">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-magenta text-sm font-bold text-white">
                     {p.name
@@ -609,7 +699,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {MINUTES_GALLERY.map((shot, i) => (
-              <MinutesReveal key={shot.src + shot.label} delayMs={(i % 3) * 70}>
+              <MinutesReveal key={shot.src + shot.label} delayMs={(i % 3) * 100}>
                 <li className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
                     src={shot.src}
@@ -717,7 +807,7 @@ export default function PhotographyInMinutesPage() {
           </MinutesReveal>
           <ol className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {MINUTES_BLUEPRINT.map((item, i) => (
-              <MinutesReveal key={`${item.role}-${i}`} delayMs={(i % 4) * 50}>
+              <MinutesReveal key={`${item.role}-${i}`} delayMs={(i % 4) * 100}>
                 <li className="rounded-2xl border border-brand-line bg-white p-4">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
                     {item.role}
@@ -729,7 +819,7 @@ export default function PhotographyInMinutesPage() {
           </ol>
           <div className="grid gap-6 md:grid-cols-2">
             {MINUTES_PHASES.map((phase, idx) => (
-              <MinutesReveal key={phase.name} delayMs={idx * 80}>
+              <MinutesReveal key={phase.name} delayMs={idx * 100}>
                 <div className="rounded-2xl border border-brand-line bg-white p-6">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-brand-magenta">
                     Phase {idx + 1}
@@ -752,6 +842,25 @@ export default function PhotographyInMinutesPage() {
               </MinutesReveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="scroll-mt-24 bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-3xl px-6">
+          <MinutesReveal>
+            <div className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-brand-magenta">
+                Got questions?
+              </p>
+              <h2 className="font-wedding-display text-3xl font-semibold text-brand-magenta-deep md:text-4xl">
+                Frequently asked questions
+              </h2>
+            </div>
+          </MinutesReveal>
+          <MinutesReveal delayMs={80}>
+            <MinutesFaq />
+          </MinutesReveal>
         </div>
       </section>
 
@@ -798,17 +907,21 @@ export default function PhotographyInMinutesPage() {
         .minutes-page {
           --minutes-pink: #d81b60;
         }
+
+        /* Scroll reveals — fast, ease-out entrances */
         .minutes-reveal {
           opacity: 0;
-          transform: translateY(22px);
+          transform: translateY(16px);
           transition:
-            opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-            transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            opacity 0.4s ease-out,
+            transform 0.4s ease-out;
         }
         .minutes-reveal.is-visible {
           opacity: 1;
           transform: translateY(0);
         }
+
+        /* Marquee */
         .minutes-marquee {
           overflow: hidden;
           mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
@@ -831,49 +944,224 @@ export default function PhotographyInMinutesPage() {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
-        .minutes-hero-copy {
-          animation: minutes-fade-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+        /* Hero — sequential fade-in */
+        .minutes-hero-in {
+          opacity: 0;
+          transform: translateY(14px);
+          animation: minutes-fade-up 0.4s ease-out forwards;
         }
+        .minutes-hero-in-1 { animation-delay: 0.05s; }
+        .minutes-hero-in-2 { animation-delay: 0.22s; }
+        .minutes-hero-in-3 { animation-delay: 0.38s; }
+        .minutes-hero-in-4 { animation-delay: 0.52s; }
+        .minutes-hero-in-5 { animation-delay: 0.66s; }
         .minutes-hero-visual {
-          animation: minutes-fade-up 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+          opacity: 0;
+          animation: minutes-fade-up 0.5s ease-out 0.3s forwards;
+        }
+        .minutes-badge {
+          opacity: 0;
+          animation: minutes-fade-up 0.4s ease-out 0.75s forwards;
+        }
+        @keyframes minutes-fade-up {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         .minutes-float {
           animation: minutes-float 5.5s ease-in-out infinite;
-        }
-        .minutes-badge {
-          animation: minutes-fade-up 1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
-        }
-        @keyframes minutes-fade-up {
-          from { opacity: 0; transform: translateY(18px); }
-          to { opacity: 1; transform: translateY(0); }
         }
         @keyframes minutes-float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
         }
+
+        /* Hero pink glow blobs — breathing pulse */
+        .minutes-glow {
+          filter: blur(48px);
+          background: radial-gradient(circle, rgba(240, 98, 146, 0.38), rgba(216, 27, 96, 0.12) 60%, transparent 75%);
+          animation: minutes-glow-pulse 2s ease-in-out infinite;
+        }
+        .minutes-glow-1 { animation-delay: 0s; }
+        .minutes-glow-2 { animation-delay: 0.35s; background: radial-gradient(circle, rgba(216, 27, 96, 0.3), transparent 70%); }
+        .minutes-glow-3 { animation-delay: 0.7s; background: radial-gradient(circle, rgba(240, 98, 146, 0.28), transparent 70%); }
+        @keyframes minutes-glow-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.55; }
+          50% { transform: scale(1.12); opacity: 0.9; }
+        }
+
+        /* Hero gradient sweep accent line */
+        .minutes-sweep-line {
+          position: relative;
+          z-index: 1;
+          height: 3px;
+          width: 100%;
+          background: linear-gradient(90deg, #d81b60, #f8bbd0, #d81b60);
+          background-size: 200% 100%;
+          animation: minutes-sweep 3s linear infinite;
+        }
+        @keyframes minutes-sweep {
+          from { background-position: 0% 0%; }
+          to { background-position: 200% 0%; }
+        }
+
+        /* Card lift */
         .minutes-lift {
           transition:
-            transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-            box-shadow 0.35s ease,
-            border-color 0.35s ease;
+            transform 0.3s ease-out,
+            box-shadow 0.3s ease-out,
+            border-color 0.3s ease-out;
         }
         .minutes-lift:hover {
           transform: translateY(-4px);
           box-shadow: 0 22px 44px -28px rgba(216, 27, 96, 0.45);
           border-color: rgba(216, 27, 96, 0.28);
         }
+
+        /* Floating in-page nav */
+        .minutes-floating-nav {
+          opacity: 0;
+          transform: translateY(12px);
+          transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+          pointer-events: none;
+        }
+        .minutes-floating-nav.is-visible {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+        .minutes-nav-item:hover .minutes-nav-highlight {
+          background: rgba(216, 27, 96, 0.12);
+          box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.06);
+        }
+        .minutes-nav-item:hover .minutes-nav-tooltip {
+          opacity: 1;
+          transform: translate(-50%, 4px);
+        }
+        .minutes-nav-tooltip {
+          transform: translate(-50%, -2px);
+        }
+
+        /* Carousel */
+        .minutes-carousel-track {
+          scrollbar-width: none;
+        }
+        .minutes-carousel-track::-webkit-scrollbar {
+          display: none;
+        }
+        .minutes-carousel-arrow {
+          position: absolute;
+          display: none;
+          height: 2.5rem;
+          width: 2.5rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9999px;
+          border: 1px solid var(--brand-line);
+          background: #fff;
+          color: var(--brand-magenta);
+          box-shadow: 0 12px 28px -16px rgba(216, 27, 96, 0.5);
+          transition: transform 0.2s ease-out, background 0.2s ease-out;
+        }
+        @media (min-width: 640px) {
+          .minutes-carousel-arrow {
+            display: flex;
+          }
+        }
+        .minutes-carousel-arrow:hover {
+          background: var(--brand-magenta);
+          color: #fff;
+          transform: translateY(-50%) scale(1.06);
+        }
+
+        /* FAQ accordion */
+        .minutes-faq-chevron {
+          transform-origin: center;
+        }
+        .minutes-faq-panel {
+          display: grid;
+          grid-template-rows: 0fr;
+          overflow: hidden;
+          transition: grid-template-rows 0.3s ease-out;
+        }
+        .minutes-faq-item.is-open .minutes-faq-panel {
+          grid-template-rows: 1fr;
+        }
+        .minutes-faq-panel-inner {
+          min-height: 0;
+          opacity: 0;
+          transition: opacity 0.25s ease-out;
+        }
+        .minutes-faq-item.is-open .minutes-faq-panel-inner {
+          opacity: 1;
+        }
+
+        /* Trust badge — orbiting dashed rings */
+        .minutes-orbit-wrap {
+          position: relative;
+          height: 4.5rem;
+          width: 4.5rem;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .minutes-orbit-ring {
+          position: absolute;
+          border-radius: 9999px;
+          border: 1.5px dashed rgba(216, 27, 96, 0.45);
+        }
+        .minutes-orbit-ring-1 {
+          inset: -6px;
+          animation: minutes-orbit-spin 9s linear infinite;
+        }
+        .minutes-orbit-ring-2 {
+          inset: -16px;
+          border-color: rgba(216, 27, 96, 0.28);
+          animation: minutes-orbit-spin 14s linear infinite reverse;
+        }
+        .minutes-orbit-ring-3 {
+          inset: -26px;
+          border-color: rgba(216, 27, 96, 0.16);
+          animation: minutes-orbit-spin 20s linear infinite;
+        }
+        @keyframes minutes-orbit-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .minutes-reveal,
-          .minutes-hero-copy,
+          .minutes-hero-in,
           .minutes-hero-visual,
           .minutes-badge,
           .minutes-float,
           .minutes-lift,
-          .minutes-marquee-track {
+          .minutes-marquee-track,
+          .minutes-glow,
+          .minutes-sweep-line,
+          .minutes-orbit-ring,
+          .minutes-floating-nav,
+          .minutes-carousel-arrow,
+          .minutes-faq-panel,
+          .minutes-faq-panel-inner,
+          .minutes-nav-tooltip {
             animation: none !important;
             transition: none !important;
+          }
+          .minutes-reveal,
+          .minutes-hero-in,
+          .minutes-hero-visual,
+          .minutes-badge {
             opacity: 1 !important;
             transform: none !important;
+          }
+          .minutes-faq-panel.is-open,
+          .minutes-faq-item.is-open .minutes-faq-panel {
+            grid-template-rows: 1fr !important;
+          }
+          .minutes-faq-item.is-open .minutes-faq-panel-inner {
+            opacity: 1 !important;
           }
         }
       `}</style>

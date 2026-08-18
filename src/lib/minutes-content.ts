@@ -598,6 +598,43 @@ export const MINUTES_AUDIENCES = [
   },
 ] as const;
 
+/** Trust & safety highlights shown near the verified-network badge. */
+export const MINUTES_TRUST_POINTS = [
+  "Verified photographer network",
+  "Payment gateway webhook verification",
+  "Digital booking confirmation & payment record",
+  "Ratings and vendor performance tracking",
+] as const;
+
+/** Short FAQ grounded in the Phase 1 report. */
+export const MINUTES_FAQS = [
+  {
+    question: "How much does Photography in Minutes cost?",
+    answer:
+      "Packages start at ₹1,999 for Basic. Standard ₹2,999 is Most Popular, and Premium ₹4,999 adds longer coverage plus a reel. Category-specific pricing may vary — see the rate card above.",
+  },
+  {
+    question: "How does booking work?",
+    answer:
+      "Choose an occasion, share your location and date/time, pick a package, and pay securely. We assign a verified photographer and send your booking ID and confirmation right away.",
+  },
+  {
+    question: "Are the photographers verified?",
+    answer:
+      "Yes. Every photographer goes through portfolio review, KYC checks and a trial job before activation. Availability, rating, distance, experience and reliability decide who is matched to your job.",
+  },
+  {
+    question: "What if I need to cancel or reschedule?",
+    answer:
+      "Cancellation and refund terms are shown before payment and follow our published policy. Reach out to support for help with rescheduling.",
+  },
+  {
+    question: "When will I receive my photos or reels?",
+    answer:
+      "Delivery follows the SLA for your package. Our team tracks every booking until photos/reels are delivered and you confirm completion.",
+  },
+] as const;
+
 export const MINUTES_USPS = [
   "Starting price of ₹1,999",
   "Book by occasion rather than searching freelancers",
