@@ -978,16 +978,17 @@ export default function PhotographyInMinutesPage() {
 
         /* Hero pink glow blobs — breathing pulse */
         .minutes-glow {
-          filter: blur(48px);
-          background: radial-gradient(circle, rgba(240, 98, 146, 0.38), rgba(216, 27, 96, 0.12) 60%, transparent 75%);
+          filter: blur(42px);
+          background: radial-gradient(circle, rgba(240, 98, 146, 0.55), rgba(216, 27, 96, 0.22) 55%, transparent 72%);
           animation: minutes-glow-pulse 2s ease-in-out infinite;
+          will-change: transform, opacity;
         }
         .minutes-glow-1 { animation-delay: 0s; }
-        .minutes-glow-2 { animation-delay: 0.35s; background: radial-gradient(circle, rgba(216, 27, 96, 0.3), transparent 70%); }
-        .minutes-glow-3 { animation-delay: 0.7s; background: radial-gradient(circle, rgba(240, 98, 146, 0.28), transparent 70%); }
+        .minutes-glow-2 { animation-delay: 0.35s; background: radial-gradient(circle, rgba(216, 27, 96, 0.48), transparent 68%); }
+        .minutes-glow-3 { animation-delay: 0.7s; background: radial-gradient(circle, rgba(240, 98, 146, 0.42), transparent 68%); }
         @keyframes minutes-glow-pulse {
-          0%, 100% { transform: scale(1); opacity: 0.55; }
-          50% { transform: scale(1.12); opacity: 0.9; }
+          0%, 100% { transform: scale(1); opacity: 0.65; }
+          50% { transform: scale(1.18); opacity: 1; }
         }
 
         /* Hero gradient sweep accent line */
@@ -1036,10 +1037,10 @@ export default function PhotographyInMinutesPage() {
         }
         .minutes-nav-item:hover .minutes-nav-tooltip {
           opacity: 1;
-          transform: translate(-50%, 4px);
+          transform: translate(-50%, -4px);
         }
         .minutes-nav-tooltip {
-          transform: translate(-50%, -2px);
+          transform: translate(-50%, 2px);
         }
 
         /* Carousel */
