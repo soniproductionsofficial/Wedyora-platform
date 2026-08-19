@@ -17,7 +17,7 @@ export interface BlogPost {
   heading?: string;
   list?: BlogListItem[];
   closing?: string;
-  body: string[]; // extra paragraphs after the list (legacy posts use only this)
+  body?: string[];
 }
 
 const VENUE_SELECTION_CHECKLIST: BlogListItem[] = [
@@ -70,7 +70,6 @@ export const BLOG_POSTS: BlogPost[] = [
     list: VENUE_SELECTION_CHECKLIST,
     closing:
       "The right wedding hotel is the foundation where your celebrations, emotions, and memories come together. Select a property that aligns with your overall vision, budget, and guest experience goals.",
-    body: [],
   },
   {
     slug: "the-future-of-wedding-planning-with-wedyora",
@@ -118,7 +117,6 @@ export const BLOG_POSTS: BlogPost[] = [
     ],
     closing:
       "Love knows no borders, and neither should your wedding memories. Let expert lensmen capture your story, anywhere in India. By using intelligent matching technology, Wedyora assigns top-rated wedding professionals directly to you based on your unique style, date, and budget.",
-    body: [],
   },
   {
     slug: "top-luxury-wedding-hotels-in-bangalore",
@@ -134,30 +132,6 @@ export const BLOG_POSTS: BlogPost[] = [
     list: VENUE_SELECTION_CHECKLIST,
     closing:
       "The right wedding hotel is the foundation where your celebrations, emotions, and memories come together. Select a property that aligns with your overall vision, budget, and guest experience goals.",
-    body: [],
-  },
-  {
-    slug: "how-to-choose-a-wedding-photographer",
-    title: "How to Choose the Right Wedding Photographer",
-    excerpt:
-      "Portfolio style, delivery timelines, and the questions worth asking before you book — a quick guide for couples.",
-    publishedAt: "2026-06-01",
-    body: [
-      "Your wedding photos are one of the few things from your big day that last forever, which makes the photographer decision feel heavier than it needs to be. Start with style: do you want candid, documentary-style coverage, or classic posed portraits? Most photographers lean toward one, so look at full galleries (not just highlight reels) to judge consistency.",
-      "Next, ask about delivery timelines. A realistic full-length wedding video usually takes several weeks to edit properly — anyone promising next-day delivery of a complete film is cutting corners somewhere.",
-      "Finally, confirm what's actually included: raw files, drone coverage, a second shooter, album design. On Wedyora, every vendor's package spells out exactly what's covered before you pay a deposit, so there are no surprises later.",
-    ],
-  },
-  {
-    slug: "wedding-budget-planning-101",
-    title: "Wedding Budget Planning 101",
-    excerpt:
-      "A simple way to think about splitting your budget across venue, catering, photography, and decor.",
-    publishedAt: "2026-06-15",
-    body: [
-      "Most first-time wedding planners underestimate how many vendors are involved and overestimate how far a single budget number stretches. A useful starting split: venue and catering typically take the largest share, followed by photography/videography, then decor, with smaller allocations for entertainment and invitations.",
-      "The biggest budget mistake isn't overspending on one category — it's not tracking the total across all of them until it's too late. Whatever tool you use, track every vendor's advance and balance in one place from day one.",
-    ],
   },
 ];
 

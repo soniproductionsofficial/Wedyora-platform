@@ -71,7 +71,7 @@ export default async function BlogPostPage({
               <p className="text-brand-magenta font-medium">{post.closing}</p>
             ) : null}
 
-            {post.body.map((paragraph, i) => (
+            {post.body?.map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
           </div>
